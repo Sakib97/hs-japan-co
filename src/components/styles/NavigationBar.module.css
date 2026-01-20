@@ -7,3 +7,105 @@
   transform: translateY(-100%);
   transition: transform 0.3s ease-in-out;
 }
+
+/* Hover effect for desktop */
+@media (min-width: 992px) {
+  .hoverDropdown:hover > :global(.dropdown-menu) {
+    display: block !important;
+    margin-top: 0;
+  }
+}
+
+.loginBtn {
+  border-radius: 50px !important;
+  padding: 8px 25px !important;
+  background-color: #3b5bdb !important;
+  border: none !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  color: white !important;
+  text-decoration: none;
+}
+
+.loginBtn:hover {
+  background-color: #304ac1 !important;
+  color: white !important;
+}
+
+.loginIcon {
+  background-color: #FFD700;
+  color: #3b5bdb; 
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* Mobile Menu Styles */
+.mobileMenuItem {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mobileNavLink {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  transition: color 0.2s;
+}
+
+.mobileNavLink:hover {
+  color: #3b5bdb;
+}
+
+.mobileNavLink i {
+  margin-right: 12px;
+  font-size: 12px;
+  width: 15px;
+}
+
+.mobileDropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+}
+
+.mobileDropdownHeader.active {
+  color: #3b5bdb;
+}
+
+.mobileDropdownToggle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.mobileDropdownToggle:hover {
+  background-color: #e9ecef;
+}
+
+.mobileSubMenu {
+  padding-left: 15px;
+  padding-bottom: 10px;
+}
+

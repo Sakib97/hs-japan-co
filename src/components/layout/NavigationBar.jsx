@@ -6,6 +6,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
+import Collapse from "react-bootstrap/Collapse";
 import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import useScrollDirection from "../../hooks/useScrollDirection";
@@ -16,34 +17,51 @@ const NavigationBar = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  // Mobile Dropdown States
+  const [admissionOpen, setAdmissionOpen] = useState(true);
+  const [japanOpen, setJapanOpen] = useState(false);
+
   const showNavbar = useScrollDirection();
   // see if mobile view
   const isMobile = window.innerWidth < 768;
+
+  const toggleAdmission = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAdmissionOpen(!admissionOpen);
+  };
+
+  const toggleJapan = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setJapanOpen(!japanOpen);
+  };
 
   return (
     <div>
       {" "}
       <Navbar
-        bg="light"
+        variant="dark"
         expand="lg"
         // className="shadow-sm mb-3"
         className={`shadow-sm fixed-top py-1 ${
           showNavbar ? styles.navbarShow : styles.navbarHide
         }`}
+        style={{ backgroundColor: "#2D2A4A" }}
       >
         <Container style={{ padding: "0px 10px", margin: "0 0 0 10vw" }}>
           <Navbar.Brand href="/">
             <img
               alt=""
               // src="/logo3.png"
-              src="/logo_v1-.png"
-              width={isMobile ? "45" : "45"}
-              height={isMobile ? "50" : "50"}
+              src="/logo_1.png"
+              width={isMobile ? "200" : "300"}
+              height={isMobile ? "50" : "80"}
               // className={styles.logo}
               // className="d-inline-block align-top"
             />
             &nbsp;
-            <span>HS Japan Academy</span>
+            {/* <span>HS Japan Academy</span> */}
           </Navbar.Brand>
 
           <Navbar.Toggle
@@ -69,41 +87,286 @@ const NavigationBar = () => {
             </Offcanvas.Header>
             <Offcanvas.Body>
               {/* <Offcanvas.Body  className={styles.offcanvasBody}> */}
+
+              {/* Desktop Menu */}
               <Nav
                 style={{ fontSize: "1.1rem" }}
                 className="
+                                    d-none d-lg-flex
                                     ms-auto        /* push to right on large screens */
                                     flex-lg-row    /* horizontal on large screens */
                                     flex-column    /* vertical on small screens */
-                                    align-items-lg-end  /* right align on large */
+                                    align-items-lg-center
                                     align-items-center  /* center align on small */
-                                    gap-2
+                                    gap-3
                                 "
               >
                 <Nav.Link onClick={handleClose} as={Link} to="/">
                   Home
                 </Nav.Link>
-                {/* <Nav.Link onClick={handleClose} href="#about">About</Nav.Link> */}
-                <Nav.Link onClick={handleClose} as={Link} to="/contact">
-                  Contact
+                <Nav.Link onClick={handleClose} as={Link} to="/about">
+                  About Us
                 </Nav.Link>
-                {/* {user ? (
-                  <Nav.Link
-                    onClick={handleClose}
+
+                <NavDropdown
+                  title="Admission"
+                  id="admission-dropdown"
+                  className={styles.hoverDropdown}
+                  renderMenuOnMount={true}
+                >
+                  <NavDropdown.Item
                     as={Link}
-                    to="/dashboard/profile"
+                    to="/admission"
+                    onClick={handleClose}
                   >
-                    {user.user_metadata.full_name || "User"}
-                  </Nav.Link>
-                ) : (
-                  <Nav.Link onClick={handleClose} as={Link} to="/auth/signin">
-                    Sign In
-                  </Nav.Link>
-                )} */}
-                <Navbar.Text onClick={handleClose}>
-                  {/* <LanguageToggle /> */}
-                </Navbar.Text>
+                    Admission
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    as={Link}
+                    to="/admission/online"
+                    onClick={handleClose}
+                  >
+                    Online Admission
+                  </NavDropdown.Item>
+                </NavDropdown>
+
+                <NavDropdown
+                  title="Japan"
+                  id="japan-dropdown"
+                  className={styles.hoverDropdown}
+                  renderMenuOnMount={true}
+                >
+                  <NavDropdown.Item
+                    as={Link}
+                    to="/japan/culture"
+                    onClick={handleClose}
+                  >
+                    Culture
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    as={Link}
+                    to="/japan/guide"
+                    onClick={handleClose}
+                  >
+                    Guide
+                  </NavDropdown.Item>
+                </NavDropdown>
+
+                <Nav.Link onClick={handleClose} as={Link} to="/gallery">
+                  Gallery
+                </Nav.Link>
+                <Nav.Link onClick={handleClose} as={Link} to="/team">
+                  Team
+                </Nav.Link>
+
+                <Nav.Link onClick={handleClose} as={Link} to="/contact">
+                  Contact Us
+                </Nav.Link>
+
+                <Button
+                  as={Link}
+                  to="/auth/signin"
+                  className={styles.loginBtn}
+                  onClick={handleClose}
+                >
+                  <div className={styles.loginIcon}>
+                    <i className="fa-solid fa-user"></i>
+                  </div>
+                  <span
+                    style={{
+                      borderLeft: "1px solid rgba(255,255,255,0.5)",
+                      height: "20px",
+                      margin: "0 5px",
+                    }}
+                  ></span>
+                  Login
+                </Button>
               </Nav>
+
+
+              {/* Mobile Menu */}
+              <div className="d-lg-none d-flex flex-column gap-0">
+                <div className={styles.mobileMenuItem}>
+                  <Link
+                    to="/"
+                    className={styles.mobileNavLink}
+                    onClick={handleClose}
+                  >
+                    <i className="fa-solid fa-chevron-right"></i> Home
+                  </Link>
+                </div>
+                <div className={styles.mobileMenuItem}>
+                  <Link
+                    to="/about"
+                    className={styles.mobileNavLink}
+                    onClick={handleClose}
+                  >
+                    <i className="fa-solid fa-chevron-right"></i> About Us
+                  </Link>
+                </div>
+
+                {/* Admission Dropdown */}
+                <div className={styles.mobileMenuItem}>
+                  <div
+                    className={`${styles.mobileDropdownHeader} ${
+                      admissionOpen ? styles.active : ""
+                    }`}
+                    onClick={toggleAdmission}
+                  >
+                    <div className="d-flex align-items-center">
+                      <i
+                        className={`fa-solid ${
+                          admissionOpen ? "fa-chevron-down" : "fa-chevron-right"
+                        } me-2`}
+                        style={{ fontSize: "12px", width: "15px" }}
+                      ></i>
+                      Admission
+                    </div>
+                    <button className={styles.mobileDropdownToggle}>
+                      <i
+                        className={`fa-solid ${
+                          admissionOpen ? "fa-minus" : "fa-plus"
+                        }`}
+                      ></i>
+                    </button>
+                  </div>
+                  <Collapse in={admissionOpen}>
+                    <div className={styles.mobileSubMenu}>
+                      <div
+                        className={styles.mobileMenuItem}
+                        style={{ borderBottom: "none" }}
+                      >
+                        <Link
+                          to="/admission"
+                          className={styles.mobileNavLink}
+                          onClick={handleClose}
+                        >
+                          <i className="fa-solid fa-chevron-right"></i>{" "}
+                          Admission
+                        </Link>
+                      </div>
+                      <div
+                        className={styles.mobileMenuItem}
+                        style={{ borderBottom: "none" }}
+                      >
+                        <Link
+                          to="/admission/online"
+                          className={styles.mobileNavLink}
+                          onClick={handleClose}
+                        >
+                          <i className="fa-solid fa-chevron-right"></i> Online
+                          Admission
+                        </Link>
+                      </div>
+                    </div>
+                  </Collapse>
+                </div>
+
+                {/* Japan Dropdown */}
+                <div className={styles.mobileMenuItem}>
+                  <div
+                    className={`${styles.mobileDropdownHeader} ${
+                      japanOpen ? styles.active : ""
+                    }`}
+                    onClick={toggleJapan}
+                  >
+                    <div className="d-flex align-items-center">
+                      <i
+                        className={`fa-solid ${
+                          japanOpen ? "fa-chevron-down" : "fa-chevron-right"
+                        } me-2`}
+                        style={{ fontSize: "12px", width: "15px" }}
+                      ></i>
+                      Japan
+                    </div>
+                    <button className={styles.mobileDropdownToggle}>
+                      <i
+                        className={`fa-solid ${
+                          japanOpen ? "fa-minus" : "fa-plus"
+                        }`}
+                      ></i>
+                    </button>
+                  </div>
+                  <Collapse in={japanOpen}>
+                    <div className={styles.mobileSubMenu}>
+                      <div
+                        className={styles.mobileMenuItem}
+                        style={{ borderBottom: "none" }}
+                      >
+                        <Link
+                          to="/japan/culture"
+                          className={styles.mobileNavLink}
+                          onClick={handleClose}
+                        >
+                          <i className="fa-solid fa-chevron-right"></i> Culture
+                        </Link>
+                      </div>
+                      <div
+                        className={styles.mobileMenuItem}
+                        style={{ borderBottom: "none" }}
+                      >
+                        <Link
+                          to="/japan/guide"
+                          className={styles.mobileNavLink}
+                          onClick={handleClose}
+                        >
+                          <i className="fa-solid fa-chevron-right"></i> Guide
+                        </Link>
+                      </div>
+                    </div>
+                  </Collapse>
+                </div>
+
+                <div className={styles.mobileMenuItem}>
+                  <Link
+                    to="/gallery"
+                    className={styles.mobileNavLink}
+                    onClick={handleClose}
+                  >
+                    <i className="fa-solid fa-chevron-right"></i> Gallery
+                  </Link>
+                </div>
+                <div className={styles.mobileMenuItem}>
+                  <Link
+                    to="/team"
+                    className={styles.mobileNavLink}
+                    onClick={handleClose}
+                  >
+                    <i className="fa-solid fa-chevron-right"></i> Team
+                  </Link>
+                </div>
+                <div className={styles.mobileMenuItem}>
+                  <Link
+                    to="/contact"
+                    className={styles.mobileNavLink}
+                    onClick={handleClose}
+                  >
+                    <i className="fa-solid fa-chevron-right"></i> Contact Us
+                  </Link>
+                </div>
+
+                <div className="mt-4">
+                  <Button
+                    as={Link}
+                    to="/auth/signin"
+                    className={styles.loginBtn}
+                    onClick={handleClose}
+                    style={{ width: "100%", justifyContent: "center" }}
+                  >
+                    <div className={styles.loginIcon}>
+                      <i className="fa-solid fa-user"></i>
+                    </div>
+                    <span
+                      style={{
+                        borderLeft: "1px solid rgba(255,255,255,0.5)",
+                        height: "20px",
+                        margin: "0 5px",
+                      }}
+                    ></span>
+                    Login
+                  </Button>
+                </div>
+              </div>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
         </Container>
