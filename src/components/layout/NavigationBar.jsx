@@ -17,6 +17,48 @@ const NavigationBar = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  // Desktop Dropdown State
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isSticky, setIsSticky] = useState(false);
+
+  const handleMouseEnter = (linkName) => {
+    // Only switch if we are moving to a NEW dropdown
+    // If we re-enter the already open/sticky one, don't change anything (keep it sticky if it was)
+    if (activeDropdown !== linkName) {
+      setActiveDropdown(linkName);
+      setIsSticky(false);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    // Only close if it's NOT sticky
+    if (!isSticky) {
+      setActiveDropdown(null);
+    }
+  };
+
+  const handleToggle = (isOpen, meta, linkName) => {
+    if (meta.source === "click") {
+      // If clicking:
+      // 1. If it's the one already open and sticky, toggle it CLOSED.
+      // 2. Otherwise (different one, or same one but not sticky yet), make it OPEN and STICKY.
+      if (activeDropdown === linkName && isSticky) {
+        setActiveDropdown(null);
+        setIsSticky(false);
+      } else {
+        setActiveDropdown(linkName);
+        setIsSticky(true);
+      }
+    }
+  };
+
+  const closeDropdownCheck = () => {
+    // Helper to close dropdown when clicking a link inside it
+    setActiveDropdown(null);
+    setIsSticky(false);
+    handleClose(); // Close offcanvas if mobile
+  };
+
   // Mobile Dropdown States
   const [admissionOpen, setAdmissionOpen] = useState(true);
   const [japanOpen, setJapanOpen] = useState(false);
@@ -112,19 +154,24 @@ const NavigationBar = () => {
                   title="Admission"
                   id="admission-dropdown"
                   className={styles.hoverDropdown}
-                  renderMenuOnMount={true}
+                  show={activeDropdown === "admission"}
+                  onMouseEnter={() => handleMouseEnter("admission")}
+                  onMouseLeave={handleMouseLeave}
+                  onToggle={(isOpen, meta) =>
+                    handleToggle(isOpen, meta, "admission")
+                  }
                 >
                   <NavDropdown.Item
                     as={Link}
                     to="/admission"
-                    onClick={handleClose}
+                    onClick={closeDropdownCheck}
                   >
                     Admission
                   </NavDropdown.Item>
                   <NavDropdown.Item
                     as={Link}
                     to="/admission/online"
-                    onClick={handleClose}
+                    onClick={closeDropdownCheck}
                   >
                     Online Admission
                   </NavDropdown.Item>
@@ -134,19 +181,24 @@ const NavigationBar = () => {
                   title="Japan"
                   id="japan-dropdown"
                   className={styles.hoverDropdown}
-                  renderMenuOnMount={true}
+                  show={activeDropdown === "japan"}
+                  onMouseEnter={() => handleMouseEnter("japan")}
+                  onMouseLeave={handleMouseLeave}
+                  onToggle={(isOpen, meta) =>
+                    handleToggle(isOpen, meta, "japan")
+                  }
                 >
                   <NavDropdown.Item
                     as={Link}
                     to="/japan/culture"
-                    onClick={handleClose}
+                    onClick={closeDropdownCheck}
                   >
                     Culture
                   </NavDropdown.Item>
                   <NavDropdown.Item
                     as={Link}
                     to="/japan/guide"
-                    onClick={handleClose}
+                    onClick={closeDropdownCheck}
                   >
                     Guide
                   </NavDropdown.Item>
@@ -182,7 +234,6 @@ const NavigationBar = () => {
                   Login
                 </Button>
               </Nav>
-
 
               {/* Mobile Menu */}
               <div className="d-lg-none d-flex flex-column gap-0">

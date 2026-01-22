@@ -8,13 +8,7 @@
   transition: transform 0.3s ease-in-out;
 }
 
-/* Hover effect for desktop */
-@media (min-width: 992px) {
-  .hoverDropdown:hover > :global(.dropdown-menu) {
-    display: block !important;
-    margin-top: 0;
-  }
-}
+/* Hover effect for desktop removed as we use JS state control now */
 
 .loginBtn {
   border-radius: 50px !important;

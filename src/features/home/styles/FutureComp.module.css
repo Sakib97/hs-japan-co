@@ -1,0 +1,165 @@
+.section {
+    padding: 80px 0;
+    background-color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden; /* To handle any overflow from the background shape */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.imageSide {
+    flex: 1;
+    position: relative;
+    height: 600px; /* Need explicit height for absolute positioning of children */
+    min-width: 500px;
+}
+
+/* Yellow background shape */
+.backgroundShape {
+    position: absolute;
+    width: 60%;
+    height: 80%;
+    background-color: #fccc2e;
+    border-radius: 40px;
+    top: 10%;
+    left: 15%;
+    z-index: 0;
+    /* Create a somewhat organic or abstract shape if needed, 
+       but the image shows a large yellow blob/rect behind the photos.
+       Let's make it look like the one in the screenshot (approx). */
+    border-radius: 40% 40% 40% 40% / 60% 60% 40% 40%; 
+    transform: rotate(-10deg);
+}
+
+.imageWrapper {
+    position: absolute;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    background-color: #eee;
+    z-index: 1;
+    cursor: pointer;
+}
+
+/* Shine effect */
+.imageWrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg);
+    z-index: 2;
+    transition: none;
+}
+
+.imageWrapper:hover::after {
+    left: 150%;
+    transition: left 0.7s ease;
+}
+
+.imageWrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.imageWrapper:hover img {
+    transform: scale(1.05);
+}
+
+/* Top Image: Wide, top right */
+.img1 {
+    width: 320px;
+    height: 200px;
+    top: 0;
+    right: 20px;
+    z-index: 2;
+}
+
+/* Left/Middle Image: Vertical, left side */
+.img2 {
+    width: 200px;
+    height: 280px;
+    top: 150px;
+    left: 20px;
+    z-index: 3;
+}
+
+/* Bottom Image: Wide, bottom */
+.img3 {
+    width: 380px;
+    height: 240px;
+    bottom: 0;
+    right: 0;
+    z-index: 4;
+}
+
+
+.contentSide {
+    flex: 1;
+}
+
+.mobileImageStack {
+    display: none;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    margin: 30px 0;
+}
+
+.mobileStackImage {
+    width: 100%;
+    border-radius: 18px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    object-fit: cover;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #000;
+    font-family: 'Times New Roman', Times, serif; /* Match the serif title */
+}
+
+.description {
+    color: #555;
+    line-height: 1.8;
+    font-size: 1rem;
+    margin-bottom: 25px;
+    text-align: justify; /* Text looks justified or very neat */
+}
+
+@media (max-width: 992px) {
+    .container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+    }
+
+    .imageSide {
+        display: none;
+    }
+
+    .mobileImageStack {
+        display: flex;
+    }
+}
+
+@media (max-width: 600px) {
+    .title {
+        font-size: 2.2rem;
+    }
+}

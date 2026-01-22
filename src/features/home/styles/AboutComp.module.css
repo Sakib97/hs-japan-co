@@ -1,0 +1,100 @@
+.aboutSection {
+    padding: 60px 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.decorationIcon {
+    width: 40px;
+    height: 40px;
+    background-color: #2b45f5; /* Approximate blue color from image */
+    border-radius: 0 0 40px 40px;
+    transform: rotate(45deg);
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.contentWrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    align-items: flex-start;
+}
+
+.textContent {
+    flex: 1;
+    color: #444;
+    line-height: 1.8;
+    font-size: 1rem;
+    text-align: justify;
+}
+
+.servicesList {
+    flex: 0 0 350px; /* Fixed width for the list similar to the image */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.serviceItem {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.serviceItem:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-color: #d0d0d0;
+}
+
+.arrowIcon {
+    font-size: 0.8rem;
+    color: #000;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.serviceText {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Responsiveness */
+@media (max-width: 900px) {
+    .contentWrapper {
+        flex-direction: column;
+    }
+
+    .servicesList {
+        flex: 1;
+        width: 100%;
+    }
+}

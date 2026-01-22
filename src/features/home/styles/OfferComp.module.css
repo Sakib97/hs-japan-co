@@ -1,0 +1,171 @@
+.offerSection {
+    position: relative;
+    padding: 80px 0;
+    color: #fff;
+    background-color: #111;
+    overflow: hidden;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+}
+
+.backgroundImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.15;
+    z-index: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.contentSide {
+    flex: 1;
+    max-width: 600px;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+}
+
+.offerList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 50px;
+}
+
+.offerItem {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.checkIcon {
+    width: 24px;
+    height: 24px;
+    background-color: #2b45f5;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.ctaButton {
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    border: 1px solid #4d60fc;
+    border-radius: 50px;
+    padding: 5px;
+    padding-right: 25px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.ctaButton:hover {
+    background: xmlns="http://www.w3.org/2000/svg";
+    background-color: rgba(77, 96, 252, 0.1);
+}
+
+.iconCircle {
+    width: 40px;
+    height: 40px;
+    background-color: #4d60fc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.imageSide {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+}
+
+.yellowShape {
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    background-color: #fccc2e;
+    border-radius: 50%;
+    /* Create the semi-circle/pie effect if needed, but a circle works well behind */
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 20% 100%); 
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(-15deg);
+    z-index: 1;
+}
+
+.personImage {
+    position: relative;
+    z-index: 2;
+    height: 550px;
+    object-fit: cover;
+    /* Since we can't easily remove background of a random image, 
+       we'll style it to look intentional or use a PNG if we had one */
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .contentSide {
+        margin-bottom: 50px;
+        text-align: center;
+    }
+
+    .offerList {
+        align-items: flex-start;
+        text-align: left;
+        width: fit-content;
+        margin: 0 auto 50px auto;
+    }
+
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .imageSide {
+        width: 100%;
+        height: 400px;
+    }
+
+    .personImage {
+        height: 400px;
+    }
+
+    .yellowShape {
+        width: 300px;
+        height: 300px;
+    }
+}

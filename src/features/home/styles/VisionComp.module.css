@@ -1,0 +1,203 @@
+.section {
+    padding: 80px 0;
+    background-color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.decorationIcon {
+    width: 40px;
+    height: 40px;
+    background-color: #2b45f5;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #000;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    margin: 0;
+}
+
+.contentWrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 60px;
+}
+
+.imageSide {
+    flex: 1.2;
+    position: relative;
+}
+
+.mainImageWrapper {
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    z-index: 2;
+    cursor: pointer;
+}
+
+.mainImage {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 20px;
+    transition: transform 0.5s ease;
+}
+
+/* Shine and hover effects */
+.mainImageWrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg);
+    z-index: 3;
+    transition: none;
+}
+
+.mainImageWrapper:hover::after {
+    left: 150%;
+    transition: left 0.7s ease;
+}
+
+.mainImageWrapper:hover .mainImage {
+    transform: scale(1.03);
+}
+
+/* Decorative dots on bottom left */
+.dotsDecorationLeft {
+    position: absolute;
+    bottom: -30px;
+    left: -30px;
+    width: 100px;
+    height: 100px;
+    background-image: radial-gradient(#aaa 2px, transparent 2px);
+    background-size: 15px 15px;
+    z-index: 1;
+}
+
+.textSide {
+    flex: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 20px;
+    position: relative;
+}
+
+/* Decorative dots on right side */
+.dotsDecorationRight {
+    position: absolute;
+    bottom: -110px;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    background-image: radial-gradient(#aaa 2px, transparent 2px);
+    background-size: 15px 15px;
+    z-index: 0;
+    opacity: 0.6;
+}
+
+
+.description {
+    color: #555;
+    line-height: 1.8;
+    font-size: 1rem;
+    margin-bottom: 40px;
+    text-align: justify;
+}
+
+.profileCard {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profileImage {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%; /* Or slightly rounded square based on design? Design is squareish with rounded corners or just cut out background. 60x60 square/circle */
+    object-fit: cover;
+    border-radius: 8px; /* Based on image, it looks like a cutout or a square with slight radius */
+}
+
+.profileInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.profileName {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+.profileTitle {
+    font-size: 0.85rem;
+    color: #666;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Large Yellow semi-circle on the left edge of screen */
+.yellowShape {
+    position: absolute;
+    left: -100px;
+    top: 100px;
+    width: 250px;
+    height: 500px; /* Half circle height/width ratio */
+    border-radius: 0 250px 250px 0; /* Right semi-circle? Actually designs shows left semi-circle or ring.
+       The image shows a large yellow ring shape on the LEFT side entering the screen.
+       Let's approximate a circle outline or stroke.
+    */
+    width: 200px;
+    height: 400px;
+    border: 30px solid #fccc2e;
+    border-left: 0;
+    border-radius: 0 400px 400px 0;
+    top: 15%;
+    left: -100px;
+    z-index: 0;
+}
+
+
+@media (max-width: 900px) {
+    .contentWrapper {
+        flex-direction: column;
+    }
+
+    .imageSide, .textSide {
+        width: 100%;
+        flex: auto;
+    }
+    
+    .yellowShape {
+        display: none; /* Hide on mobile often cleaner */
+    }
+}

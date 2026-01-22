@@ -1,0 +1,112 @@
+.section {
+    padding: 80px 0;
+    background-color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.decorationIcon {
+    width: 40px;
+    height: 40px;
+    background-color: #2b45f5;
+    border-radius: 40px 0 40px 40px; /* Altered shape to match image - droplet like? */
+    /* The image shows a semi-circle or leaf shape at the top. 
+       Let's try a shape that looks like the top one: rotated semi-circle or teardrop. 
+       Actually previous AboutComp used 0 0 40px 40px rotated 45deg. 
+       This one looks like a tear drop pointing top-left or similar.
+       Let's just use a circle or similar decorative element. */
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 30px;
+    font-family: 'Times New Roman', Times, serif; /* serif font in image */
+}
+
+/* Fallback for title if no serif preferred */
+/* .title { font-family: serif; } */
+
+.description {
+    max-width: 900px;
+    margin: 0 auto;
+    color: #555;
+    line-height: 1.6;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.grid {
+    display: flex;
+    justify-content: space-evenly; /* Spread them out */
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 150px;
+    text-align: center;
+}
+
+.imageContainer {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 20px;
+    border-radius: 50%; /* circular background effect from design? Or just square images */
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Optional: Add a light background circle if utilizing transparent PNGs, 
+       but for picsum photos (squares) we usually mask them or just show them.
+       The design has illustrated icons. Picsum are photos.
+       I will use rounded corners for the photos. */
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background-color: #f9f9f9;
+}
+
+.benefitImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+    
+    .grid {
+        justify-content: center;
+    }
+}

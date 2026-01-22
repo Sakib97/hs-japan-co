@@ -1,0 +1,160 @@
+.programSection {
+    padding: 80px 0;
+    margin: 0 0 0 40px;
+    position: relative;
+    /* overflow: hidden; Removed to allow yellow background to extend if needed, or keep to contain. */
+}
+
+.mainTitle {
+    font-weight: 700;
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+    color: #000;
+}
+
+.featureItem {
+    margin-bottom: 40px;
+    padding-right: 20px;
+}
+
+.iconWrapper {
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.iconWrapper i {
+    font-size: 3.5rem; /* Large icons */
+    color: #4361ee; /* Primary blue color */
+    line-height: 1;
+}
+
+.featureItem h5 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+    color: #000;
+}
+
+.featureItem p {
+    color: #555; /* Dark grey text */
+    line-height: 1.6;
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.formContainer {
+    position: relative;
+    z-index: 10;
+}
+
+.yellowBackground {
+    position: absolute;
+    width: 100%; /* Or fixed size */
+    height: 100%;
+    background-color: #ffca3a; /* Yellow color */
+    border-radius: 50%;
+    top: 50px;
+    left: 100px;
+    z-index: -1;
+    transform: scale(1.1); /* Make it larger than the card */
+}
+
+/* Specific shape for the yellow background to match image - circle offset */
+.yellowCircle {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background-color: #ffd60a;
+    border-radius: 50%;
+    bottom: -80px;
+    right: -80px;
+    z-index: 0;
+}
+
+.contactCard {
+    border: none;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    overflow: hidden; /* Ensure rounded corners */
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: #000;
+    font-weight: 500;
+}
+
+.highlightText {
+    color: #4361ee;
+    font-weight: 700;
+}
+
+.formControl {
+    border-radius: 50px; /* Pill shape */
+    padding: 12px 25px;
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 15px;
+    height: 50px;
+}
+
+.formControl:focus {
+    box-shadow: none;
+    border-color: #4361ee;
+}
+
+.formControl::placeholder {
+    color: #999;
+}
+
+.submitButton {
+    border-radius: 50px;
+    padding: 12px 20px;
+    background-color: #3f37c9; /* slightly deeper blue */
+    border-color: #3f37c9;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    height: 50px;
+    margin-top: 10px;
+}
+
+.submitButton:hover {
+    background-color: #3a0ca3;
+    border-color: #3a0ca3;
+
+}
+
+@media (max-width: 991px) {
+    .programSection {
+        margin: 0;
+        padding: 40px 0;
+    }
+
+    .mainTitle {
+        text-align: center;
+    }
+
+    .featuresRow{
+        justify-content: center;
+    }
+
+    .featureItem {
+        margin-bottom: 30px;
+        text-align: center;
+        padding-right: 0;
+    }
+
+    .yellowCircle {
+        width: 350px;
+        height: 350px;
+        right: -10px;
+        bottom: -70px;
+    }
+}
