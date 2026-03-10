@@ -2,6 +2,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import NavigationBar from "./components/layout/NavigationBar.jsx";
+import ScrollToTop from "./components/common/ScrollToTop.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
       </Routes>
+      <ScrollToTop />
     </BrowserRouter>
   );
 }

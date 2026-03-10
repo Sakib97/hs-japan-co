@@ -1,0 +1,217 @@
+.section {
+  position: relative;
+  padding: 80px 0;
+  background-color: #fff;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Decorative crescent on the right */
+.crescentRight {
+  position: absolute;
+  top: 50%;
+  right: -140px;
+  transform: translateY(-100%);
+  width: 250px;
+  height: 300px;
+  border: 30px solid #f5c518;
+  border-radius: 50%;
+  clip-path: inset(0 50% 0 0);
+}
+
+.layout {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.imageColumn {
+  flex: 0 0 320px;
+}
+
+.eventImage {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.contentColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+  margin-bottom: 40px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.eventCard {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  background: #1e1b4b;
+  border-radius: 14px;
+  padding: 20px 30px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.eventCard:hover {
+  background: #4f46e5;
+}
+
+.eventCard:hover .dateBadge::after {
+  opacity: 1;
+}
+
+
+
+.eventCard:hover .eventTitle {
+  text-decoration: underline;
+}
+
+.eventCard:hover .metaItem {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dateBadge {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.dateBadge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dateDay {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dateMonth {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #f5c518;
+  margin-top: 4px;
+  transition: color 0.3s ease;
+}
+
+.eventInfo {
+  flex: 1;
+}
+
+.eventTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.eventMeta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  transition: color 0.3s ease;
+}
+
+.metaItem i {
+  font-size: 0.85rem;
+}
+
+/* Decorative dot under events */
+.decorDot {
+  width: 25px;
+  height: 25px;
+  background: #4f46e5;
+  border-radius: 6px 6px 6px 6px;
+  transform: rotate(45deg);
+  margin-top: 30px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .imageColumn {
+    flex: none;
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .crescentRight {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .eventCard {
+    padding: 15px 18px;
+    gap: 15px;
+  }
+
+  .dateBadge {
+    width: 65px;
+    height: 65px;
+  }
+
+  .dateDay {
+    font-size: 1.4rem;
+  }
+
+  .eventMeta {
+    gap: 12px;
+  }
+}

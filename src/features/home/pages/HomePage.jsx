@@ -5,7 +5,10 @@ import BenefitsComp from "../components/BenefitsComp";
 import FutureComp from "../components/FutureComp";
 import VisionComp from "../components/VisionComp";
 import ProgramComp from "../components/ProgramComp";
-
+import CourseComp from "../components/CourseComp";
+import EventsComp from "../components/EventsComp";
+import ActivityComp from "../components/ActivityComp";
+import FooterComp from "../components/FooterComp";
 const HomePage = () => {
   return (
     <div>
@@ -16,6 +19,10 @@ const HomePage = () => {
       <FutureComp />
       <VisionComp />
       <ProgramComp />
+      <CourseComp />
+      <EventsComp />
+      <ActivityComp />
+      <FooterComp />
     </div>
   );
 };
