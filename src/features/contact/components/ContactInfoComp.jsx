@@ -64,14 +64,15 @@ const ContactInfoComp = () => {
 
                 <div className={styles.infoRow}>
                   <span className={styles.iconCircle}>
-                    <i className="fa-solid fa-clock"></i>
+                    {/* {`${styles.iconCircle} ${styles.yourNewClass}`}> */}
+                    <i className={`${styles.iconStyle} fa-solid fa-clock`}></i>
                   </span>
                   <span className={styles.infoText}>{o.hours}</span>
                 </div>
 
                 <div className={styles.infoRow}>
                   <span className={styles.iconCircle}>
-                    <i className="fa-solid fa-location-dot"></i>
+                    <i className={`${styles.iconStyle} fa-solid fa-location-dot`}></i>
                   </span>
                   <span className={`${styles.infoText} ${styles.linkText}`}>
                     {o.address}
@@ -81,7 +82,7 @@ const ContactInfoComp = () => {
                 {o.phones.map((p, i) => (
                   <div key={i} className={styles.infoRow}>
                     <span className={styles.iconCircle}>
-                      <i className="fa-solid fa-phone"></i>
+                      <i className={`${styles.iconStyle} fa-solid fa-phone`}></i>
                     </span>
                     <span className={styles.infoText}>{p}</span>
                   </div>
@@ -89,7 +90,7 @@ const ContactInfoComp = () => {
 
                 <div className={styles.infoRow}>
                   <span className={styles.iconCircle}>
-                    <i className="fa-solid fa-envelope"></i>
+                    <i className={`${styles.iconStyle} fa-solid fa-envelope`}></i>
                   </span>
                   <span className={`${styles.infoText} ${styles.linkText}`}>
                     {o.email}

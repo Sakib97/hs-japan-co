@@ -1,7 +1,7 @@
 .section {
   padding: 50px 0;
   background: #fff;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; */
 }
 
 .container {
@@ -15,7 +15,7 @@
   font-weight: 700;
   color: #000;
   margin: 0 0 20px;
-  font-family: "Times New Roman", Times, serif;
+  /* font-family: "Times New Roman", Times, serif; */
 }
 
 .mapWrapper {
