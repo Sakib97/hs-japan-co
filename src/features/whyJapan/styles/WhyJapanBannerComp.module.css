@@ -1,0 +1,78 @@
+.banner {
+  position: relative;
+  background: url("https://images.unsplash.com/photo-1528164344705-47542687000d?w=1400&h=200&fit=crop") center / cover no-repeat;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 27, 75, 0.7);
+}
+
+.decorCircle {
+  position: absolute;
+  top: -30px;
+  right: 60px;
+  width: 120px;
+  height: 120px;
+  border: 20px solid rgba(243, 156, 18, 0.6);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.decorCircle2 {
+  position: absolute;
+  top: -20px;
+  right: 160px;
+  width: 80px;
+  height: 80px;
+  border: 14px solid rgba(243, 156, 18, 0.35);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.breadcrumbBar {
+  position: relative;
+  z-index: 2;
+  padding: 20px 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.breadcrumbLink {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: #fff;
+}
+
+.separator {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.current {
+  color: #f5c518;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .decorCircle,
+  .decorCircle2 {
+    display: none;
+  }
+}

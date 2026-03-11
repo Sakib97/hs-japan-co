@@ -8,7 +8,6 @@ import ProgramComp from "../components/ProgramComp";
 import CourseComp from "../components/CourseComp";
 import EventsComp from "../components/EventsComp";
 import ActivityComp from "../components/ActivityComp";
-import FooterComp from "../components/FooterComp";
 const HomePage = () => {
   return (
     <div>
@@ -22,7 +21,6 @@ const HomePage = () => {
       <CourseComp />
       <EventsComp />
       <ActivityComp />
-      <FooterComp />
     </div>
   );
 };

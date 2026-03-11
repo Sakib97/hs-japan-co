@@ -1,0 +1,33 @@
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #4f46e5;
+  margin-bottom: 6px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.imageWrapper {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}

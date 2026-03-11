@@ -170,7 +170,7 @@ const NavigationBar = () => {
                   </NavDropdown.Item>
                   <NavDropdown.Item
                     as={Link}
-                    to="/admission/online"
+                    to="/online-admission"
                     onClick={closeDropdownCheck}
                   >
                     Online Admission
@@ -188,19 +188,19 @@ const NavigationBar = () => {
                     handleToggle(isOpen, meta, "japan")
                   }
                 >
-                  <NavDropdown.Item
+                  {/* <NavDropdown.Item
                     as={Link}
                     to="/japan/culture"
                     onClick={closeDropdownCheck}
                   >
                     Culture
-                  </NavDropdown.Item>
+                  </NavDropdown.Item> */}
                   <NavDropdown.Item
                     as={Link}
-                    to="/japan/guide"
+                    to="/why-japan"
                     onClick={closeDropdownCheck}
                   >
-                    Guide
+                    Why Japan
                   </NavDropdown.Item>
                 </NavDropdown>
 
