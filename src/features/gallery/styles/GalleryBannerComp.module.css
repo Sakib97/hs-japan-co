@@ -1,0 +1,84 @@
+.banner {
+  position: relative;
+  background: url("https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1400&h=350&fit=crop")
+    center / cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 27, 75, 0.65);
+}
+
+/* ── title area ── */
+.titleArea {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 70px 20px 50px;
+}
+
+.title {
+  color: #fff;
+  font-size: 2.8rem;
+  font-weight: 700;
+  font-family: "Times New Roman", Times, serif;
+  margin: 0;
+}
+
+/* ── breadcrumb strip ── */
+.breadcrumbBar {
+  position: relative;
+  z-index: 2;
+  background: rgba(43, 34, 80, 0.95);
+  padding: 12px 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.breadcrumbLink {
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: #f5c518;
+}
+
+.separator {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.current {
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .titleArea {
+    padding: 50px 20px 35px;
+  }
+}

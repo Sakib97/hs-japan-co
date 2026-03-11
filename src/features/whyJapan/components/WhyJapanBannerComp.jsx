@@ -6,7 +6,7 @@ const WhyJapanBannerComp = () => {
       <div className={styles.overlay} />
       <div className={styles.decorCircle} />
       <div className={styles.decorCircle2} />
-      <div className={styles.breadcrumbBar}>
+      {/* <div className={styles.breadcrumbBar}>
         <div className={styles.container}>
           <a href="/" className={styles.breadcrumbLink}>
             <i className="fa-solid fa-house" /> HOME
@@ -14,7 +14,7 @@ const WhyJapanBannerComp = () => {
           <span className={styles.separator}>/</span>
           <span className={styles.current}>WHY JAPAN</span>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 };

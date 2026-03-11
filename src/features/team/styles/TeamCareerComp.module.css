@@ -1,0 +1,114 @@
+.section {
+  padding: 60px 0 50px;
+  background: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.layout {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+/* ── text column ── */
+.textCol {
+  flex: 1;
+}
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 22px;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.paragraph {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: #555;
+  margin: 0 0 16px;
+}
+
+.checkList {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkList li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.checkList li i {
+  color: #4f46e5;
+  font-size: 0.85rem;
+}
+
+/* ── image column ── */
+.imageCol {
+  flex: 0 0 420px;
+  position: relative;
+}
+
+.decorCircle {
+  position: absolute;
+  top: -30px;
+  right: -40px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: #f5c518;
+  z-index: 0;
+}
+
+.image {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ── responsive ── */
+@media (max-width: 850px) {
+  .layout {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .imageCol {
+    flex: none;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .heading {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .decorCircle {
+    width: 220px;
+    height: 220px;
+    top: -20px;
+    right: -20px;
+  }
+}

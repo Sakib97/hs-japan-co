@@ -1,0 +1,298 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 30px 16px;
+}
+
+.container {
+  display: flex;
+  max-width: 960px;
+  width: 100%;
+  min-height: 560px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* ── left panel ── */
+.leftPanel {
+  flex: 0 0 42%;
+  background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 36px;
+  color: #fff;
+}
+
+.leftContent {
+  text-align: center;
+}
+
+.brandTitle {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin: 0 0 18px;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.brandText {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0 0 28px;
+}
+
+.decorDots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.decorDots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.decorDots span:nth-child(2) {
+  background: #f5c518;
+}
+
+/* ── right panel ── */
+.rightPanel {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 45px 40px;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 380px;
+}
+
+.formHeader {
+  margin-bottom: 28px;
+}
+
+.formTitle {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0 0 6px;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.formSubtitle {
+  font-size: 0.88rem;
+  color: #888;
+  margin: 0;
+}
+
+/* ── form ── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 0 14px;
+  transition: border-color 0.2s;
+}
+
+.inputWrap:focus-within {
+  border-color: #4f46e5;
+}
+
+.inputWrap i {
+  color: #aaa;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 12px 0;
+  font-size: 0.88rem;
+  color: #333;
+  background: transparent;
+}
+
+.input::placeholder {
+  color: #bbb;
+}
+
+.eyeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #aaa;
+  font-size: 0.88rem;
+}
+
+.eyeBtn:hover {
+  color: #4f46e5;
+}
+
+/* ── options row ── */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #555;
+  cursor: pointer;
+}
+
+.checkbox {
+  accent-color: #4f46e5;
+}
+
+.forgotLink {
+  font-size: 0.82rem;
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgotLink:hover {
+  text-decoration: underline;
+}
+
+/* ── submit ── */
+.submitBtn {
+  width: 100%;
+  padding: 13px;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submitBtn:hover {
+  background: #3730a3;
+}
+
+/* ── divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 22px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e5e5;
+}
+
+.divider span {
+  padding: 0 14px;
+  font-size: 0.78rem;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+/* ── social ── */
+.socialRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.socialBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #555;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.socialBtn:hover {
+  border-color: #4f46e5;
+  color: #4f46e5;
+}
+
+/* ── switch text ── */
+.switchText {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+}
+
+.switchLink {
+  color: #4f46e5;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.switchLink:hover {
+  text-decoration: underline;
+}
+
+/* ── responsive ── */
+@media (max-width: 700px) {
+  .container {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .leftPanel {
+    flex: none;
+    padding: 36px 24px;
+  }
+
+  .rightPanel {
+    padding: 32px 24px;
+  }
+}
