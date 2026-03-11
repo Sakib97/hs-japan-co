@@ -3,6 +3,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import NavigationBar from "./components/layout/NavigationBar.jsx";
 import ScrollToTop from "./components/common/ScrollToTop.jsx";
+import ScrollToTopOnNav from "./components/common/ScrollToTopOnNav.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 
@@ -21,6 +22,7 @@ import FooterComp from "./features/home/components/FooterComp.jsx";
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTopOnNav />
       <NavigationBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
