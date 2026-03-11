@@ -301,7 +301,7 @@ const NavigationBar = () => {
                         style={{ borderBottom: "none" }}
                       >
                         <Link
-                          to="/admission/online"
+                          to="/online-admission"
                           className={styles.mobileNavLink}
                           onClick={handleClose}
                         >
@@ -345,14 +345,14 @@ const NavigationBar = () => {
                         style={{ borderBottom: "none" }}
                       >
                         <Link
-                          to="/japan/culture"
+                          to="/why-japan"
                           className={styles.mobileNavLink}
                           onClick={handleClose}
                         >
-                          <i className="fa-solid fa-chevron-right"></i> Culture
+                          <i className="fa-solid fa-chevron-right"></i> Why Japan
                         </Link>
                       </div>
-                      <div
+                      {/* <div
                         className={styles.mobileMenuItem}
                         style={{ borderBottom: "none" }}
                       >
@@ -363,7 +363,7 @@ const NavigationBar = () => {
                         >
                           <i className="fa-solid fa-chevron-right"></i> Guide
                         </Link>
-                      </div>
+                      </div> */}
                     </div>
                   </Collapse>
                 </div>
