@@ -18,6 +18,12 @@ import ContactPage from "./features/contact/pages/ContactPage.jsx";
 import LoginPage from "./features/auth/pages/LoginPage.jsx";
 import RegisterPage from "./features/auth/pages/RegisterPage.jsx";
 import FooterComp from "./features/home/components/FooterComp.jsx";
+import DashboardPage from "./features/dashboard/pages/DashboardPage.jsx";
+import ApplicantManagementPage from "./features/dashboard/pages/ApplicantManagementPage.jsx";
+import CourseManagementPage from "./features/dashboard/pages/CourseManagementPage.jsx";
+import EmployeeManagementPage from "./features/dashboard/pages/EmployeeManagementPage.jsx";
+import FinancesPage from "./features/dashboard/pages/FinancesPage.jsx";
+import ProfilePage from "./features/dashboard/pages/ProfilePage.jsx";
 
 function App() {
   return (
@@ -35,6 +41,20 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/auth/signin" element={<LoginPage />} />
         <Route path="/auth/register" element={<RegisterPage />} />
+
+        <Route path="/dashboard" element={<DashboardPage />}>
+          <Route index element={<ProfilePage />} />
+          <Route
+            path="applicant-management"
+            element={<ApplicantManagementPage />}
+          />
+          <Route path="course-management" element={<CourseManagementPage />} />
+          <Route
+            path="employee-management"
+            element={<EmployeeManagementPage />}
+          />
+          <Route path="finances" element={<FinancesPage />} />
+        </Route>
       </Routes>
       <ScrollToTop />
       <FooterComp />
