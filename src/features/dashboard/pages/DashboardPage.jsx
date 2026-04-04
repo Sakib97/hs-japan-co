@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   DashboardOutlined,
@@ -18,6 +18,7 @@ import {
 } from "@ant-design/icons";
 import { Layout, Input, Button, Avatar, Badge } from "antd";
 import styles from "../styles/DashboardPage.module.css";
+import ScrollToTop from "../../../components/common/ScrollToTop";
 
 const { Content } = Layout;
 
@@ -67,6 +68,7 @@ const DashboardPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const contentRef = useRef(null);
 
   const handleMenuClick = (path) => {
     navigate(path);
@@ -77,13 +79,12 @@ const DashboardPage = () => {
     <div className={styles.dashboardWrapper}>
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div
-          className={styles.overlay}
-          onClick={() => setSidebarOpen(false)}
-        />
+        <div className={styles.overlay} onClick={() => setSidebarOpen(false)} />
       )}
       {/* Sidebar */}
-      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
+      <aside
+        className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}
+      >
         {/* Logo */}
         <div className={styles.logoSection}>
           <div className={styles.logoIcon}>
@@ -133,13 +134,9 @@ const DashboardPage = () => {
               onClick={() => setSidebarOpen(true)}
             />
             <h1 className={styles.headerTitle}>HS Japan Academy</h1>
-            <div className={styles.searchWrapper}>
-              <Input
-                prefix={<SearchOutlined style={{ color: "#999" }} />}
-                placeholder="Search applicants..."
-                className={styles.searchInput}
-              />
-            </div>
+          </div>
+
+          <div className={styles.headerRight}>
             <div className={styles.headerIcons}>
               <Badge dot>
                 <BellOutlined className={styles.headerIcon} />
@@ -150,23 +147,11 @@ const DashboardPage = () => {
               <QuestionCircleOutlined className={styles.headerIcon} />
             </div>
           </div>
-          <div className={styles.headerRight}>
-            <Button type="link" className={styles.reportBtn}>
-              Generate Report
-            </Button>
-            <Button type="primary" danger className={styles.createBtn}>
-              Create Employee Account
-            </Button>
-            <Avatar
-              size={36}
-              icon={<UserOutlined />}
-              className={styles.avatar}
-            />
-          </div>
         </header>
 
         {/* Content */}
-        <main className={styles.content}>
+        <main className={styles.content} ref={contentRef}>
+          <ScrollToTop containerRef={contentRef} />
           <Outlet />
         </main>
       </div>

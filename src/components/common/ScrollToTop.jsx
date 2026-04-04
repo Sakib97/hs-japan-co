@@ -1,18 +1,27 @@
 import { useState, useEffect } from "react";
 
-const ScrollToTop = () => {
+const ScrollToTop = ({ containerRef }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    const el = containerRef?.current;
+    const target = el || window;
+
     const handleScroll = () => {
-      setVisible(window.scrollY > 300);
+      const scrollY = el ? el.scrollTop : window.scrollY;
+      setVisible(scrollY > 300);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    target.addEventListener("scroll", handleScroll);
+    return () => target.removeEventListener("scroll", handleScroll);
+  }, [containerRef]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const el = containerRef?.current;
+    if (el) {
+      el.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (

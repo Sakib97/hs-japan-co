@@ -1,0 +1,286 @@
+/* ===== Page Layout ===== */
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ===== Top Bar ===== */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pageTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.searchInput {
+  max-width: 340px;
+  flex: 1;
+}
+
+.createBtn {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.createBtn:hover {
+  background: #991b1b !important;
+  border-color: #991b1b !important;
+}
+
+/* ===== Stats Grid ===== */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.statCard {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px 20px;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.statTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.statIconWrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.statBadge {
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1;
+}
+
+/* ===== Directory Section ===== */
+.directorySection {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  border: 1px solid #f0f0f0;
+}
+
+.directoryHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.directoryTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 4px 0;
+}
+
+.directorySubtitle {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.directoryActions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== Table Cells ===== */
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.employeeAvatar {
+  background: #e0d6f6 !important;
+  color: #5b21b6 !important;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.employeeName {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #111;
+}
+
+.employeeEmail {
+  font-size: 12px;
+  color: #999;
+}
+
+.cellText {
+  font-size: 13px;
+  color: #444;
+}
+
+.applicantCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.applicantCount {
+  font-weight: 700;
+  font-size: 13px;
+  color: #111;
+  min-width: 28px;
+}
+
+.applicantBar {
+  width: 80px;
+}
+
+.scoreCell {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.scoreText {
+  font-weight: 600;
+  font-size: 13px;
+  color: #111;
+}
+
+.statusTag {
+  font-weight: 600;
+  font-size: 12px;
+  border-radius: 12px;
+}
+
+.actionIcon {
+  font-size: 15px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.actionIcon:hover {
+  color: #b91c1c;
+}
+
+/* ===== Ant Table Overrides ===== */
+.employeeTable :global(.ant-table) {
+  border-radius: 8px;
+}
+
+.employeeTable :global(.ant-table-thead > tr > th) {
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.employeeTable :global(.ant-table-tbody > tr > td) {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.employeeTable :global(.ant-table-tbody > tr:hover > td) {
+  background: #fefefe;
+}
+
+.employeeTable :global(.ant-pagination) {
+  margin-top: 16px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .topBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .searchInput {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .statValue {
+    font-size: 22px;
+  }
+
+  .directoryHeader {
+    flex-direction: column;
+  }
+
+  .directorySection {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .directoryActions {
+    width: 100%;
+  }
+
+  .directoryActions button {
+    flex: 1;
+  }
+}
