@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { Input, Button } from "antd";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import EmployeeStatsComp from "../components/employeeManagement/EmployeeStatsComp";
 import EmployeeDirectoryComp from "../components/employeeManagement/EmployeeDirectoryComp";
+import CreateEmployeeModal from "../components/employeeManagement/CreateEmployeeModal";
 import styles from "../styles/EmployeeManagementPage.module.css";
 
 const EmployeeManagementPage = () => {
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <div className={styles.pageWrapper}>
       {/* Top Bar */}
@@ -20,10 +23,17 @@ const EmployeeManagementPage = () => {
           type="primary"
           icon={<PlusOutlined />}
           className={styles.createBtn}
+          onClick={() => setModalOpen(true)}
         >
-          Create Employee
+          Create Admin & Employee
         </Button>
       </div>
+
+      {/* Create Employee Modal */}
+      <CreateEmployeeModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
 
       {/* Stats Cards */}
       <EmployeeStatsComp />
