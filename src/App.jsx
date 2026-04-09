@@ -24,12 +24,15 @@ import CourseManagementPage from "./features/dashboard/pages/CourseManagementPag
 import EmployeeManagementPage from "./features/dashboard/pages/EmployeeManagementPage.jsx";
 import FinancesPage from "./features/dashboard/pages/FinancesPage.jsx";
 import ProfilePage from "./features/dashboard/pages/ProfilePage.jsx";
+import { Toaster } from "react-hot-toast";
+import SetupPassword from "./features/auth/pages/SetupPassword.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTopOnNav />
       <NavigationBar />
+      <Toaster />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
@@ -41,6 +44,7 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/auth/signin" element={<LoginPage />} />
         <Route path="/auth/register" element={<RegisterPage />} />
+        <Route path="/auth/setup-password" element={<SetupPassword />} />
 
         <Route path="/dashboard" element={<DashboardPage />}>
           <Route index element={<ProfilePage />} />

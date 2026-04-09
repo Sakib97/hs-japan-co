@@ -1,52 +1,128 @@
-import { Modal, Input, Select, Button, Tabs } from "antd";
+import { Modal, Input, Select, Button, Tabs, Spin } from "antd";
 import styles from "./CreateEmployeeModal.module.css";
-
-const designationOptions = [
-  { value: "senior_visa_officer", label: "Senior Visa Officer" },
-  { value: "language_specialist", label: "Language Specialist" },
-  { value: "legal_consultant", label: "Legal Consultant" },
-  { value: "training_director", label: "Training Director" },
-  { value: "immigration_analyst", label: "Immigration Analyst" },
-];
-
-const departmentOptions = [
-  { value: "consular_affairs", label: "Consular Affairs" },
-  { value: "education_culture", label: "Education & Culture" },
-  { value: "legal_compliance", label: "Legal Compliance" },
-  { value: "human_resources", label: "Human Resources" },
-];
+import { supabase } from "../../../../config/supabaseClient";
+import { useFormik } from "formik";
+import { AdminSchema } from "../../schema/AdminSchema";
+import { EmployeeSchema } from "../../schema/EmployeeSchema";
+import { useQuery } from "@tanstack/react-query";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const CreateEmployeeModal = ({ open, onClose }) => {
-  const handleAdminSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
-    console.log("Create admin:", data);
+  const {
+    data: fetchDepartments,
+    isLoading: departmentsLoading,
+    error: departmentsError,
+  } = useQuery({
+    queryKey: ["departments"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("departments")
+        .select("id, department_name")
+        .eq("is_active", true);
+
+      if (error) {
+        throw new Error("Error fetching departments: " + error.message);
+      }
+      return data;
+    },
+  });
+
+  const {
+    data: fetchDesignations,
+    isLoading: designationsLoading,
+    error: designationsError,
+  } = useQuery({
+    queryKey: ["designations"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("designations")
+        .select("id, designation_name")
+        .eq("is_active", true);
+
+      if (error) {
+        throw new Error("Error fetching designations: " + error.message);
+      }
+      return data;
+    },
+  });
+
+  const departmentOptions = fetchDepartments
+    ? fetchDepartments.map((dept) => ({
+        value: dept.id,
+        label: dept.department_name,
+      }))
+    : [];
+
+  const designationOptions = fetchDesignations
+    ? fetchDesignations.map((desig) => ({
+        value: desig.id,
+        label: desig.designation_name,
+      }))
+    : [];
+  const handleClose = () => {
+    adminFormik.resetForm();
+    employeeFormik.resetForm();
     onClose();
   };
 
-  const handleEmployeeSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
-    console.log("Create employee:", data);
-    onClose();
+  const handleAdminSubmit = (values) => {
+    console.log("Create admin:", values);
+    handleClose();
   };
+
+  const handleEmployeeSubmit = (values) => {
+    console.log("Create employee:", values);
+    handleClose();
+  };
+
+  const adminFormik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+    },
+    validationSchema: AdminSchema,
+    onSubmit: async (values) => {
+      handleAdminSubmit(values);
+    },
+  });
+
+  const employeeFormik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      designation: "",
+      department: "",
+    },
+    validationSchema: EmployeeSchema,
+    onSubmit: async (values) => {
+      handleEmployeeSubmit(values);
+    },
+  });
 
   const items = [
     {
       key: "1",
       label: "New Admin",
       children: (
-        <form onSubmit={handleAdminSubmit} className={styles.form}>
+        <form onSubmit={adminFormik.handleSubmit} className={styles.form}>
           <div className={styles.field}>
             <label className={styles.label}>FULL NAME</label>
             <Input
-              name="fullName"
+              name="name"
               placeholder="e.g. Kenji Tanaka"
               size="large"
-              required
+              value={adminFormik.values.name}
+              onChange={adminFormik.handleChange}
+              onBlur={adminFormik.handleBlur}
+              status={
+                adminFormik.touched.name && adminFormik.errors.name
+                  ? "error"
+                  : ""
+              }
             />
+            {adminFormik.touched.name && adminFormik.errors.name && (
+              <div className={styles.error}>{adminFormik.errors.name}</div>
+            )}
           </div>
 
           <div className={styles.field}>
@@ -56,12 +132,22 @@ const CreateEmployeeModal = ({ open, onClose }) => {
               type="email"
               placeholder="k.tanaka@consulate.gov"
               size="large"
-              required
+              value={adminFormik.values.email}
+              onChange={adminFormik.handleChange}
+              onBlur={adminFormik.handleBlur}
+              status={
+                adminFormik.touched.email && adminFormik.errors.email
+                  ? "error"
+                  : ""
+              }
             />
+            {adminFormik.touched.email && adminFormik.errors.email && (
+              <div className={styles.error}>{adminFormik.errors.email}</div>
+            )}
           </div>
 
           <div className={styles.footer}>
-            <Button onClick={onClose} size="large">
+            <Button onClick={handleClose} size="large">
               Cancel
             </Button>
             <Button
@@ -85,15 +171,25 @@ const CreateEmployeeModal = ({ open, onClose }) => {
       key: "2",
       label: "New Employee",
       children: (
-        <form onSubmit={handleEmployeeSubmit} className={styles.form}>
+        <form onSubmit={employeeFormik.handleSubmit} className={styles.form}>
           <div className={styles.field}>
             <label className={styles.label}>FULL NAME</label>
             <Input
-              name="fullName"
+              name="name"
               placeholder="e.g. Kenji Tanaka"
               size="large"
-              required
+              value={employeeFormik.values.name}
+              onChange={employeeFormik.handleChange}
+              onBlur={employeeFormik.handleBlur}
+              status={
+                employeeFormik.touched.name && employeeFormik.errors.name
+                  ? "error"
+                  : ""
+              }
             />
+            {employeeFormik.touched.name && employeeFormik.errors.name && (
+              <div className={styles.error}>{employeeFormik.errors.name}</div>
+            )}
           </div>
 
           <div className={styles.field}>
@@ -103,8 +199,18 @@ const CreateEmployeeModal = ({ open, onClose }) => {
               type="email"
               placeholder="k.tanaka@consulate.gov"
               size="large"
-              required
+              value={employeeFormik.values.email}
+              onChange={employeeFormik.handleChange}
+              onBlur={employeeFormik.handleBlur}
+              status={
+                employeeFormik.touched.email && employeeFormik.errors.email
+                  ? "error"
+                  : ""
+              }
             />
+            {employeeFormik.touched.email && employeeFormik.errors.email && (
+              <div className={styles.error}>{employeeFormik.errors.email}</div>
+            )}
           </div>
 
           <div className={styles.row}>
@@ -115,7 +221,30 @@ const CreateEmployeeModal = ({ open, onClose }) => {
                 options={designationOptions}
                 size="large"
                 className={styles.select}
+                loading={designationsLoading}
+                suffixIcon={
+                  designationsLoading ? <LoadingOutlined spin /> : undefined
+                }
+                value={employeeFormik.values.designation || undefined}
+                onChange={(val) =>
+                  employeeFormik.setFieldValue("designation", val)
+                }
+                onBlur={() =>
+                  employeeFormik.setFieldTouched("designation", true)
+                }
+                status={
+                  employeeFormik.touched.designation &&
+                  employeeFormik.errors.designation
+                    ? "error"
+                    : ""
+                }
               />
+              {employeeFormik.touched.designation &&
+                employeeFormik.errors.designation && (
+                  <div className={styles.error}>
+                    {employeeFormik.errors.designation}
+                  </div>
+                )}
             </div>
             <div className={styles.field}>
               <label className={styles.label}>DEPARTMENT</label>
@@ -124,12 +253,35 @@ const CreateEmployeeModal = ({ open, onClose }) => {
                 options={departmentOptions}
                 size="large"
                 className={styles.select}
+                loading={departmentsLoading}
+                suffixIcon={
+                  departmentsLoading ? <LoadingOutlined spin /> : undefined
+                }
+                value={employeeFormik.values.department || undefined}
+                onChange={(val) =>
+                  employeeFormik.setFieldValue("department", val)
+                }
+                onBlur={() =>
+                  employeeFormik.setFieldTouched("department", true)
+                }
+                status={
+                  employeeFormik.touched.department &&
+                  employeeFormik.errors.department
+                    ? "error"
+                    : ""
+                }
               />
+              {employeeFormik.touched.department &&
+                employeeFormik.errors.department && (
+                  <div className={styles.error}>
+                    {employeeFormik.errors.department}
+                  </div>
+                )}
             </div>
           </div>
 
           <div className={styles.footer}>
-            <Button onClick={onClose} size="large">
+            <Button onClick={handleClose} size="large">
               Cancel
             </Button>
             <Button
@@ -155,7 +307,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
     <Modal
       title="Create New Account"
       open={open}
-      onCancel={onClose}
+      onCancel={handleClose}
       footer={null}
       destroyOnClose
       centered

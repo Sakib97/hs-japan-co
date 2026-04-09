@@ -66,6 +66,12 @@
   border-color: #991b1b !important;
 }
 
+.error {
+  color: #b91c1c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 480px) {
   .modal :global(.ant-modal) {
