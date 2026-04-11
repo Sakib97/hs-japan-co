@@ -1,33 +1,99 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../styles/SetupPassword.module.css";
-import { useSearchParams } from "react-router";
+import { useSearchParams, useNavigate } from "react-router";
+import { useFormik } from "formik";
+import { SetupPasswordSchema } from "../schema/SetupPasswordSchema";
+import { supabase } from "../../../config/supabaseClient";
+import { Spin } from "antd";
+import { showToast } from "../../../components/layout/CustomToast";
 
 const SetupPassword = () => {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
+  const navigate = useNavigate();
 
-const [searchParams, setSearchParams] = useSearchParams();
-
-const token = searchParams.get("token");
-// console.log("Token from URL:", token);
-
-  const [formData, setFormData] = useState({
-    password: "",
-    confirmPassword: "",
-  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [valid, setValid] = useState(false);
+  const [validating, setValidating] = useState(true);
+  const [email, setEmail] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-    console.log("Setup password:", formData);
-  };
+  useEffect(() => {
+    const validateToken = async () => {
+      const token = searchParams.get("token");
+
+      const { data, error } = await supabase
+        .from("user_invite_tokens")
+        .select("*")
+        .eq("token", token)
+        .eq("is_used", false)
+        .single();
+
+      if (error || !data || new Date(data.expires_at) < new Date()) {
+        setValid(false);
+        return;
+      }
+
+      setEmail(data.email);
+      setValid(true);
+    };
+
+    validateToken().finally(() => setValidating(false));
+  }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: SetupPasswordSchema,
+    onSubmit: async (values) => {
+      console.log(
+        "Setup password:",
+        values.password,
+        "confirm:",
+        values.confirmPassword,
+      );
+      // 1. Create user in Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password: values.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/signin`,
+        },
+      });
+
+      if (error) {
+        console.error("Error creating user:", error);
+        showToast("Failed to set password. Please try again.", "error");
+        return;
+      }
+
+      // 2. Mark token as used
+      await supabase
+        .from("user_invite_tokens")
+        .update({ is_used: true })
+        .eq("token", token);
+
+      // 3. Redirect to login
+      navigate("/auth/signin?passwordSet=1");
+    },
+  });
+
+  if (validating)
+    return (
+      <div className={styles.centerScreen}>
+        <Spin size="large" />
+      </div>
+    );
+
+  if (!valid)
+    return (
+      <div className={styles.centerScreen}>
+        <p className={styles.invalidMsg}>Invalid or expired invitation link.</p>
+      </div>
+    );
 
   return (
     <div className={styles.page}>
@@ -58,19 +124,25 @@ const token = searchParams.get("token");
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className={styles.form}>
+            <form onSubmit={formik.handleSubmit} className={styles.form}>
               <div className={styles.inputGroup}>
-                <label className={styles.label}>Password</label>
-                <div className={styles.inputWrap}>
+                <label className={styles.label}>Password*</label>
+                <div
+                  className={`${styles.inputWrap} ${
+                    formik.touched.password && formik.errors.password
+                      ? styles.inputError
+                      : ""
+                  }`}
+                >
                   <i className="fa-solid fa-lock"></i>
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleChange}
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     className={styles.input}
-                    required
                   />
                   <button
                     type="button"
@@ -84,20 +156,32 @@ const token = searchParams.get("token");
                     />
                   </button>
                 </div>
+                {formik.touched.password && formik.errors.password && (
+                  <span className={styles.errorMsg}>
+                    {formik.errors.password}
+                  </span>
+                )}
               </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.label}>Confirm Password</label>
-                <div className={styles.inputWrap}>
+                <label className={styles.label}>Confirm Password*</label>
+                <div
+                  className={`${styles.inputWrap} ${
+                    formik.touched.confirmPassword &&
+                    formik.errors.confirmPassword
+                      ? styles.inputError
+                      : ""
+                  }`}
+                >
                   <i className="fa-solid fa-lock"></i>
                   <input
                     type={showConfirm ? "text" : "password"}
                     name="confirmPassword"
                     placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
+                    value={formik.values.confirmPassword}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     className={styles.input}
-                    required
                   />
                   <button
                     type="button"
@@ -111,10 +195,23 @@ const token = searchParams.get("token");
                     />
                   </button>
                 </div>
+                {formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword && (
+                    <span className={styles.errorMsg}>
+                      {formik.errors.confirmPassword}
+                    </span>
+                  )}
               </div>
 
-              <button type="submit" className={styles.submitBtn}>
-                Set Password
+              <button
+                type="submit"
+                className={styles.submitBtn}
+                disabled={formik.isSubmitting}
+              >
+                {formik.isSubmitting ? (
+                  <Spin size="small" style={{ marginRight: 8 }} />
+                ) : null}
+                {formik.isSubmitting ? "Setting Password..." : "Set Password"}
               </button>
             </form>
           </div>

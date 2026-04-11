@@ -1,22 +1,22 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useFormik } from "formik";
+import { LoginSchema } from "../schema/LoginSchema";
 import styles from "../styles/LoginPage.module.css";
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [searchParams] = useSearchParams();
+  const passwordSet = searchParams.get("passwordSet") === "1";
+
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login:", formData);
-  };
+  const formik = useFormik({
+    initialValues: { email: "", password: "" },
+    validationSchema: LoginSchema,
+    onSubmit: (values) => {
+      console.log("Login:", values);
+    },
+  });
 
   return (
     <div className={styles.page}>
@@ -46,35 +46,57 @@ const LoginPage = () => {
               <p className={styles.formSubtitle}>Sign in to your account</p>
             </div>
 
-            <form onSubmit={handleSubmit} className={styles.form}>
+            {passwordSet && (
+              <div className={styles.successBanner}>
+                <i className="fa-solid fa-circle-check"></i>
+                Password set successfully! You can now sign in.
+              </div>
+            )}
+
+            <form onSubmit={formik.handleSubmit} className={styles.form}>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>Email Address</label>
-                <div className={styles.inputWrap}>
+                <div
+                  className={`${styles.inputWrap} ${
+                    formik.touched.email && formik.errors.email
+                      ? styles.inputError
+                      : ""
+                  }`}
+                >
                   <i className="fa-solid fa-envelope"></i>
                   <input
                     type="email"
                     name="email"
                     placeholder="you@example.com"
-                    value={formData.email}
-                    onChange={handleChange}
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     className={styles.input}
-                    required
                   />
                 </div>
+                {formik.touched.email && formik.errors.email && (
+                  <span className={styles.errorMsg}>{formik.errors.email}</span>
+                )}
               </div>
 
               <div className={styles.inputGroup}>
                 <label className={styles.label}>Password</label>
-                <div className={styles.inputWrap}>
+                <div
+                  className={`${styles.inputWrap} ${
+                    formik.touched.password && formik.errors.password
+                      ? styles.inputError
+                      : ""
+                  }`}
+                >
                   <i className="fa-solid fa-lock"></i>
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleChange}
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     className={styles.input}
-                    required
                   />
                   <button
                     type="button"
@@ -88,6 +110,11 @@ const LoginPage = () => {
                     ></i>
                   </button>
                 </div>
+                {formik.touched.password && formik.errors.password && (
+                  <span className={styles.errorMsg}>
+                    {formik.errors.password}
+                  </span>
+                )}
               </div>
 
               <div className={styles.options}>
@@ -109,7 +136,7 @@ const LoginPage = () => {
               <span>or continue with</span>
             </div>
 
-            <div className={styles.socialRow}>
+            {/* <div className={styles.socialRow}>
               <button className={styles.socialBtn}>
                 <i className="fa-brands fa-google"></i>
               </button>
@@ -119,14 +146,14 @@ const LoginPage = () => {
               <button className={styles.socialBtn}>
                 <i className="fa-brands fa-linkedin-in"></i>
               </button>
-            </div>
+            </div> */}
 
-            <p className={styles.switchText}>
+            {/* <p className={styles.switchText}>
               Don&apos;t have an account?{" "}
               <Link to="/auth/register" className={styles.switchLink}>
                 Register
               </Link>
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

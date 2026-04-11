@@ -6,8 +6,13 @@ import { AdminSchema } from "../../schema/AdminSchema";
 import { EmployeeSchema } from "../../schema/EmployeeSchema";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingOutlined } from "@ant-design/icons";
+import { generateToken } from "../../../../utils/generateToken";
+import { sendInviteEmail } from "../../../../utils/sendInviteEmail";
+import { showToast } from "../../../../components/layout/CustomToast";
+import { useState } from "react";
 
 const CreateEmployeeModal = ({ open, onClose }) => {
+  const [adminLoading, setAdminLoading] = useState(false);
   const {
     data: fetchDepartments,
     isLoading: departmentsLoading,
@@ -65,9 +70,58 @@ const CreateEmployeeModal = ({ open, onClose }) => {
     onClose();
   };
 
-  const handleAdminSubmit = (values) => {
-    console.log("Create admin:", values);
-    handleClose();
+  const handleAdminSubmit = async (values) => {
+    const { email, name } = values;
+    const role = "admin";
+    const uid = crypto.randomUUID();
+
+    setAdminLoading(true);
+    try {
+      // 1. Insert into users_meta
+      const { error } = await supabase
+        .from("users_meta")
+        .insert([{ email, name, role, uid }]);
+
+      if (error) {
+        if (error.message.includes("users_meta_email_key")) {
+          showToast("An account with this email already exists.", "error");
+        } else {
+          showToast("Failed to create admin: " + error.message, "error");
+        }
+        return;
+      }
+
+      // 2. Generate token and expiry
+      const token = generateToken();
+      const expires_at = new Date(Date.now() + 2 * 60 * 60 * 1000);
+
+      // 3. Store token
+      const { error: tokenError } = await supabase
+        .from("user_invite_tokens")
+        .insert([{ email, token, role, expires_at }]);
+
+      if (tokenError) {
+        showToast(
+          "Failed to generate invite token: " + tokenError.message,
+          "error",
+        );
+        return;
+      }
+
+      // 4. Send invite email
+      try {
+        await sendInviteEmail(email, token, name);
+        showToast("Admin created and invite email sent!", "success");
+      } catch {
+        showToast("Admin created but email sending failed.", "warning");
+      }
+
+      handleClose();
+    } catch (err) {
+      showToast("Unexpected error: " + err.message, "error");
+    } finally {
+      setAdminLoading(false);
+    }
   };
 
   const handleEmployeeSubmit = (values) => {
@@ -147,7 +201,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
           </div>
 
           <div className={styles.footer}>
-            <Button onClick={handleClose} size="large">
+            <Button onClick={handleClose} size="large" disabled={adminLoading}>
               Cancel
             </Button>
             <Button
@@ -155,8 +209,10 @@ const CreateEmployeeModal = ({ open, onClose }) => {
               htmlType="submit"
               size="large"
               className={styles.submitBtn}
+              loading={adminLoading}
+              disabled={adminLoading}
             >
-              Create Admin
+              {adminLoading ? "Creating..." : "Create Admin"}
             </Button>
           </div>
           <div>
