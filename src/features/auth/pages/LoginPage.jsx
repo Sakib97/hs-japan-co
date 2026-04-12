@@ -1,10 +1,15 @@
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { LoginSchema } from "../schema/LoginSchema";
 import styles from "../styles/LoginPage.module.css";
+import { supabase } from "../../../config/supabaseClient";
+import { Spin } from "antd";
+import { showToast } from "../../../components/layout/CustomToast";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
   const passwordSet = searchParams.get("passwordSet") === "1";
 
@@ -13,8 +18,20 @@ const LoginPage = () => {
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     validationSchema: LoginSchema,
-    onSubmit: (values) => {
-      console.log("Login:", values);
+    onSubmit: async (values) => {
+      const { email, password } = values;
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        showToast("Login failed: " + error.message, "error");
+        return;
+      }
+      // console.log("Login:", values);
+      navigate("/dashboard");
     },
   });
 
@@ -127,8 +144,15 @@ const LoginPage = () => {
                 </Link>
               </div>
 
-              <button type="submit" className={styles.submitBtn}>
-                Sign In
+              <button
+                type="submit"
+                className={styles.submitBtn}
+                disabled={formik.isSubmitting}
+              >
+                {formik.isSubmitting ? (
+                  <Spin size="small" style={{ marginRight: 8 }} />
+                ) : null}
+                {formik.isSubmitting ? "Signing In..." : "Sign In"}
               </button>
             </form>
 

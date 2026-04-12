@@ -73,14 +73,16 @@ const CreateEmployeeModal = ({ open, onClose }) => {
   const handleAdminSubmit = async (values) => {
     const { email, name } = values;
     const role = "admin";
-    const uid = crypto.randomUUID();
+    // const uid = crypto.randomUUID();
 
     setAdminLoading(true);
     try {
       // 1. Insert into users_meta
       const { error } = await supabase
         .from("users_meta")
-        .insert([{ email, name, role, uid }]);
+        .insert([{ email, name, role, 
+            // uid 
+        }]);
 
       if (error) {
         if (error.message.includes("users_meta_email_key")) {

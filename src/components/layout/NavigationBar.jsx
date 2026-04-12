@@ -10,8 +10,11 @@ import Collapse from "react-bootstrap/Collapse";
 import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import useScrollDirection from "../../hooks/useScrollDirection";
+import { useAuth } from "../../context/AuthProvider";
 
 const NavigationBar = () => {
+  const { user, userMeta } = useAuth();
+
   // Offcanvas state
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -215,24 +218,45 @@ const NavigationBar = () => {
                   Contact Us
                 </Nav.Link>
 
-                <Button
-                  as={Link}
-                  to="/auth/signin"
-                  className={styles.loginBtn}
-                  onClick={handleClose}
-                >
-                  <div className={styles.loginIcon}>
-                    <i className="fa-solid fa-user"></i>
-                  </div>
-                  <span
-                    style={{
-                      borderLeft: "1px solid rgba(255,255,255,0.5)",
-                      height: "20px",
-                      margin: "0 5px",
-                    }}
-                  ></span>
-                  Login
-                </Button>
+                {user ? (
+                  <Button
+                    as={Link}
+                    to="/dashboard"
+                    className={styles.loginBtn}
+                    onClick={handleClose}
+                  >
+                    {/* <div className={styles.loginIcon}>
+                      <i className="fa-solid fa-user"></i>
+                    </div> */}
+                    {/* <span
+                      style={{
+                        borderLeft: "1px solid rgba(255,255,255,0.5)",
+                        height: "20px",
+                        margin: "0 5px",
+                      }}
+                    ></span> */}
+                    {userMeta?.name ?? user.email}
+                  </Button>
+                ) : (
+                  <Button
+                    as={Link}
+                    to="/auth/signin"
+                    className={styles.loginBtn}
+                    onClick={handleClose}
+                  >
+                    <div className={styles.loginIcon}>
+                      <i className="fa-solid fa-user"></i>
+                    </div>
+                    <span
+                      style={{
+                        borderLeft: "1px solid rgba(255,255,255,0.5)",
+                        height: "20px",
+                        margin: "0 5px",
+                      }}
+                    ></span>
+                    Login
+                  </Button>
+                )}
               </Nav>
 
               {/* Mobile Menu */}
@@ -349,7 +373,8 @@ const NavigationBar = () => {
                           className={styles.mobileNavLink}
                           onClick={handleClose}
                         >
-                          <i className="fa-solid fa-chevron-right"></i> Why Japan
+                          <i className="fa-solid fa-chevron-right"></i> Why
+                          Japan
                         </Link>
                       </div>
                       {/* <div
@@ -396,27 +421,51 @@ const NavigationBar = () => {
                   </Link>
                 </div>
 
-                <div className="mt-4">
-                  <Button
-                    as={Link}
-                    to="/auth/signin"
-                    className={styles.loginBtn}
-                    onClick={handleClose}
-                    style={{ width: "100%", justifyContent: "center" }}
-                  >
-                    <div className={styles.loginIcon}>
-                      <i className="fa-solid fa-user"></i>
-                    </div>
-                    <span
-                      style={{
-                        borderLeft: "1px solid rgba(255,255,255,0.5)",
-                        height: "20px",
-                        margin: "0 5px",
-                      }}
-                    ></span>
-                    Login
-                  </Button>
-                </div>
+                {user ? (
+                  <div className="mt-4">
+                    <Button
+                      as={Link}
+                      to="/dashboard"
+                      className={styles.loginBtn}
+                      onClick={handleClose}
+                      style={{ width: "100%", justifyContent: "center" }}
+                    >
+                      <div className={styles.loginIcon}>
+                        <i className="fa-solid fa-user"></i>
+                      </div>
+                      <span
+                        style={{
+                          borderLeft: "1px solid rgba(255,255,255,0.5)",
+                          height: "20px",
+                          margin: "0 5px",
+                        }}
+                      ></span>
+                      {userMeta?.name ?? user.email}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="mt-4">
+                    <Button
+                      as={Link}
+                      to="/auth/signin"
+                      className={styles.loginBtn}
+                      onClick={handleClose}
+                      style={{ width: "100%", justifyContent: "center" }}
+                    >
+                      <div className={styles.loginIcon}>
+                        <i className="fa-solid fa-user"></i>
+                      </div>
+                      <span
+                        style={{
+                          borderLeft: "1px solid rgba(255,255,255,0.5)",
+                          height: "20px",
+                          margin: "0 5px",
+                        }}
+                      ></span>
+                      Login
+                    </Button>
+                  </div>
+                )}
               </div>
             </Offcanvas.Body>
           </Navbar.Offcanvas>

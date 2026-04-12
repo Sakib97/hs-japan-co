@@ -26,6 +26,7 @@ import FinancesPage from "./features/dashboard/pages/FinancesPage.jsx";
 import ProfilePage from "./features/dashboard/pages/ProfilePage.jsx";
 import { Toaster } from "react-hot-toast";
 import SetupPassword from "./features/auth/pages/SetupPassword.jsx";
+import AuthRedirect from "./components/common/AuthRedirect.jsx";
 
 function App() {
   return (
@@ -42,9 +43,23 @@ function App() {
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/team" element={<TeamPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/auth/signin" element={<LoginPage />} />
-        <Route path="/auth/register" element={<RegisterPage />} />
-        <Route path="/auth/setup-password" element={<SetupPassword />} />
+        <Route
+          path="/auth/signin"
+          element={
+            <AuthRedirect>
+              <LoginPage />
+            </AuthRedirect>
+          }
+        />
+        {/* <Route path="/auth/register" element={<AuthRedirect><RegisterPage /></AuthRedirect>} /> */}
+        <Route
+          path="/auth/setup-password"
+          element={
+            <AuthRedirect>
+              <SetupPassword />
+            </AuthRedirect>
+          }
+        />
 
         <Route path="/dashboard" element={<DashboardPage />}>
           <Route index element={<ProfilePage />} />

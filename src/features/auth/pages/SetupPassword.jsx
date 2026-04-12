@@ -70,13 +70,22 @@ const SetupPassword = () => {
         return;
       }
 
-      // 2. Mark token as used
+      // 2. Link auth UID to users_meta
+      await supabase
+        .from("users_meta")
+        .update({ uid: data.user.id })
+        .eq("email", email);
+
+      // 3. Mark token as used
       await supabase
         .from("user_invite_tokens")
         .update({ is_used: true })
         .eq("token", token);
 
-      // 3. Redirect to login
+      // 4. Sign out so AuthRedirect doesn't fight the navigation
+      await supabase.auth.signOut();
+
+      // 5. Redirect to login
       navigate("/auth/signin?passwordSet=1");
     },
   });

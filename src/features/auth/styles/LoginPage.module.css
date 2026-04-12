@@ -1,5 +1,5 @@
 .page {
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,6 +240,11 @@
   background: #3730a3;
 }
 
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 /* ── divider ── */
 .divider {
   display: flex;
@@ -312,6 +317,9 @@
 
 /* ── responsive ── */
 @media (max-width: 700px) {
+  .page {
+    margin-top: -20px;
+  }
   .container {
     flex-direction: column;
     min-height: auto;
