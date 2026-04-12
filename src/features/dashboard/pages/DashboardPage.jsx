@@ -19,6 +19,8 @@ import {
 import { Layout, Input, Button, Avatar, Badge } from "antd";
 import styles from "../styles/DashboardPage.module.css";
 import ScrollToTop from "../../../components/common/ScrollToTop";
+import LogoutButton from "../../auth/components/LogoutButton";
+
 
 const { Content } = Layout;
 
@@ -57,11 +59,11 @@ const bottomMenuItems = [
     icon: <QuestionCircleOutlined />,
     label: "Support",
   },
-  {
-    key: "logout",
-    icon: <LogoutOutlined />,
-    label: "Logout",
-  },
+  // {
+  //   key: "logout",
+  //   icon: <LogoutOutlined />,
+  //   label: "Logout",
+  // },
 ];
 
 const DashboardPage = () => {
@@ -121,6 +123,8 @@ const DashboardPage = () => {
               <span className={styles.menuLabel}>{item.label}</span>
             </div>
           ))}
+        <LogoutButton />
+          
         </nav>
       </aside>
 

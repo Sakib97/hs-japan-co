@@ -27,6 +27,7 @@ import ProfilePage from "./features/dashboard/pages/ProfilePage.jsx";
 import { Toaster } from "react-hot-toast";
 import SetupPassword from "./features/auth/pages/SetupPassword.jsx";
 import AuthRedirect from "./components/common/AuthRedirect.jsx";
+import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 
 function App() {
   return (
@@ -61,7 +62,14 @@ function App() {
           }
         />
 
-        <Route path="/dashboard" element={<DashboardPage />}>
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<ProfilePage />} />
           <Route
             path="applicant-management"

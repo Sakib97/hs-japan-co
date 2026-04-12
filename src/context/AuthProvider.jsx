@@ -30,6 +30,8 @@ export const AuthProvider = ({ children }) => {
           .eq("uid", session.user.id)
           .single();
 
+        // console.log("user_meta: ", userMetaData);
+
         if (userMetaError) {
           console.error("Error fetching user metadata:", userMetaError);
           setUserMeta(null);
@@ -55,8 +57,17 @@ export const AuthProvider = ({ children }) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      // nullish coalescing operator (??), which returns the right-hand value (null in this case)
-      // if the left-hand value (session?.user) is null or undefined. Otherwise, it returns the left-hand operand
+
+      if (session?.user) {
+        supabase
+          .from("users_meta")
+          .select("*")
+          .eq("uid", session.user.id)
+          .single()
+          .then(({ data }) => setUserMeta(data ?? null));
+      } else {
+        setUserMeta(null);
+      }
     });
 
     return () => subscription.unsubscribe();
