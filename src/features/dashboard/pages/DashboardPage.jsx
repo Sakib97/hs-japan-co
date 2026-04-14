@@ -20,7 +20,7 @@ import { Layout, Input, Button, Avatar, Badge } from "antd";
 import styles from "../styles/DashboardPage.module.css";
 import ScrollToTop from "../../../components/common/ScrollToTop";
 import LogoutButton from "../../auth/components/LogoutButton";
-
+import { useAuth } from "../../../context/AuthProvider";
 
 const { Content } = Layout;
 
@@ -34,6 +34,7 @@ const mainMenuItems = [
     key: "/dashboard/employee-management",
     icon: <TeamOutlined />,
     label: "Employee Management",
+    adminOnly: true,
   },
   {
     key: "/dashboard/applicant-management",
@@ -50,6 +51,7 @@ const mainMenuItems = [
     key: "/dashboard/finances",
     icon: <DollarOutlined />,
     label: "Financials",
+    adminOnly: true,
   },
 ];
 
@@ -71,11 +73,35 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRef = useRef(null);
+  const { user, userMeta, loading, userMetaLoading } = useAuth();
 
   const handleMenuClick = (path) => {
     navigate(path);
     setSidebarOpen(false);
   };
+
+  if (loading || userMetaLoading) return null;
+
+  const isAdmin = userMeta?.role === "admin";
+  const visibleMenuItems = mainMenuItems.filter(
+    (item) => !item.adminOnly || isAdmin,
+  );
+
+  if (!user || !userMeta) {
+    return (
+      <p
+        style={{
+          textAlign: "center",
+          marginTop: "150px",
+          minHeight: "40vh",
+          fontSize: "2.0rem",
+          fontWeight: "bold",
+        }}
+      >
+        Not Logged In !
+      </p>
+    );
+  }
 
   return (
     <div className={styles.dashboardWrapper}>
@@ -101,7 +127,7 @@ const DashboardPage = () => {
 
         {/* Main Menu */}
         <nav className={styles.mainNav}>
-          {mainMenuItems.map((item) => (
+          {visibleMenuItems.map((item) => (
             <div
               key={item.key}
               className={`${styles.menuItem} ${
@@ -123,8 +149,7 @@ const DashboardPage = () => {
               <span className={styles.menuLabel}>{item.label}</span>
             </div>
           ))}
-        <LogoutButton />
-          
+          <LogoutButton />
         </nav>
       </aside>
 

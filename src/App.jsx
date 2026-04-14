@@ -28,6 +28,8 @@ import { Toaster } from "react-hot-toast";
 import SetupPassword from "./features/auth/pages/SetupPassword.jsx";
 import AuthRedirect from "./components/common/AuthRedirect.jsx";
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
+import NotFound from "./components/common/NotFound.jsx";
+import AdminOnlyRoute from "./components/common/AdminOnlyRoute.jsx";
 
 function App() {
   return (
@@ -78,10 +80,24 @@ function App() {
           <Route path="course-management" element={<CourseManagementPage />} />
           <Route
             path="employee-management"
-            element={<EmployeeManagementPage />}
+            element={
+              <AdminOnlyRoute>
+                <EmployeeManagementPage />
+              </AdminOnlyRoute>
+            }
           />
-          <Route path="finances" element={<FinancesPage />} />
+          <Route
+            path="finances"
+            element={
+              <AdminOnlyRoute>
+                <FinancesPage />
+              </AdminOnlyRoute>
+            }
+          />
         </Route>
+
+        <Route path="*" element={<NotFound />} />
+        <Route path="/404" element={<NotFound />} />
       </Routes>
       <ScrollToTop />
       <FooterComp />

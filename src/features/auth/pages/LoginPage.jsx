@@ -30,7 +30,23 @@ const LoginPage = () => {
         showToast("Login failed: " + error.message, "error");
         return;
       }
-      // console.log("Login:", values);
+
+      // Check if account is active
+      const { data: userMeta } = await supabase
+        .from("users_meta")
+        .select("is_active")
+        .eq("uid", data.user.id)
+        .single();
+
+      if (!userMeta || userMeta.is_active === false) {
+        await supabase.auth.signOut();
+        showToast(
+          "Your account has been deactivated. Please contact an administrator.",
+          "error",
+        );
+        return;
+      }
+
       navigate("/dashboard");
     },
   });

@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userMeta, setUserMeta] = useState(null);
+  const [userMetaLoading, setUserMetaLoading] = useState(true);
 
   // Supabase automatically stores the session token in localStorage.
   // On every page refresh, getSession() finds it and restores the session.
@@ -35,10 +36,16 @@ export const AuthProvider = ({ children }) => {
         if (userMetaError) {
           console.error("Error fetching user metadata:", userMetaError);
           setUserMeta(null);
+        } else if (userMetaData?.is_active === false) {
+          // Account deactivated — kill the session
+          await supabase.auth.signOut();
+          setUser(null);
+          setUserMeta(null);
         } else {
           setUserMeta(userMetaData);
         }
       }
+      setUserMetaLoading(false);
 
       if (sessionError) {
         console.error("Error fetching session:", sessionError);
@@ -59,14 +66,27 @@ export const AuthProvider = ({ children }) => {
       setUser(session?.user ?? null);
 
       if (session?.user) {
+        setUserMetaLoading(true);
         supabase
           .from("users_meta")
           .select("*")
           .eq("uid", session.user.id)
           .single()
-          .then(({ data }) => setUserMeta(data ?? null));
+          .then(({ data }) => {
+            if (data?.is_active === false) {
+              // Account deactivated — kill the session
+              supabase.auth.signOut().then(() => {
+                setUser(null);
+                setUserMeta(null);
+              });
+            } else {
+              setUserMeta(data ?? null);
+            }
+            setUserMetaLoading(false);
+          });
       } else {
         setUserMeta(null);
+        setUserMetaLoading(false);
       }
     });
 
@@ -81,6 +101,7 @@ export const AuthProvider = ({ children }) => {
         setLoading,
         userMeta,
         loading,
+        userMetaLoading,
       }}
     >
       {children}

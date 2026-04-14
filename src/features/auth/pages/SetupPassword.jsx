@@ -49,12 +49,6 @@ const SetupPassword = () => {
     },
     validationSchema: SetupPasswordSchema,
     onSubmit: async (values) => {
-      console.log(
-        "Setup password:",
-        values.password,
-        "confirm:",
-        values.confirmPassword,
-      );
       // 1. Create user in Supabase Auth
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -70,22 +64,15 @@ const SetupPassword = () => {
         return;
       }
 
-      // 2. Link auth UID to users_meta
-      await supabase
-        .from("users_meta")
-        .update({ uid: data.user.id })
-        .eq("email", email);
+      // a trigger is called in supabase to Link the new auth UID to users_meta by matching email
+      // and mark the token as used so it can't be reused
 
-      // 3. Mark token as used
-      await supabase
-        .from("user_invite_tokens")
-        .update({ is_used: true })
-        .eq("token", token);
-
-      // 4. Sign out so AuthRedirect doesn't fight the navigation
+      // 2. Sign out immediately — prevents AuthRedirect from seeing the
+      //    auto-session created by signUp and redirecting to /dashboard
+      //    before we can navigate to /auth/signin?passwordSet=1
       await supabase.auth.signOut();
 
-      // 5. Redirect to login
+      // 3. Redirect to login with success flag
       navigate("/auth/signin?passwordSet=1");
     },
   });
