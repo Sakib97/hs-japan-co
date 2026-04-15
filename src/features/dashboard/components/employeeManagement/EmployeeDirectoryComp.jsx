@@ -1,151 +1,69 @@
 import { useState } from "react";
-import {
-  Table,
-  Tag,
-  Avatar,
-  Button,
-  Input,
-  Progress,
-  Space,
-  Tooltip,
-  Rate,
-} from "antd";
+import { Table, Tag, Avatar, Button, Space, Tooltip } from "antd";
 import {
   FilterOutlined,
   DownloadOutlined,
   SettingOutlined,
   LinkOutlined,
-  StarFilled,
 } from "@ant-design/icons";
 import styles from "../../styles/EmployeeManagementPage.module.css";
+import { supabase } from "../../../../config/supabaseClient";
+import { useQuery } from "@tanstack/react-query";
 
-const employeeData = [
-  {
-    key: "1",
-    name: "Haruki Sato",
-    email: "haruki.s@consulate.gov",
-    avatar: null,
-    role: "Senior Visa Officer",
-    department: "Consular Affairs",
-    assignedApplicants: 142,
-    maxApplicants: 200,
-    performanceScore: 4.9,
-    status: "Active",
-  },
-  {
-    key: "2",
-    name: "Emi Nakamura",
-    email: "emi.n@consulate.gov",
-    avatar: null,
-    role: "Language Specialist",
-    department: "Education & Culture",
-    assignedApplicants: 28,
-    maxApplicants: 200,
-    performanceScore: 4.7,
-    status: "Away",
-  },
-  {
-    key: "3",
-    name: "Daisuke Tanaka",
-    email: "d.tanaka@consulate.gov",
-    avatar: null,
-    role: "Legal Consultant",
-    department: "Legal Compliance",
-    assignedApplicants: 65,
-    maxApplicants: 200,
-    performanceScore: 5.0,
-    status: "On Leave",
-  },
-  {
-    key: "4",
-    name: "Yuki Ito",
-    email: "y.ito@consulate.gov",
-    avatar: null,
-    role: "Training Director",
-    department: "Human Resources",
-    assignedApplicants: 12,
-    maxApplicants: 200,
-    performanceScore: 4.8,
-    status: "Active",
-  },
-];
+const PAGE_SIZE = 10;
 
 const statusColorMap = {
-  Active: "green",
-  Away: "gold",
-  "On Leave": "red",
+  true: "green",
+  false: "red",
 };
 
 const columns = [
   {
     title: "NAME",
-    dataIndex: "name",
     key: "name",
     render: (_, record) => (
       <div className={styles.nameCell}>
         <Avatar size={36} className={styles.employeeAvatar}>
-          {record.name.charAt(0)}
+          {record.users_meta?.name?.charAt(0) ?? record.email.charAt(0)}
         </Avatar>
         <div>
-          <div className={styles.employeeName}>{record.name}</div>
+          <div className={styles.employeeName}>
+            {record.users_meta?.name ?? "—"}
+          </div>
           <div className={styles.employeeEmail}>{record.email}</div>
         </div>
       </div>
     ),
   },
   {
-    title: "ROLE",
-    dataIndex: "role",
-    key: "role",
-    render: (text) => <span className={styles.cellText}>{text}</span>,
+    title: "DESIGNATION",
+    key: "designation",
+    render: (_, record) => (
+      <span className={styles.cellText}>
+        {record.designations?.designation_name ?? "—"}
+      </span>
+    ),
   },
   {
     title: "DEPARTMENT",
-    dataIndex: "department",
     key: "department",
-    render: (text) => <span className={styles.cellText}>{text}</span>,
-  },
-  {
-    title: "ASSIGNED APPLICANTS",
-    dataIndex: "assignedApplicants",
-    key: "assignedApplicants",
-    render: (val, record) => {
-      const percent = Math.round((val / record.maxApplicants) * 100);
-      return (
-        <div className={styles.applicantCell}>
-          <span className={styles.applicantCount}>{val}</span>
-          <Progress
-            percent={percent}
-            showInfo={false}
-            size="small"
-            strokeColor={percent > 50 ? "#b91c1c" : "#b91c1c"}
-            trailColor="#f0f0f0"
-            className={styles.applicantBar}
-          />
-        </div>
-      );
-    },
-  },
-  {
-    title: "PERFORMANCE SCORE",
-    dataIndex: "performanceScore",
-    key: "performanceScore",
-    render: (val) => (
-      <div className={styles.scoreCell}>
-        <StarFilled style={{ color: "#faad14", fontSize: 13 }} />
-        <span className={styles.scoreText}>{val}</span>
-      </div>
+    render: (_, record) => (
+      <span className={styles.cellText}>
+        {record.departments?.department_name ?? "—"}
+      </span>
     ),
   },
   {
     title: "STATUS",
-    dataIndex: "status",
     key: "status",
-    render: (status) => (
-      <Tag color={statusColorMap[status]} className={styles.statusTag}>
-        {status}
-      </Tag>
-    ),
+    render: (_, record) => {
+      const active = record.activity_status !== false;
+      return (
+        <Tag color={active ? "green" : "red"}>
+          {active ? "Active" : "Inactive"}
+        </Tag>
+      );
+    },
   },
   {
     title: "ACTIONS",
@@ -165,7 +83,32 @@ const columns = [
 
 const EmployeeDirectoryComp = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 4;
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["employees", currentPage],
+    queryFn: async () => {
+      const from = (currentPage - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error, count } = await supabase
+        .from("employees")
+        .select(
+          `
+          email,
+          activity_status,
+          departments(department_name),
+          designations(designation_name),
+          users_meta(name, avatar_url)
+          `,
+          { count: "exact" },
+        )
+        .range(from, to);
+
+      if (error) throw new Error(error.message);
+      return { rows: data, total: count };
+    },
+    keepPreviousData: true, // keeps old data visible while next page loads
+  });
 
   return (
     <div className={styles.directorySection}>
@@ -184,13 +127,15 @@ const EmployeeDirectoryComp = () => {
 
       <Table
         columns={columns}
-        dataSource={employeeData}
+        dataSource={data?.rows ?? []}
+        rowKey="email"
+        loading={isLoading}
         pagination={{
           current: currentPage,
-          pageSize: pageSize,
-          total: 1284,
+          pageSize: PAGE_SIZE,
+          total: data?.total ?? 0,
           showTotal: (total, range) =>
-            `Showing ${range[0]} - ${range[1]} of ${total.toLocaleString()} employees`,
+            `Showing ${range[0]}–${range[1]} of ${total.toLocaleString()} employees`,
           onChange: (page) => setCurrentPage(page),
         }}
         className={styles.employeeTable}

@@ -30,6 +30,8 @@ import AuthRedirect from "./components/common/AuthRedirect.jsx";
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import NotFound from "./components/common/NotFound.jsx";
 import AdminOnlyRoute from "./components/common/AdminOnlyRoute.jsx";
+import AssetsManagementPage from "./features/dashboard/pages/AssetsManagementPage.jsx";
+
 
 function App() {
   return (
@@ -91,6 +93,14 @@ function App() {
             element={
               <AdminOnlyRoute>
                 <FinancesPage />
+              </AdminOnlyRoute>
+            }
+          />
+          <Route
+            path="assets-management"
+            element={
+              <AdminOnlyRoute>
+                <AssetsManagementPage />
               </AdminOnlyRoute>
             }
           />

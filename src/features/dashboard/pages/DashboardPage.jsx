@@ -15,6 +15,7 @@ import {
   UserOutlined,
   MenuOutlined,
   CloseOutlined,
+  FileImageOutlined
 } from "@ant-design/icons";
 import { Layout, Input, Button, Avatar, Badge } from "antd";
 import styles from "../styles/DashboardPage.module.css";
@@ -51,6 +52,12 @@ const mainMenuItems = [
     key: "/dashboard/finances",
     icon: <DollarOutlined />,
     label: "Financials",
+    adminOnly: true,
+  },
+  {
+    key: "/dashboard/assets-management",
+    icon: <FileImageOutlined />,
+    label: "Assets Management",
     adminOnly: true,
   },
 ];
