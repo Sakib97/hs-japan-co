@@ -11,6 +11,8 @@ import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import { Modal } from "antd";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
+const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3 MB
+
 const fetchSlides = async () => {
   const { data, error } = await supabase
     .from("home_page")
@@ -40,6 +42,11 @@ const HomepagePanel = () => {
   });
 
   const addSlide = async (e) => {
+    if (slides.length >= 5) {
+      showToast("Maximum of 5 slides allowed.", "error");
+      return;
+    }
+
     const file = e.target.files[0];
     e.target.value = "";
     if (!file) return;
@@ -49,8 +56,8 @@ const HomepagePanel = () => {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      showToast("File too large. Maximum allowed size is 5 MB.", "error");
+    if (file.size > MAX_FILE_SIZE) {
+      showToast(`File too large. Maximum allowed size is ${MAX_FILE_SIZE / (1024 * 1024)} MB.`, "error");
       return;
     }
     setUploading(true);
@@ -60,6 +67,7 @@ const HomepagePanel = () => {
       const { error: dbError } = await supabase.from("home_page").insert({
         image_link: publicUrl,
         image_section: "homepage_carousel",
+        image_size: file.size,
       });
 
       if (dbError) throw new Error(dbError.message);
@@ -93,7 +101,7 @@ const HomepagePanel = () => {
   };
 
   const confirmRemoveSlide = (slide) => {
-    console.log("slide::", slide);
+    // console.log("slide::", slide);
 
     Modal.confirm({
       title: "Delete Slide",
@@ -116,7 +124,9 @@ const HomepagePanel = () => {
             <p className={styles.sectionSubtitle}>
               Manage the hero images that rotate on the landing page. <br />
               <span style={{ fontWeight: "bold", color: "#666" }}>
-                Maximum file size: 5 MB per image. Supported formats: JPG, PNG,
+                Limit: 05 slides.
+                <br />
+                Maximum file size: {MAX_FILE_SIZE / (1024 * 1024)} MB per image. Supported formats: JPG, PNG,
                 JPEG. Recommended dimensions: 1920x1080 pixels.
               </span>
             </p>
@@ -124,7 +134,7 @@ const HomepagePanel = () => {
           <button
             className={styles.btnPrimary}
             onClick={() => carouselInput.current.click()}
-            disabled={uploading}
+            disabled={uploading || slides.length >= 5}
           >
             {uploading ? (
               <>
@@ -132,7 +142,13 @@ const HomepagePanel = () => {
               </>
             ) : (
               <>
-                <DatabaseOutlined /> Add Slide
+                {slides.length >= 5 ? (
+                  <span style={{ marginRight: "6px" }}>Limit reached</span>
+                ) : (
+                  <>
+                    <DatabaseOutlined /> Add Slide
+                  </>
+                )}
               </>
             )}
           </button>

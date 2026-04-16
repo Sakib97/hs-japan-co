@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { supabase } from "../config/supabaseClient";
 
 const AuthContext = createContext();
@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [userMeta, setUserMeta] = useState(null);
   const [userMetaLoading, setUserMetaLoading] = useState(true);
+  const fetchedUid = useRef(null);
 
   // Supabase automatically stores the session token in localStorage.
   // On every page refresh, getSession() finds it and restores the session.
@@ -25,6 +26,7 @@ export const AuthProvider = ({ children }) => {
 
       // Check user metadata
       if (session) {
+        fetchedUid.current = session.user.id;
         const { data: userMetaData, error: userMetaError } = await supabase
           .from("users_meta")
           .select("*")
@@ -41,6 +43,7 @@ export const AuthProvider = ({ children }) => {
           await supabase.auth.signOut();
           setUser(null);
           setUserMeta(null);
+          fetchedUid.current = null;
         } else {
           setUserMeta(userMetaData);
         }
@@ -63,9 +66,19 @@ export const AuthProvider = ({ children }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      // TOKEN_REFRESHED fires silently in the background — skip re-fetching userMeta
+      if (_event === "TOKEN_REFRESHED") return;
+
       setUser(session?.user ?? null);
 
       if (session?.user) {
+        // Prevent redundant fetching if user is already loaded (like on window refocus)
+        if (fetchedUid.current === session.user.id) {
+          setUserMetaLoading(false);
+          return;
+        }
+
+        fetchedUid.current = session.user.id;
         setUserMetaLoading(true);
         supabase
           .from("users_meta")
@@ -78,6 +91,7 @@ export const AuthProvider = ({ children }) => {
               supabase.auth.signOut().then(() => {
                 setUser(null);
                 setUserMeta(null);
+                fetchedUid.current = null;
               });
             } else {
               setUserMeta(data ?? null);
@@ -87,6 +101,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setUserMeta(null);
         setUserMetaLoading(false);
+        fetchedUid.current = null;
       }
     });
 

@@ -3,6 +3,8 @@ import { useAuth } from "../../../context/AuthProvider";
 import { supabase } from "../../../config/supabaseClient";
 import { showToast } from "../../../components/layout/CustomToast";
 import styles from "../styles/ProfilePage.module.css";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { uploadImage, deleteImage } from "../../../utils/handleImage";
 
 const ProfilePage = () => {
   const { user, userMeta, setUserMeta } = useAuth();
@@ -35,8 +37,28 @@ const ProfilePage = () => {
   const [passwordSaving, setPasswordSaving] = useState(false);
 
   const handleSavePassword = async () => {
+    // console.log("email: ", user.email);
+
     if (newPassword.length < 8) {
       showToast("Password must be at least 8 characters.", "error");
+      return;
+    }
+    if (!/[A-Z]/.test(newPassword)) {
+      showToast(
+        "Password must contain at least one uppercase letter.",
+        "error",
+      );
+      return;
+    }
+    if (!/[a-z]/.test(newPassword)) {
+      showToast(
+        "Password must contain at least one lowercase letter.",
+        "error",
+      );
+      return;
+    }
+    if (!/[0-9]/.test(newPassword)) {
+      showToast("Password must contain at least one number.", "error");
       return;
     }
     setPasswordSaving(true);
@@ -57,29 +79,52 @@ const ProfilePage = () => {
   const avatarUrl = userMeta?.avatar_url ?? null;
 
   const handleAvatarChange = async (e) => {
+    
     const file = e.target.files[0];
+    e.target.value = "";
     if (!file) return;
-    setAvatarUploading(true);
-    const filePath = `avatars/${user.id}/${Date.now()}_${file.name}`;
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(filePath, file, { upsert: true });
-    if (uploadError) {
-      showToast("Failed to upload image.", "error");
-      setAvatarUploading(false);
+
+    if (!file.type.startsWith("image/")) {
+      showToast("Invalid file type. Please upload an image file.", "error");
       return;
     }
-    const { data: urlData } = supabase.storage
-      .from("avatars")
-      .getPublicUrl(filePath);
-    const publicUrl = urlData.publicUrl;
-    await supabase
-      .from("users_meta")
-      .update({ avatar_url: publicUrl })
-      .eq("uid", user.id);
-    setUserMeta((prev) => ({ ...prev, avatar_url: publicUrl }));
-    showToast("Profile picture updated.", "success");
-    setAvatarUploading(false);
+    if (file.size > 2 * 1024 * 1024) {
+      showToast("File too large. Maximum allowed size is 2 MB.", "error");
+      return;
+    }
+    setAvatarUploading(true);
+    try {
+      // Delete old image from storage if one exists
+      if (avatarUrl) {
+        await deleteImage(avatarUrl, "profile_pics");
+      }
+
+      // Upload new image — name the file after the email prefix
+      const ext = file.name.split(".").pop();
+      const emailPrefix = user.email.split("@")[0];
+      const renamedFile = new File([file], `${emailPrefix}.${ext}`, {
+        type: file.type,
+      });
+      const publicUrl = await uploadImage(renamedFile, "profile_pics", "pics");
+
+      // Update DB
+      const { error: dbError } = await supabase
+        .from("users_meta")
+        .update({ avatar_url: publicUrl, avatar_image_size: file.size })
+        .eq("email", user.email);
+      if (dbError) throw new Error(dbError.message);
+
+      setUserMeta((prev) => ({
+        ...prev,
+        avatar_url: publicUrl,
+        avatar_image_size: file.size,
+      }));
+      showToast("Profile picture updated.", "success");
+    } catch {
+      showToast("Failed to upload image. Please try again.", "error");
+    } finally {
+      setAvatarUploading(false);
+    }
   };
 
   const initials = (userMeta?.name ?? user?.email ?? "?")

@@ -2,7 +2,8 @@ import { EmailJSResponseStatus } from "@emailjs/browser";
 import emailjs from "@emailjs/browser";
 
 export const sendInviteEmail = async (email, token, name = "") => {
-  const baseURL = import.meta.env.VITE_APP_BASE_URL_DEV; // Change to PROD URL in production
+  // const baseURL = import.meta.env.VITE_APP_BASE_URL_DEV; 
+  const baseURL = import.meta.env.VITE_APP_BASE_URL; 
   const inviteLink = `${baseURL}/auth/setup-password?token=${token}`;
 
   const templateParams = {

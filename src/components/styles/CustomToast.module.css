@@ -9,6 +9,12 @@
   gap: 5px;
   text-align: center;
 }
+.toastMessage {
+  flex: 1;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+}
 .crossBtn {
   /* color: red; */
   margin-left: 10px;

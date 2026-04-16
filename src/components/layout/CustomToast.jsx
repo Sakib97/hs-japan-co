@@ -58,7 +58,7 @@ export const showToast = (message, type = "info", id = null) => {
           style={{ fontSize: "20px", color: getBorderColor(type) }}
         ></i>
         &nbsp;
-        {message}
+        <span className={styles.toastMessage}>{message}</span>
         <div className={styles.crossBtn} onClick={() => toast.dismiss(t.id)}>
           <i className="fa-solid fa-xmark"></i>
         </div>
