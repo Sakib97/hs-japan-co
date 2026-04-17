@@ -1,52 +1,36 @@
+import { useQuery } from "@tanstack/react-query";
 import styles from "../styles/TeamMembersComp.module.css";
-
-const chairman = {
-  name: "Muhammad Rofiqul Islam",
-  role: "Chairman, HS Japan Limited",
-  image:
-    "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face",
-};
-
-const members = [
-  {
-    name: "Dr. Fakir Sharif Hossain",
-    role: "CHIEF ADVISOR",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face",
-  },
-  {
-    name: "Mamiko Ogura",
-    role: "ADVISOR, STUDENT COUNCILING",
-    image:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&h=120&fit=crop&crop=face",
-  },
-  {
-    name: "Md Faysal Hossain",
-    role: "DIRECTOR, DHAKA BRANCH",
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop&crop=face",
-  },
-  {
-    name: "Re Yamashita",
-    role: "DIRECTOR, KHULNA BRANCH",
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=face",
-  },
-  {
-    name: "Md Mostafa Kamal",
-    role: "DIRECTOR, KHULNA BRANCH",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop&crop=face",
-  },
-  {
-    name: "Md AL Asmaul Karim",
-    role: "DIRECTOR, KHULNA BRANCH",
-    image:
-      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&h=120&fit=crop&crop=face",
-  },
-];
+import { supabase } from "../../../config/supabaseClient";
 
 const TeamMembersComp = () => {
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["team_page_members"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("team_page")
+        .select("*")
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return data.map((d) => ({ ...d, key: String(d.id) }));
+    },
+  });
+
+  const chairman = data[0] ?? null;
+  const members = data.slice(1);
+
+  if (isLoading) {
+    return (
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.loading}>
+            <span className={styles.spinner} />
+            <span>Loading team members...</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className={styles.section}>
       <div className={styles.container}>
@@ -57,32 +41,40 @@ const TeamMembersComp = () => {
         </div>
 
         {/* ── chairman card ── */}
-        <div className={styles.chairmanWrapper}>
-          <div className={styles.chairmanCard}>
-            <div className={styles.chairmanImgWrap}>
-              <img
-                src={chairman.image}
-                alt={chairman.name}
-                className={styles.chairmanImg}
-              />
+        {chairman && (
+          <div className={styles.chairmanWrapper}>
+            <div className={styles.chairmanCard}>
+              <div className={styles.chairmanImgWrap}>
+                <img
+                  src={chairman.member_image_url}
+                  alt={chairman.member_name}
+                  className={styles.chairmanImg}
+                />
+              </div>
+              <h3 className={styles.chairmanName}>{chairman.member_name}</h3>
+              <p className={styles.chairmanRole}>
+                {chairman.member_designation}
+              </p>
             </div>
-            <h3 className={styles.chairmanName}>{chairman.name}</h3>
-            <p className={styles.chairmanRole}>{chairman.role}</p>
           </div>
-        </div>
+        )}
 
         {/* ── members grid ── */}
         <div className={styles.grid}>
-          {members.map((m, idx) => (
-            <div key={idx} className={styles.card}>
+          {members.map((m) => (
+            <div key={m.id} className={styles.card}>
               <div className={styles.cardTop}>
                 <div className={styles.cardInfo}>
-                  <h4 className={styles.memberName}>{m.name}</h4>
-                  <p className={styles.memberRole}>{m.role}</p>
+                  <h4 className={styles.memberName}>{m.member_name}</h4>
+                  <p className={styles.memberRole}>{m.member_designation}</p>
                 </div>
               </div>
               <div className={styles.memberImgWrap}>
-                <img src={m.image} alt={m.name} className={styles.memberImg} />
+                <img
+                  src={m.member_image_url}
+                  alt={m.member_name}
+                  className={styles.memberImg}
+                />
               </div>
             </div>
           ))}

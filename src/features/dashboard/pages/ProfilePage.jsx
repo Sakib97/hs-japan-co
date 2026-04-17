@@ -6,6 +6,9 @@ import styles from "../styles/ProfilePage.module.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { uploadImage, deleteImage } from "../../../utils/handleImage";
 
+
+const MAX_FILE_SIZE = 150 * 1024; // 150 KB
+
 const ProfilePage = () => {
   const { user, userMeta, setUserMeta } = useAuth();
 
@@ -88,8 +91,8 @@ const ProfilePage = () => {
       showToast("Invalid file type. Please upload an image file.", "error");
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      showToast("File too large. Maximum allowed size is 2 MB.", "error");
+    if (file.size > MAX_FILE_SIZE) {
+      showToast(`File too large. Maximum allowed size is ${MAX_FILE_SIZE / 1024} KB.`, "error");
       return;
     }
     setAvatarUploading(true);
@@ -150,7 +153,7 @@ const ProfilePage = () => {
               className={styles.avatarEditBtn}
               onClick={() => fileInputRef.current.click()}
               disabled={avatarUploading}
-              title="Change photo"
+              title={`Change photo / ${MAX_FILE_SIZE / 1024} KB max`}
             >
               {avatarUploading ? (
                 <i className="fa-solid fa-spinner fa-spin"></i>
