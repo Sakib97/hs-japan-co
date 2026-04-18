@@ -92,6 +92,15 @@
   gap: 12px;
 }
 
+/* ── Submit icon ── */
+.submitIcon {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 3px;
+  font-size: 12px;
+  transform: translateY(1px);
+}
+
 /* ── Mobile ── */
 @media (max-width: 640px) {
   .section {
@@ -197,4 +206,30 @@
 
 .submitBtn:hover {
   background: #991b1b;
+}
+
+/* ── Validation ── */
+.inputError {
+  border-color: #dc2626 !important;
+  background: #fff5f5 !important;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
+}
+
+.dropzoneError {
+  border-color: #dc2626;
+  background: #fff5f5;
+}
+
+.rteError :global(.tiptap-wrapper) {
+  border-color: #dc2626;
+}
+
+.errorMsg {
+  font-size: 11px;
+  color: #dc2626;
+  font-weight: 500;
+  margin-top: 2px;
 }
