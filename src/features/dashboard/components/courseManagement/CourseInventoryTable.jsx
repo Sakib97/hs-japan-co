@@ -62,6 +62,7 @@ const CourseInventoryTable = ({ onEdit }) => {
       showToast("Failed to update course status.", "error");
     } else {
       await queryClient.invalidateQueries({ queryKey: [COURSES_QUERY_KEY] });
+      await queryClient.invalidateQueries({ queryKey: ["home-courses"] });
       showToast(
         `Course ${newStatus ? "activated" : "deactivated"} successfully.`,
         "success",

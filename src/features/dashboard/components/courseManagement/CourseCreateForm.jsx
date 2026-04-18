@@ -75,6 +75,7 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
         }
 
         await queryClient.invalidateQueries({ queryKey: [COURSES_QUERY_KEY] });
+        await queryClient.invalidateQueries({ queryKey: ["home-courses"] });
         resetForm();
         setResetKey((k) => k + 1);
       } catch (err) {
