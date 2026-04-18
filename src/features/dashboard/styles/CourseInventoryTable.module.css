@@ -283,3 +283,68 @@
 .toggleOff .toggleThumb {
   left: 2px;
 }
+
+.toggleLoading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.toggleSpinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgb(0, 0, 0);
+  border-top-color: #ffffff01;
+  animation: toggleSpin 0.6s linear infinite;
+}
+
+@keyframes toggleSpin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* ── Pagination ── */
+.paginationRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+/* ── Ant Design table overrides ── */
+.antTable :global(.ant-table) {
+  font-size: 13px;
+}
+
+.antTable :global(.ant-table-thead > tr > th) {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0 12px 10px;
+}
+
+.antTable :global(.ant-table-tbody > tr > td) {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.antTable :global(.ant-table-tbody > tr:last-child > td) {
+  border-bottom: none;
+}
+
+.antTable :global(.ant-table-tbody > tr:hover > td) {
+  background: #fafafa !important;
+}
+
+.antTable :global(.ant-table-wrapper) {
+  border: none;
+}

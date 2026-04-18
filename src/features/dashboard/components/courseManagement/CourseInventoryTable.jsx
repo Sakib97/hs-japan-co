@@ -1,5 +1,12 @@
 import { useState } from "react";
+import { Table, Pagination } from "antd";
 import styles from "../../styles/CourseInventoryTable.module.css";
+import { supabase } from "../../../../config/supabaseClient";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { showToast } from "../../../../components/layout/CustomToast";
+
+export const COURSES_QUERY_KEY = "courses";
+const PAGE_SIZE = 5;
 
 const LEVEL_COLORS = {
   N1: { bg: "#dcfce7", color: "#15803d" },
@@ -9,57 +16,171 @@ const LEVEL_COLORS = {
   N5: { bg: "#fee2e2", color: "#b91c1c" },
 };
 
-// Mock data – replace with real query results
-const MOCK_COURSES = [
-  {
-    id: 1,
-    name: "Essential Kanji Mastery",
-    updatedAt: "2 days ago",
-    level: "N5",
-    duration: "3 Months",
-    instructor: { name: "Kenji Tanaka", avatar: null },
-    active: true,
-    thumbnail: null,
-  },
-  {
-    id: 2,
-    name: "Business Etiquette & Keigo",
-    updatedAt: "1 week ago",
-    level: "N2",
-    duration: "6 Months",
-    instructor: { name: "Sayaka Sato", avatar: null },
-    active: true,
-    thumbnail: null,
-  },
-  {
-    id: 3,
-    name: "N1 Exam Preparation",
-    updatedAt: "1 month ago",
-    level: "N1",
-    duration: "12 Months",
-    instructor: { name: "Hiroshi Abe", avatar: null },
-    active: false,
-    thumbnail: null,
-  },
-];
-
 const initials = (name) =>
-  name
+  (name || "?")
     .split(" ")
     .map((w) => w[0])
     .join("")
     .slice(0, 2)
     .toUpperCase();
 
-const CourseInventoryTable = ({ courses = MOCK_COURSES, onEdit, onToggle }) => {
-  const [rows, setRows] = useState(courses);
+const CourseInventoryTable = ({ onEdit }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [togglingId, setTogglingId] = useState(null);
+  const queryClient = useQueryClient();
 
-  const handleToggle = (id) => {
-    setRows((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, active: !c.active } : c)),
-    );
-    onToggle?.(id);
+  const { data, isLoading } = useQuery({
+    queryKey: [COURSES_QUERY_KEY, currentPage],
+    queryFn: async () => {
+      const from = (currentPage - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error, count } = await supabase
+        .from("course")
+        .select(
+          "id, course_name, course_level, course_duration, instructor_name, instructor_description, course_description, cover_image_url, cover_image_size, created_at, is_active",
+          { count: "exact" },
+        )
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
+      if (error) throw new Error(error.message);
+      return { rows: data ?? [], total: count ?? 0 };
+    },
+    keepPreviousData: true,
+  });
+
+  const handleToggleStatus = async (record) => {
+    setTogglingId(record.id);
+    const newStatus = !record.is_active;
+    const { error } = await supabase
+      .from("course")
+      .update({ is_active: newStatus })
+      .eq("id", record.id);
+
+    if (error) {
+      showToast("Failed to update course status.", "error");
+    } else {
+      await queryClient.invalidateQueries({ queryKey: [COURSES_QUERY_KEY] });
+      showToast(
+        `Course ${newStatus ? "activated" : "deactivated"} successfully.`,
+        "success",
+      );
+    }
+    setTogglingId(null);
   };
+
+  const columns = [
+    {
+      title: "Course Name",
+      dataIndex: "course_name",
+      key: "course_name",
+      render: (name, record) => (
+        <div className={styles.courseCell}>
+          <div className={styles.thumbnail}>
+            {record.cover_image_url ? (
+              <img
+                src={record.cover_image_url}
+                alt={name}
+                className={styles.thumbnailImg}
+              />
+            ) : (
+              <span className={styles.thumbnailPlaceholder}>&#127979;</span>
+            )}
+          </div>
+          <div>
+            <p className={styles.courseName}>{name}</p>
+            <p className={styles.courseUpdated}>
+              {record.created_at
+                ? new Date(record.created_at).toLocaleDateString()
+                : "—"}
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Level",
+      dataIndex: "course_level",
+      key: "course_level",
+      render: (level) => {
+        const levelStyle = LEVEL_COLORS[level] ?? {
+          bg: "#f3f4f6",
+          color: "#374151",
+        };
+        return (
+          <span
+            className={styles.badge}
+            style={{ background: levelStyle.bg, color: levelStyle.color }}
+          >
+            {level || "—"}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Duration",
+      dataIndex: "course_duration",
+      key: "course_duration",
+      render: (v) => <span className={styles.muted}>{v || "—"}</span>,
+    },
+    {
+      title: "Instructor",
+      dataIndex: "instructor_name",
+      key: "instructor_name",
+      render: (name) => (
+        <div className={styles.instructorCell}>
+          <div className={styles.avatar}>
+            <span>{initials(name || "")}</span>
+          </div>
+          <span className={styles.instructorName}>{name || "—"}</span>
+        </div>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      key: "is_active",
+      render: (active) => (
+        <span
+          className={`${styles.status} ${active !== false ? styles.statusActive : styles.statusInactive}`}
+        >
+          <span className={styles.statusDot} />
+          {active !== false ? "Active" : "Deactivated"}
+        </span>
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <div className={styles.actionsCell}>
+          <button
+            type="button"
+            className={styles.editBtn}
+            title="Edit"
+            onClick={() => onEdit?.(record)}
+          >
+            &#9998;
+          </button>
+          <button
+            type="button"
+            className={`${styles.toggle} ${record.is_active !== false ? styles.toggleOn : styles.toggleOff} ${togglingId === record.id ? styles.toggleLoading : ""}`}
+            onClick={() => handleToggleStatus(record)}
+            title={record.is_active !== false ? "Deactivate" : "Activate"}
+            aria-pressed={record.is_active !== false}
+            disabled={togglingId === record.id}
+          >
+            {togglingId === record.id ? (
+              <span className={styles.toggleSpinner} />
+            ) : (
+              <span className={styles.toggleThumb} />
+            )}
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <section className={styles.section}>
@@ -75,123 +196,24 @@ const CourseInventoryTable = ({ courses = MOCK_COURSES, onEdit, onToggle }) => {
         </div>
       </div>
 
-      <div className={styles.tableWrapper}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th className={styles.th}>Course Name</th>
-              <th className={styles.th}>Level</th>
-              <th className={styles.th}>Duration</th>
-              <th className={styles.th}>Instructor</th>
-              <th className={styles.th}>Status</th>
-              <th className={styles.th}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((course) => {
-              const levelStyle = LEVEL_COLORS[course.level] ?? {};
-              return (
-                <tr key={course.id} className={styles.row}>
-                  {/* Course name + thumbnail */}
-                  <td className={styles.td}>
-                    <div className={styles.courseCell}>
-                      <div className={styles.thumbnail}>
-                        {course.thumbnail ? (
-                          <img
-                            src={course.thumbnail}
-                            alt={course.name}
-                            className={styles.thumbnailImg}
-                          />
-                        ) : (
-                          <span className={styles.thumbnailPlaceholder}>
-                            &#127979;
-                          </span>
-                        )}
-                      </div>
-                      <div>
-                        <p className={styles.courseName}>{course.name}</p>
-                        <p className={styles.courseUpdated}>
-                          Updated {course.updatedAt}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
+      <Table
+        columns={columns}
+        dataSource={data?.rows ?? []}
+        rowKey="id"
+        loading={isLoading}
+        pagination={false}
+        className={styles.antTable}
+      />
 
-                  {/* Level badge */}
-                  <td className={styles.td}>
-                    <span
-                      className={styles.badge}
-                      style={{
-                        background: levelStyle.bg,
-                        color: levelStyle.color,
-                      }}
-                    >
-                      {course.level}
-                    </span>
-                  </td>
-
-                  {/* Duration */}
-                  <td className={`${styles.td} ${styles.muted}`}>
-                    {course.duration}
-                  </td>
-
-                  {/* Instructor */}
-                  <td className={styles.td}>
-                    <div className={styles.instructorCell}>
-                      <div className={styles.avatar}>
-                        {course.instructor.avatar ? (
-                          <img
-                            src={course.instructor.avatar}
-                            alt={course.instructor.name}
-                            className={styles.avatarImg}
-                          />
-                        ) : (
-                          <span>{initials(course.instructor.name)}</span>
-                        )}
-                      </div>
-                      <span className={styles.instructorName}>
-                        {course.instructor.name}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* Status */}
-                  <td className={styles.td}>
-                    <span
-                      className={`${styles.status} ${course.active ? styles.statusActive : styles.statusInactive}`}
-                    >
-                      <span className={styles.statusDot} />
-                      {course.active ? "Active" : "Deactivated"}
-                    </span>
-                  </td>
-
-                  {/* Actions */}
-                  <td className={styles.td}>
-                    <div className={styles.actionsCell}>
-                      <button
-                        type="button"
-                        className={styles.editBtn}
-                        title="Edit"
-                        onClick={() => onEdit?.(course)}
-                      >
-                        &#9998;
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.toggle} ${course.active ? styles.toggleOn : styles.toggleOff}`}
-                        onClick={() => handleToggle(course.id)}
-                        title={course.active ? "Deactivate" : "Activate"}
-                        aria-pressed={course.active}
-                      >
-                        <span className={styles.toggleThumb} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className={styles.paginationRow}>
+        <Pagination
+          current={currentPage}
+          pageSize={PAGE_SIZE}
+          total={data?.total ?? 0}
+          onChange={setCurrentPage}
+          showSizeChanger={false}
+          showTotal={(total) => `${total} course${total !== 1 ? "s" : ""}`}
+        />
       </div>
     </section>
   );

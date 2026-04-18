@@ -208,6 +208,37 @@
   background: #991b1b;
 }
 
+.submitBtn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.cancelBtn {
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  padding: 0 20px;
+  height: 40px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.cancelBtn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.cancelBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ── Validation ── */
 .inputError {
   border-color: #dc2626 !important;
