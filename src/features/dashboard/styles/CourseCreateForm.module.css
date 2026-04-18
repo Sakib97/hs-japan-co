@@ -1,0 +1,266 @@
+/* ── Section shell ── */
+.section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 28px 28px 24px;
+}
+
+.sectionHeader {
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 4px;
+}
+
+.sectionSubtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  max-width: 480px;
+}
+
+/* ── Two-column grid ── */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+}
+
+.leftCol,
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Field ── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.input,
+.select {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #111;
+  background: #f9fafb;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.select:focus {
+  border-color: #b91c1c;
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1);
+  background: #fff;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.inputGap {
+  margin-top: 8px;
+}
+
+/* ── Side-by-side dropdowns ── */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ── Submit icon ── */
+.submitIcon {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 3px;
+  font-size: 12px;
+  transform: translateY(1px);
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .section {
+    padding: 20px 16px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .submitRow {
+    justify-content: stretch;
+  }
+
+  .submitBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Drop zone ── */
+.dropzone {
+  position: relative;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 8px;
+  background: #f9fafb;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  overflow: hidden;
+  padding: 16px;
+  text-align: center;
+}
+
+.dropzone:hover,
+.dropzoneActive {
+  border-color: #b91c1c;
+  background: #fff5f5;
+}
+
+.dropzoneIcon {
+  font-size: 28px;
+  color: #b91c1c;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.dropzoneText {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 2px;
+}
+
+.dropzoneHint {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.preview {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.fileInput {
+  display: none;
+}
+
+/* ── Submit row ── */
+.submitRow {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.submitBtn {
+  background: #b91c1c;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0 24px;
+  height: 40px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+}
+
+.submitBtn:hover {
+  background: #991b1b;
+}
+
+.submitBtn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.cancelBtn {
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  padding: 0 20px;
+  height: 40px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.cancelBtn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.cancelBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Validation ── */
+.inputError {
+  border-color: #dc2626 !important;
+  background: #fff5f5 !important;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
+}
+
+.dropzoneError {
+  border-color: #dc2626;
+  background: #fff5f5;
+}
+
+.rteError :global(.tiptap-wrapper) {
+  border-color: #dc2626;
+}
+
+.errorMsg {
+  font-size: 11px;
+  color: #dc2626;
+  font-weight: 500;
+  margin-top: 2px;
+}

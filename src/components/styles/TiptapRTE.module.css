@@ -1,0 +1,105 @@
+.wrapper {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: center;
+  padding: 6px 8px;
+  background: #f9fafb;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  color: #374151;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.btnActive {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: #d1d5db;
+  margin: 0 4px;
+}
+
+.editor {
+  padding: 12px 16px;
+  min-height: 200px;
+  outline: none;
+}
+
+.editor :global(.tiptap) {
+  outline: none;
+  min-height: 180px;
+}
+
+.editor :global(.tiptap) > * + * {
+  margin-top: 0.75em;
+}
+
+.editor :global(.tiptap) h1 {
+  font-size: 1.6em;
+  font-weight: 700;
+}
+
+.editor :global(.tiptap) h2 {
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.editor :global(.tiptap) h3 {
+  font-size: 1.1em;
+  font-weight: 700;
+}
+
+.editor :global(.tiptap) ul,
+.editor :global(.tiptap) ol {
+  padding-left: 1.5em;
+}
+
+.editor :global(.tiptap) blockquote {
+  border-left: 3px solid #d1d5db;
+  margin-left: 0;
+  padding-left: 1em;
+  color: #6b7280;
+}
+
+.editor :global(.tiptap) hr {
+  border: none;
+  border-top: 2px solid #e5e7eb;
+  margin: 1em 0;
+}
