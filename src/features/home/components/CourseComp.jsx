@@ -1,5 +1,6 @@
 import { supabase } from "../../../config/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import styles from "../styles/CourseComp.module.css";
 
 const CourseComp = () => {
@@ -52,7 +53,11 @@ const CourseComp = () => {
         <h2 className={styles.title}>Explore Courses</h2>
         <div className={styles.cardsContainer}>
           {courses.map((course) => (
-            <div key={course.id} className={styles.card}>
+            <Link
+              key={course.id}
+              to={`/courses/${course.id}`}
+              className={styles.cardLink}
+            >
               <div className={styles.imageWrapper}>
                 <img
                   src={course.cover_image_url}
@@ -77,7 +82,7 @@ const CourseComp = () => {
                   <span>{course.course_duration}</span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

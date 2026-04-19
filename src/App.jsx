@@ -31,7 +31,7 @@ import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import NotFound from "./components/common/NotFound.jsx";
 import AdminOnlyRoute from "./components/common/AdminOnlyRoute.jsx";
 import AssetsManagementPage from "./features/dashboard/pages/AssetsManagementPage.jsx";
-
+import CourseDetailsPage from "./features/CourseDetails/pages/CourseDetailsPage.jsx";
 
 function App() {
   return (
@@ -48,6 +48,7 @@ function App() {
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/team" element={<TeamPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/courses/:id" element={<CourseDetailsPage />} />
         <Route
           path="/auth/signin"
           element={

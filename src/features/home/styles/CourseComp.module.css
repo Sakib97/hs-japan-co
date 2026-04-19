@@ -26,12 +26,19 @@
   flex-wrap: wrap;
 }
 
+.cardLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  max-width: 350px;
+  width: 100%;
+}
+
 .card {
   background-color: #fff;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  max-width: 350px;
   width: 100%;
   transition:
     transform 0.3s ease,
@@ -54,7 +61,7 @@
   }
 }
 
-.card:hover {
+.cardLink:hover .card {
   transform: translateY(-5px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }

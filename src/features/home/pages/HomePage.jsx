@@ -1,4 +1,5 @@
 import CarouselComp from "../components/CarouselComp";
+import IntroComp from "../components/IntroComp";
 import AboutComp from "../components/AboutComp";
 import OfferComp from "../components/OfferComp";
 import BenefitsComp from "../components/BenefitsComp";
@@ -11,6 +12,7 @@ import ActivityComp from "../components/ActivityComp";
 const HomePage = () => {
   return (
     <div>
+      <IntroComp />
       <CarouselComp />
       <AboutComp />
       <OfferComp />
