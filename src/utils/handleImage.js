@@ -20,6 +20,20 @@ export const uploadImage = async (file, bucket, folder) => {
   return publicUrl; // store this in Supabase DB
 };
 
+export const replaceImage = async (file, bucket, folder, oldUrl) => {
+  // Delete old image from storage if it exists
+  if (oldUrl) {
+    const path = oldUrl.split(`/storage/v1/object/public/${bucket}/`)[1];
+    if (path) {
+      await supabase.storage.from(bucket).remove([path]);
+    }
+  }
+
+  // Upload new image
+  const publicUrl = await uploadImage(file, bucket, folder);
+  return publicUrl;
+};
+
 export const deleteImage = async (url, bucket, dbOptions = null) => {
   // Extract the file path from the public URL
   // URL format: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>

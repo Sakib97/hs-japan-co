@@ -1,0 +1,54 @@
+/* .page {
+  padding: 10px;
+  background: #f5f5f5;
+} */
+
+.editBtnRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  margin-top: 100px;
+}
+
+.editBtn.editBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 6px;
+  background: #b91c1c;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: none;
+}
+
+.editBtn.editBtn:hover {
+  background: #991b1b !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+.editBtn.editBtn:disabled {
+  background: #e5e7eb !important;
+  border-color: transparent !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
+}
+
+.editGuideline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 600px;
+  margin: 0 auto 10px;
+  padding: 10px 18px;
+  background: #fef9c3;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #92400e;
+}

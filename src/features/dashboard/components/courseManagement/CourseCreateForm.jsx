@@ -241,7 +241,7 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
                     Drag and drop high-resolution asset
                   </p>
                   <p className={styles.dropzoneHint}>
-                    PNG, JPG up to 10MB (TBLP ratio)
+                    PNG, JPG up to 3MB (TBLP ratio)
                   </p>
                 </>
               )}

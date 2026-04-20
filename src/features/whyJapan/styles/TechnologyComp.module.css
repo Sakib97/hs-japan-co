@@ -1,7 +1,7 @@
 .section {
   padding: 80px 0;
   background: #f9f9fb;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .container {
@@ -25,16 +25,17 @@
   font-weight: 700;
   color: #000;
   margin-bottom: 20px;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .text {
   font-size: 0.95rem;
   line-height: 1.75;
-  color: #666;
+  /* color: #666; */
 }
 
 .imageWrapper {
+  position: relative;
   flex: 0 0 420px;
   border-radius: 12px;
   overflow: hidden;
@@ -45,6 +46,61 @@
   width: 100%;
   height: auto;
   display: block;
+}
+
+.imageEditOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 2rem;
+  border: none;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+
+.imageEditOverlay:hover {
+  opacity: 1;
+}
+
+.imageEditOverlay:disabled {
+  opacity: 1;
+  cursor: wait;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.rteWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.saveBtn {
+  align-self: flex-start;
+  padding: 8px 20px;
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.saveBtn:hover {
+  background: #a93226;
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 800px) {
