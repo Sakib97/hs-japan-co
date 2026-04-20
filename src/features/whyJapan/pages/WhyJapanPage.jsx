@@ -45,7 +45,7 @@ const WhyJapanPage = () => {
             }
             onClick={() => setIsEditMode(!isEditMode)}
           >
-            {isEditMode ? "Disable" : "Enable Edit Mode"}
+            {isEditMode ? "Cancel" : "Enable Edit Mode"}
           </Button>
         </div>
       )}
