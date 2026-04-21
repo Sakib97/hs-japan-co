@@ -56,6 +56,24 @@
   margin: 0 4px;
 }
 
+.select {
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.select:hover,
+.select:focus {
+  border-color: #93c5fd;
+}
+
 .editor {
   padding: 12px 16px;
   min-height: 200px;

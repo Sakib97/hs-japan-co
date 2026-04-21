@@ -1,0 +1,31 @@
+.editBtn.editBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 60px;
+  background: #b91c1c;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: none;
+  z-index: 1000;
+  position: fixed;
+  top: 500px;
+  right: 1px;
+}
+
+.editBtn.editBtn:hover {
+  background: #991b1b !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+.editBtn.editBtn:disabled {
+  background: #e5e7eb !important;
+  border-color: transparent !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
+}
