@@ -1,6 +1,44 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { TextStyle, FontFamily, FontSize } from "@tiptap/extension-text-style";
 import styles from "../styles/TiptapRTE.module.css";
+
+const FONTS = [
+  { label: "Default", value: "" },
+  { label: "Serif", value: "Georgia, serif" },
+  { label: "Sans-serif", value: "Arial, sans-serif" },
+  { label: "Times New Roman", value: "'Times New Roman', Times, serif" },
+  { label: "Monospace", value: "'Courier New', Courier, monospace" },
+  { label: "Segoe UI", value: "'Segoe UI', Tahoma, sans-serif" },
+    { label: "Roboto", value: "'Roboto', sans-serif" },
+    { label: "Open Sans", value: "'Open Sans', sans-serif" },
+    { label: "Lato", value: "'Lato', sans-serif" },
+];
+
+const SIZES = [
+  { label: "Size", value: "" },
+  { label: "8", value: "8px" },
+  { label: "10", value: "10px" },
+  { label: "12", value: "12px" },
+  { label: "14", value: "14px" },
+  { label: "16", value: "16px" },
+  { label: "18", value: "18px" },
+  { label: "20", value: "20px" },
+  { label: "22", value: "22px" },
+  { label: "24", value: "24px" },
+  { label: "26", value: "26px" },
+  { label: "28", value: "28px" },
+  { label: "30", value: "30px" },
+  { label: "32", value: "32px" },
+  { label: "34", value: "34px" },
+  { label: "36", value: "36px" },
+  { label: "38", value: "38px" },
+  { label: "40", value: "40px" },
+  { label: "42", value: "42px" },
+  { label: "44", value: "44px" },
+  { label: "46", value: "46px" },
+  { label: "48", value: "48px" },
+];
 
 const ToolbarButton = ({ onClick, active, disabled, title, children }) => (
   <button
@@ -19,7 +57,7 @@ const ToolbarButton = ({ onClick, active, disabled, title, children }) => (
 
 const TiptapRTE = ({ value, onChange }) => {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, TextStyle, FontFamily, FontSize],
     content: value || "",
     onUpdate({ editor }) {
       onChange?.(editor.getHTML());
@@ -27,6 +65,27 @@ const TiptapRTE = ({ value, onChange }) => {
   });
 
   if (!editor) return null;
+
+  const currentFont = editor.getAttributes("textStyle").fontFamily || "";
+  const currentSize = editor.getAttributes("textStyle").fontSize || "";
+
+  const handleFontChange = (e) => {
+    const val = e.target.value;
+    if (!val) {
+      editor.chain().focus().unsetFontFamily().run();
+    } else {
+      editor.chain().focus().setFontFamily(val).run();
+    }
+  };
+
+  const handleSizeChange = (e) => {
+    const val = e.target.value;
+    if (!val) {
+      editor.chain().focus().unsetFontSize().run();
+    } else {
+      editor.chain().focus().setFontSize(val).run();
+    }
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -123,6 +182,31 @@ const TiptapRTE = ({ value, onChange }) => {
         >
           &#8631;
         </ToolbarButton>
+        <span className={styles.divider} />
+        <select
+          className={styles.select}
+          value={currentFont}
+          onChange={handleFontChange}
+          title="Font family"
+        >
+          {FONTS.map((f) => (
+            <option key={f.value} value={f.value}>
+              {f.label}
+            </option>
+          ))}
+        </select>
+        <select
+          className={styles.select}
+          value={currentSize}
+          onChange={handleSizeChange}
+          title="Font size"
+        >
+          {SIZES.map((s) => (
+            <option key={s.value} value={s.value}>
+              {s.label}
+            </option>
+          ))}
+        </select>
       </div>
       <EditorContent editor={editor} className={styles.editor} />
     </div>
