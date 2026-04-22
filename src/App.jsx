@@ -19,7 +19,7 @@ import LoginPage from "./features/auth/pages/LoginPage.jsx";
 import RegisterPage from "./features/auth/pages/RegisterPage.jsx";
 import FooterComp from "./features/home/components/FooterComp.jsx";
 import DashboardPage from "./features/dashboard/pages/DashboardPage.jsx";
-import ApplicantManagementPage from "./features/dashboard/pages/ApplicantManagementPage.jsx";
+import StudentManagementPage from "./features/dashboard/pages/StudentManagementPage.jsx";
 import CourseManagementPage from "./features/dashboard/pages/CourseManagementPage.jsx";
 import EmployeeManagementPage from "./features/dashboard/pages/EmployeeManagementPage.jsx";
 import FinancesPage from "./features/dashboard/pages/FinancesPage.jsx";
@@ -77,8 +77,8 @@ function App() {
         >
           <Route index element={<ProfilePage />} />
           <Route
-            path="applicant-management"
-            element={<ApplicantManagementPage />}
+            path="student-management"
+            element={<StudentManagementPage />}
           />
           <Route path="course-management" element={<CourseManagementPage />} />
           <Route

@@ -15,30 +15,6 @@ const WhyJapanPage = () => {
   const { user, userMeta } = useAuth();
   const [isEditMode, setIsEditMode] = useState(false);
 
-  // const { data: pageData, isLoading } = useQuery({
-  //   queryKey: ["why-japan-page"],
-  //   queryFn: async () => {
-  //     const [pageRes, bydRes] = await Promise.all([
-  //       supabase
-  //         .from("why_japan_page")
-  //         .select(
-  //           "section_name, section_content, section_image_link, image_size",
-  //         )
-  //         .order("section_order", { ascending: true }),
-  //       supabase
-  //         .from("why_japan_byd")
-  //         .select("*")
-  //         .order("section_order", { ascending: true }),
-  //     ]);
-  //     if (pageRes.error) throw new Error(pageRes.error.message);
-  //     if (bydRes.error) throw new Error(bydRes.error.message);
-  //     return {
-  //       sections: pageRes.data ?? [],
-  //       bydCards: bydRes.data ?? [],
-  //     };
-  //   },
-  // });
-
   const { data: pageData, isLoading } = useQuery({
     queryKey: ["why-japan-page"],
     queryFn: async () => {

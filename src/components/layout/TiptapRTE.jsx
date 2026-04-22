@@ -1,6 +1,7 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { TextStyle, FontFamily, FontSize } from "@tiptap/extension-text-style";
+import TextAlign from "@tiptap/extension-text-align";
 import styles from "../styles/TiptapRTE.module.css";
 
 const FONTS = [
@@ -10,9 +11,9 @@ const FONTS = [
   { label: "Times New Roman", value: "'Times New Roman', Times, serif" },
   { label: "Monospace", value: "'Courier New', Courier, monospace" },
   { label: "Segoe UI", value: "'Segoe UI', Tahoma, sans-serif" },
-    { label: "Roboto", value: "'Roboto', sans-serif" },
-    { label: "Open Sans", value: "'Open Sans', sans-serif" },
-    { label: "Lato", value: "'Lato', sans-serif" },
+  { label: "Roboto", value: "'Roboto', sans-serif" },
+  { label: "Open Sans", value: "'Open Sans', sans-serif" },
+  { label: "Lato", value: "'Lato', sans-serif" },
 ];
 
 const SIZES = [
@@ -57,7 +58,13 @@ const ToolbarButton = ({ onClick, active, disabled, title, children }) => (
 
 const TiptapRTE = ({ value, onChange }) => {
   const editor = useEditor({
-    extensions: [StarterKit, TextStyle, FontFamily, FontSize],
+    extensions: [
+      StarterKit,
+      TextStyle,
+      FontFamily,
+      FontSize,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+    ],
     content: value || "",
     onUpdate({ editor }) {
       onChange?.(editor.getHTML());
@@ -181,6 +188,35 @@ const TiptapRTE = ({ value, onChange }) => {
           title="Redo"
         >
           &#8631;
+        </ToolbarButton>
+        <span className={styles.divider} />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          active={editor.isActive({ textAlign: "left" })}
+          title="Align Left"
+        >
+          <i className="fa-solid fa-align-left" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          active={editor.isActive({ textAlign: "center" })}
+          title="Align Center"
+        >
+          <i className="fa-solid fa-align-center" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          active={editor.isActive({ textAlign: "right" })}
+          title="Align Right"
+        >
+          <i className="fa-solid fa-align-right" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+          active={editor.isActive({ textAlign: "justify" })}
+          title="Justify"
+        >
+          <i className="fa-solid fa-align-justify" />
         </ToolbarButton>
         <span className={styles.divider} />
         <select

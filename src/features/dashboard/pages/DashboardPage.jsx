@@ -38,9 +38,9 @@ const mainMenuItems = [
     adminOnly: true,
   },
   {
-    key: "/dashboard/applicant-management",
+    key: "/dashboard/student-management",
     icon: <SolutionOutlined />,
-    label: "Applicant Management",
+    label: "Student Management",
   },
 
   {
