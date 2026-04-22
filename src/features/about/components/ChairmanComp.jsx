@@ -1,105 +1,216 @@
+import { useRef, useState } from "react";
+import { showToast } from "../../../components/layout/CustomToast";
+import { replaceImage } from "../../../utils/handleImage";
+import TiptapRTE from "../../../components/layout/TiptapRTE";
 import styles from "../styles/ChairmanComp.module.css";
+import { supabase } from "../../../config/supabaseClient";
+import { useQueryClient } from "@tanstack/react-query";
 
-const ChairmanComp = () => {
+const BUCKET = "combined_page_images";
+const FOLDER = "about_page";
+
+const ChairmanComp = ({ isEditMode, data = [] }) => {
+  const queryClient = useQueryClient();
+  const fileInputRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+  const [savingChairman, setSavingChairman] = useState(false);
+  const [savingFeatures, setSavingFeatures] = useState(false);
+  const [chairmanContent, setChairmanContent] = useState(null);
+  const [featuresContent, setFeaturesContent] = useState(null);
+
+  const chairmanSection = data.find(
+    (d) => d.section_name === "chairman_section",
+  );
+  const featuresSection = data.find(
+    (d) => d.section_name === "features_section",
+  );
+
+  const imgSrc =
+    chairmanSection?.section_image_url;
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showToast("Please select an image file.", "error");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      showToast("Image must be smaller than 2MB.", "error");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const publicUrl = await replaceImage(
+        file,
+        BUCKET,
+        FOLDER,
+        chairmanSection?.section_image_url,
+      );
+      const { error } = await supabase
+        .from("about_page")
+        .update({ section_image_url: publicUrl, image_size: file.size })
+        .eq("section_name", "chairman_section");
+      if (error) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      showToast("Image updated successfully!", "success");
+    } catch (err) {
+      showToast(err.message || "Failed to update image.", "error");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleChairmanContentSave = async () => {
+    if (chairmanContent === null) return;
+    setSavingChairman(true);
+    try {
+      const { error } = await supabase
+        .from("about_page")
+        .update({ section_content: chairmanContent })
+        .eq("section_name", "chairman_section");
+      if (error) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      showToast("Chairman content updated!", "success");
+    } catch (err) {
+      showToast(err.message || "Failed to update content.", "error");
+    } finally {
+      setSavingChairman(false);
+    }
+  };
+
+  const handleFeaturesContentSave = async () => {
+    if (featuresContent === null) return;
+    setSavingFeatures(true);
+    try {
+      const { error } = await supabase
+        .from("about_page")
+        .update({ section_content: featuresContent })
+        .eq("section_name", "features_section");
+      if (error) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      showToast("Features content updated!", "success");
+    } catch (err) {
+      showToast(err.message || "Failed to update content.", "error");
+    } finally {
+      setSavingFeatures(false);
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       {/* Chairman Bio Section */}
       <div className={styles.bioSection}>
         <div className={styles.photoWrapper}>
-          <img
-            src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=350&fit=crop"
-            alt="Chairman"
-            className={styles.photo}
-          />
+          <img src={imgSrc} alt="Chairman" className={styles.photo} />
+          {isEditMode && (
+            <>
+              <button
+                type="button"
+                className={styles.imageEditOverlay}
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                title="Change chairman photo"
+              >
+                {uploading ? (
+                  <i className="fa-solid fa-spinner fa-spin" />
+                ) : (
+                  <i className="fa-solid fa-pen-to-square" />
+                )}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className={styles.hiddenInput}
+                onChange={handleImageChange}
+              />
+            </>
+          )}
         </div>
         <div className={styles.bioContent}>
-          <h3 className={styles.name}>Chairman</h3>
-          <p className={styles.designation}>Hs Japan Limited</p>
-          <p className={styles.bio}>
-            With immense pride and great pleasure, I welcome you to the HS JAPAN
-            ACADEMY. HS JAPAN ACADEMY is a Bangladesh based company specialized
-            in Japanese language training courses, education consultancy and
-            immigration services. You could be a parent, a student, a staff
-            member, or anyone interested in getting deeper insights into our
-            exciting world&apos;s transforming and learning environment. Right
-            from its inception to now, our institution has committed itself to
-            spread the light of education and earn the faith of academic
-            excellence for every student.
-          </p>
-          <p className={styles.bio}>
-            To students we thank our heart to you. You are our sole reason and
-            we made all our efforts on you. We cannot see the future instead of
-            we could you for the future. The knowledge that you will gain, the
-            qualities that you will imbibe, and the technical skills you will
-            learn to apply will transform to your parents, country and the
-            nation. These are strong challenges to grasp but also raises common
-            goals. Without these, the chain of education breaks. We want you to
-            make the fruit of success even earlier the end of your life, you
-            will never study.
-          </p>
-          <p className={styles.bio}>
-            To parents we guarantee you: that we are an important partner in
-            your children&apos;s whole educational and training journey. Your
-            dedication and endless cooperation in progressing your
-            children&apos;s education and learning are vital to our mutual
-            objectives. We are keen on strengthening the communication between
-            us to practice and implement brighter for our students.
-          </p>
-          <p className={styles.bio}>
-            Again, would like to thank our students, staff members and our
-            partner institutions in Japan for choosing to support us. Thanks for
-            the trust and confidence you have shown in HS JAPAN ACADEMY.
-          </p>
+          {isEditMode ? (
+            <div className={styles.rteWrapper}>
+              <TiptapRTE
+                value={chairmanSection?.section_content || ""}
+                onChange={(html) => setChairmanContent(html)}
+              />
+              <button
+                type="button"
+                className={styles.saveBtn}
+                onClick={handleChairmanContentSave}
+                disabled={savingChairman || chairmanContent === null}
+              >
+                {savingChairman ? (
+                  <>
+                    <i className="fa-solid fa-spinner fa-spin" />
+                    &nbsp; Saving...
+                  </>
+                ) : (
+                  <>
+                    <i className="fa-solid fa-floppy-disk" />
+                    &nbsp; Save Content
+                  </>
+                )}
+              </button>
+            </div>
+          ) : chairmanSection?.section_content ? (
+            <div
+              className={styles.bioHtml}
+              dangerouslySetInnerHTML={{
+                __html: chairmanSection.section_content,
+              }}
+            />
+          ) : (
+            <>
+              <p>Connection timed out. Please try again later.</p>
+            </>
+          )}
         </div>
       </div>
 
       {/* School Features Section */}
       <div className={styles.featuresSection}>
-        <h3 className={styles.featuresTitle}>School Features</h3>
-        <div className={styles.featuresDivider} />
-
-        <div className={styles.feature}>
-          <h4 className={styles.featureHeading}>Class advisor system</h4>
-          <p className={styles.featureText}>
-            Class advisors give support and provide consultations on every-day
-            life other than study and career guidance.
-          </p>
-        </div>
-
-        <div className={styles.feature}>
-          <h4 className={styles.featureHeading}>
-            Support for University/Graduate school
-          </h4>
-          <p className={styles.featureText}>
-            Individual consultations and support for higher studies including
-            teaching and research plans and guide for university entrance.
-            Interactive technique, training in data available.
-          </p>
-        </div>
-
-        <div className={styles.feature}>
-          <h4 className={styles.featureHeading}>
-            Japanese Language Proficiency Test
-          </h4>
-          <p className={styles.featureText}>
-            We provide advanced and entry-level effective support for success.
-          </p>
-          <ul className={styles.featureList}>
-            <li>Most suitable learning facilities</li>
-            <li>
-              We have installed free WIFI in each classroom. In addition to the
-              library, there are famous Japanese books and manga so you can
-              easily read after classes.
-            </li>
-            <li>Convenient living environment</li>
-            <li>
-              Osaka is the second largest city next to Tokyo. Stand and easy
-              train access to Osaka&apos;s tourist quarters such as Namba,
-              Umeda, Shinsaibashi and more. Living costs in Osaka are also lower
-              than Tokyo.
-            </li>
-          </ul>
-        </div>
+        {isEditMode ? (
+          <div className={styles.rteWrapper}>
+            <TiptapRTE
+              value={featuresSection?.section_content || ""}
+              onChange={(html) => setFeaturesContent(html)}
+            />
+            <button
+              type="button"
+              className={styles.saveBtn}
+              onClick={handleFeaturesContentSave}
+              disabled={savingFeatures || featuresContent === null}
+            >
+              {savingFeatures ? (
+                <>
+                  <i className="fa-solid fa-spinner fa-spin" />
+                  &nbsp; Saving...
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-floppy-disk" />
+                  &nbsp; Save Content
+                </>
+              )}
+            </button>
+          </div>
+        ) : featuresSection?.section_content ? (
+          <div
+            className={styles.featuresHtml}
+            dangerouslySetInnerHTML={{
+              __html: featuresSection.section_content,
+            }}
+          />
+        ) : (
+          <>
+            <p>Connection timed out. Please try again later.</p>
+          </>
+        )}
       </div>
     </div>
   );

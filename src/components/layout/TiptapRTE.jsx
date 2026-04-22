@@ -2,6 +2,8 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { TextStyle, FontFamily, FontSize } from "@tiptap/extension-text-style";
 import TextAlign from "@tiptap/extension-text-align";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
 import styles from "../styles/TiptapRTE.module.css";
 
 const FONTS = [
@@ -63,6 +65,8 @@ const TiptapRTE = ({ value, onChange }) => {
       TextStyle,
       FontFamily,
       FontSize,
+      Color,
+      Highlight.configure({ multicolor: true }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
     content: value || "",
@@ -75,6 +79,8 @@ const TiptapRTE = ({ value, onChange }) => {
 
   const currentFont = editor.getAttributes("textStyle").fontFamily || "";
   const currentSize = editor.getAttributes("textStyle").fontSize || "";
+  const currentColor = editor.getAttributes("textStyle").color || "#000000";
+  const currentHighlight = editor.getAttributes("highlight").color || "#ffffff";
 
   const handleFontChange = (e) => {
     const val = e.target.value;
@@ -218,6 +224,64 @@ const TiptapRTE = ({ value, onChange }) => {
         >
           <i className="fa-solid fa-align-justify" />
         </ToolbarButton>
+        <span className={styles.divider} />
+        <span className={styles.divider} />
+        <label className={styles.colorLabel} title="Text color">
+          <i className="fa-solid fa-font" />
+          <input
+            type="color"
+            className={styles.colorInput}
+            value={currentColor}
+            onChange={(e) =>
+              editor.chain().focus().setColor(e.target.value).run()
+            }
+          />
+          <span
+            className={styles.colorSwatch}
+            style={{ background: currentColor }}
+          />
+        </label>
+        <button
+          type="button"
+          className={styles.btn}
+          title="Remove text color"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            editor.chain().focus().unsetColor().run();
+          }}
+        >
+          <i className="fa-solid fa-droplet-slash" />
+        </button>
+        <label className={styles.colorLabel} title="Highlight color">
+          <i className="fa-solid fa-highlighter" />
+          <input
+            type="color"
+            className={styles.colorInput}
+            value={currentHighlight}
+            onChange={(e) =>
+              editor
+                .chain()
+                .focus()
+                .setHighlight({ color: e.target.value })
+                .run()
+            }
+          />
+          <span
+            className={styles.colorSwatch}
+            style={{ background: currentHighlight }}
+          />
+        </label>
+        <button
+          type="button"
+          className={styles.btn}
+          title="Remove highlight"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            editor.chain().focus().unsetHighlight().run();
+          }}
+        >
+          <i className="fa-solid fa-eraser" />
+        </button>
         <span className={styles.divider} />
         <select
           className={styles.select}

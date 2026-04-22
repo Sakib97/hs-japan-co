@@ -17,6 +17,7 @@
   height: 220px;
   border-radius: 12px;
   overflow: hidden;
+  position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -117,4 +118,69 @@
     width: 150px;
     height: 190px;
   }
+}
+
+/* Edit mode */
+.imageEditOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1.4rem;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.photoWrapper:hover .imageEditOverlay {
+  opacity: 1;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.rteWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.saveBtn {
+  align-self: flex-end;
+  padding: 7px 20px;
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: #a93226;
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bioHtml {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #555;
+}
+
+.featuresHtml {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #555;
 }

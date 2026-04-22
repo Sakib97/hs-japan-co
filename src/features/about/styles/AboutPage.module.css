@@ -33,6 +33,30 @@
   min-width: 0;
 }
 
+.loadingOverlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.editGuideline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 600px;
+  margin:110px auto 1px;
+  padding: 10px 18px;
+  background: #fef9c3;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #92400e;
+  /* top: -500px; */
+}
+
+
 /* Responsive */
 @media (max-width: 960px) {
   .layout {
