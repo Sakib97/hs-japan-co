@@ -1,7 +1,9 @@
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import { useState } from "react";
 import NavigationBar from "./components/layout/NavigationBar.jsx";
+import SplashScreen from "./components/layout/SplashScreen.jsx";
 import ScrollToTop from "./components/common/ScrollToTop.jsx";
 import ScrollToTopOnNav from "./components/common/ScrollToTopOnNav.jsx";
 import { BrowserRouter } from "react-router-dom";
@@ -33,9 +35,21 @@ import AdminOnlyRoute from "./components/common/AdminOnlyRoute.jsx";
 import AssetsManagementPage from "./features/dashboard/pages/AssetsManagementPage.jsx";
 import CourseDetailsPage from "./features/CourseDetails/pages/CourseDetailsPage.jsx";
 
+const SPLASH_KEY = "hs_japan_splash_shown";
+
 function App() {
+  const [showSplash, setShowSplash] = useState(
+    () => !sessionStorage.getItem(SPLASH_KEY),
+  );
+
+  const handleSplashDone = () => {
+    sessionStorage.setItem(SPLASH_KEY, "true");
+    setShowSplash(false);
+  };
+
   return (
     <BrowserRouter>
+      {showSplash && <SplashScreen onDone={handleSplashDone} />}
       <ScrollToTopOnNav />
       <NavigationBar />
       <Toaster />
