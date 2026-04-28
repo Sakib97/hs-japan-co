@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { showToast } from "../../../components/layout/CustomToast";
 import { replaceImage } from "../../../utils/handleImage";
 import TiptapRTE from "../../../components/layout/TiptapRTE";
+import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 import styles from "../styles/ChairmanComp.module.css";
 import { supabase } from "../../../config/supabaseClient";
 import { useQueryClient } from "@tanstack/react-query";
@@ -25,8 +26,7 @@ const ChairmanComp = ({ isEditMode, data = [] }) => {
     (d) => d.section_name === "features_section",
   );
 
-  const imgSrc =
-    chairmanSection?.section_image_url;
+  const imgSrc = chairmanSection?.section_image_url;
 
   const handleImageChange = async (e) => {
     const file = e.target.files?.[0];
@@ -36,8 +36,11 @@ const ChairmanComp = ({ isEditMode, data = [] }) => {
       showToast("Please select an image file.", "error");
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      showToast("Image must be smaller than 2MB.", "error");
+    if (file.size > IMAGE_SIZES.ABOUT_PAGE.maxBytes) {
+      showToast(
+        `Image must be smaller than ${IMAGE_SIZES.ABOUT_PAGE.label}.`,
+        "error",
+      );
       return;
     }
 

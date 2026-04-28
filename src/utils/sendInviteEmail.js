@@ -22,7 +22,7 @@ export const sendInviteEmail = async (email, token, name = "") => {
       },
     );
 
-    console.log(" Invite email sent successfully!", response.text);
+    // console.log(" Invite email sent successfully!", response.text);
     return response;
   } catch (error) {
     console.error(" Failed to send invite email:", error.text || error);

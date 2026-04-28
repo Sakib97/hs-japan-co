@@ -32,8 +32,11 @@ import AuthRedirect from "./components/common/AuthRedirect.jsx";
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import NotFound from "./components/common/NotFound.jsx";
 import AdminOnlyRoute from "./components/common/AdminOnlyRoute.jsx";
+import StudentOnlyRoute from "./components/common/StudentOnlyRoute.jsx";
 import AssetsManagementPage from "./features/dashboard/pages/AssetsManagementPage.jsx";
 import CourseDetailsPage from "./features/CourseDetails/pages/CourseDetailsPage.jsx";
+import MyCoursesPage from "./features/dashboard/pages/MyCoursesPage.jsx";
+import MyFinancesPage from "./features/dashboard/pages/MyFinancesPage.jsx";
 
 const SPLASH_KEY = "hs_japan_splash_shown";
 
@@ -106,9 +109,9 @@ function App() {
           <Route
             path="finances"
             element={
-              <AdminOnlyRoute>
+              // <AdminOnlyRoute>
                 <FinancesPage />
-              </AdminOnlyRoute>
+              // </AdminOnlyRoute>
             }
           />
           <Route
@@ -117,6 +120,24 @@ function App() {
               <AdminOnlyRoute>
                 <AssetsManagementPage />
               </AdminOnlyRoute>
+            }
+          />
+
+          <Route
+            path="my-courses"
+            element={
+              <StudentOnlyRoute>
+                <MyCoursesPage />
+              </StudentOnlyRoute>
+            }
+          />
+
+          <Route
+            path="my-finances"
+            element={
+              <StudentOnlyRoute>
+                <MyFinancesPage />
+              </StudentOnlyRoute>
             }
           />
         </Route>

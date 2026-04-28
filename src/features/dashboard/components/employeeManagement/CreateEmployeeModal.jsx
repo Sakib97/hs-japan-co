@@ -98,7 +98,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
 
       // 2. Generate token and expiry
       const token = generateToken();
-      const expires_at = new Date(Date.now() + 2 * 60 * 60 * 1000);
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
       // 3. Store token
       const { error: tokenError } = await supabase
@@ -155,7 +155,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
 
       // 2. Generate token and expiry
       const token = generateToken();
-      const expires_at = new Date(Date.now() + 2 * 60 * 60 * 1000);
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
       // 3. Store token
       const { error: tokenError } = await supabase

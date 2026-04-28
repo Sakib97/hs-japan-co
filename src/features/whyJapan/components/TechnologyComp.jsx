@@ -5,6 +5,7 @@ import { supabase } from "../../../config/supabaseClient";
 import { useQueryClient } from "@tanstack/react-query";
 import { replaceImage } from "../../../utils/handleImage";
 import { showToast } from "../../../components/layout/CustomToast";
+import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 
 const BUCKET = "combined_page_images";
 const FOLDER = "why_japan_page";
@@ -31,8 +32,11 @@ const TechnologyComp = ({ isEditMode, data }) => {
       showToast("Please select an image file.", "error");
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      showToast("Image must be smaller than 2MB.", "error");
+    if (file.size > IMAGE_SIZES.WHY_JAPAN_PAGE.maxBytes) {
+      showToast(
+        `Image must be smaller than ${IMAGE_SIZES.WHY_JAPAN_PAGE.label}.`,
+        "error",
+      );
       return;
     }
 

@@ -7,6 +7,7 @@ import { GalleryTile, GalleryAddTile } from "./GalleryTile";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import { supabase } from "../../../../config/supabaseClient";
+import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 
 const fetchGalleryImages = async () => {
   const { data, error } = await supabase
@@ -30,7 +31,7 @@ const GalleryPanel = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 10;
   const MAX_IMAGES = 30;
-  const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3 MB
+  const MAX_FILE_SIZE = IMAGE_SIZES.GALLERY.maxBytes;
 
   const {
     data: items = [],
@@ -58,7 +59,10 @@ const GalleryPanel = () => {
         continue;
       }
       if (f.size > MAX_FILE_SIZE) {
-        showToast(`"${f.name}" exceeds the ${MAX_FILE_SIZE / (1024 * 1024)} MB size limit.`, "error");
+        showToast(
+          `"${f.name}" exceeds the ${IMAGE_SIZES.GALLERY.label} size limit.`,
+          "error",
+        );
         continue;
       }
       valid.push(f);
@@ -162,8 +166,8 @@ const GalleryPanel = () => {
               Limit: {MAX_IMAGES} images. <br />
               If {MAX_IMAGES} images are already uploaded, delete old images to
               add more. <br /> <br />
-              Maximum file size: {MAX_FILE_SIZE / (1024 * 1024)} MB per image. Supported formats: JPG, PNG,
-              JPEG.
+              Maximum file size: {IMAGE_SIZES.GALLERY.label} per image.
+              Supported formats: JPG, PNG, JPEG.
             </strong>
             <br />
             <strong>

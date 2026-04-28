@@ -1,4 +1,5 @@
 import styles from "../styles/AboutPage.module.css";
+import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 import AcademicCoursesComp from "../components/AcademicCoursesComp";
 import ChairmanComp from "../components/ChairmanComp";
 import OnlineCourseComp from "../components/OnlineCourseComp";
@@ -47,8 +48,9 @@ const AboutPage = () => {
             <div className={styles.editGuideline}>
               <i className="fa-solid fa-circle-info" />
               <span>
-                Max image size: <strong>2 MB</strong> &nbsp;|&nbsp; Preferred
-                resolution: <strong> 400 × 400 px</strong>
+                Max image size: <strong>{IMAGE_SIZES.ABOUT_PAGE.label}</strong>{" "}
+                &nbsp;|&nbsp; Preferred resolution:{" "}
+                <strong> 400 × 400 px</strong>
               </span>
             </div>
           )}

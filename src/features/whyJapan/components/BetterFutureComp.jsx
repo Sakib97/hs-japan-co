@@ -6,6 +6,7 @@ import { supabase } from "../../../config/supabaseClient";
 import { useQueryClient } from "@tanstack/react-query";
 import { replaceImage } from "../../../utils/handleImage";
 import { showToast } from "../../../components/layout/CustomToast";
+import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 
 const BUCKET = "combined_page_images";
 const FOLDER = "why_japan_page";
@@ -18,10 +19,8 @@ const BetterFutureComp = ({ isEditMode, data }) => {
   const [saving, setSaving] = useState(false);
   const [editContent, setEditContent] = useState(null);
 
-  const imgSrc =
-    data?.section_image_link;
-  const text =
-    data?.section_content;
+  const imgSrc = data?.section_image_link;
+  const text = data?.section_content;
 
   const handleImageChange = async (e) => {
     const file = e.target.files?.[0];
@@ -31,8 +30,11 @@ const BetterFutureComp = ({ isEditMode, data }) => {
       showToast("Please select an image file.", "error");
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      showToast("Image must be smaller than 2MB.", "error");
+    if (file.size > IMAGE_SIZES.WHY_JAPAN_PAGE.maxBytes) {
+      showToast(
+        `Image must be smaller than ${IMAGE_SIZES.WHY_JAPAN_PAGE.label}.`,
+        "error",
+      );
       return;
     }
 

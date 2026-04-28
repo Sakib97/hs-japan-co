@@ -23,9 +23,10 @@ import { supabase } from "../../../../config/supabaseClient";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import styles from "../../styles/TeamStaffPanel.module.css";
+import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 
 const PAGE_SIZE = 8;
-const MAX_FILE_SIZE = 500 * 1024; // 500 KB
+const MAX_FILE_SIZE = IMAGE_SIZES.TEAM_STAFF.maxBytes;
 
 const RowContext = React.createContext({});
 
@@ -158,7 +159,10 @@ const TeamStaffPanel = () => {
         }
 
         if (selectedFile.size > MAX_FILE_SIZE) {
-          showToast(`Image must be under ${MAX_FILE_SIZE / 1024} KB`, "error");
+          showToast(
+            `Image must be under ${IMAGE_SIZES.TEAM_STAFF.label}`,
+            "error",
+          );
           return;
         }
         imageUrl = await uploadImage(
@@ -473,8 +477,8 @@ const TeamStaffPanel = () => {
             the site.
           </p>
           <p style={{ fontWeight: "bold", color: "#666" }}>
-            Maximum image size: {MAX_FILE_SIZE / 1024} KB. Supported formats:
-            JPG, PNG, JPEG.
+            Maximum image size: {IMAGE_SIZES.TEAM_STAFF.label}. Supported
+            formats: JPG, PNG, JPEG.
             <br />
             Recommended dimensions: 400x400 pixels for best display. Atmost{" "}
             {PAGE_SIZE} members can be added.

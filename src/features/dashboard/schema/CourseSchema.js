@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 
 export const CourseSchema = Yup.object({
   courseName: Yup.string().trim().required("Course name is required"),
@@ -29,10 +30,14 @@ export const CourseSchema = Yup.object({
         );
       },
     )
-    .test("fileSize", "Image must be smaller than 2MB", (value) => {
-      if (!value) return true;
-      return value.size <= 2 * 1024 * 1024;
-    }),
+    .test(
+      "fileSize",
+      `Image must be smaller than ${IMAGE_SIZES.COURSE_COVER.label}`,
+      (value) => {
+        if (!value) return true;
+        return value.size <= IMAGE_SIZES.COURSE_COVER.maxBytes;
+      },
+    ),
 });
 
 export const CourseEditSchema = Yup.object({

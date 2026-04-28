@@ -2,6 +2,7 @@ import WhyJapanBannerComp from "../components/WhyJapanBannerComp";
 import BetterFutureComp from "../components/BetterFutureComp";
 import TechnologyComp from "../components/TechnologyComp";
 import BuildDreamComp from "../components/BuildDreamComp";
+import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 import { useAuth } from "../../../context/AuthProvider";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -52,8 +53,10 @@ const WhyJapanPage = () => {
             <div className={styles.editGuideline}>
               <i className="fa-solid fa-circle-info" />
               <span>
-                Max image size: <strong>2 MB</strong> &nbsp;|&nbsp; Preferred
-                resolution: <strong>840 × 560 px</strong>
+                Max image size:{" "}
+                <strong>{IMAGE_SIZES.WHY_JAPAN_PAGE.label}</strong>{" "}
+                &nbsp;|&nbsp; Preferred resolution:{" "}
+                <strong>840 × 560 px</strong>
               </span>
             </div>
           )}

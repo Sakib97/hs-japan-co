@@ -1,7 +1,49 @@
+import { useState } from "react";
+import { Input, Button } from "antd";
+import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
+import StudentStatsComp from "../components/studentManagement/StudentStatsComp";
+import StudentDirectoryComp from "../components/studentManagement/StudentDirectoryComp";
+import CreateStudentModal from "../components/studentManagement/CreateStudentModal";
+import styles from "../styles/StudentManagementPage.module.css";
+
 const StudentManagementPage = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
-    <div>
-      <h1>Student Management</h1>
+    <div className={styles.pageWrapper}>
+      {/* Top Bar */}
+      <div className={styles.topBar}>
+        <h1 className={styles.pageTitle}>Student Management</h1>
+        <Input
+          placeholder="Search students, emails, or courses..."
+          prefix={<SearchOutlined />}
+          className={styles.searchInput}
+          allowClear
+          onChange={(e) => setSearchQuery(e.target.value)}
+          value={searchQuery}
+        />
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          className={styles.createBtn}
+          onClick={() => setModalOpen(true)}
+        >
+          Add Student
+        </Button>
+      </div>
+
+      {/* Create Student Modal */}
+      <CreateStudentModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
+
+      {/* Stats Cards */}
+      <StudentStatsComp />
+
+      {/* Student Directory Table */}
+      <StudentDirectoryComp searchQuery={searchQuery} />
     </div>
   );
 };

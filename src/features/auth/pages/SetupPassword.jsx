@@ -18,6 +18,7 @@ const SetupPassword = () => {
   const [valid, setValid] = useState(false);
   const [validating, setValidating] = useState(true);
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     const validateToken = async () => {
@@ -35,7 +36,10 @@ const SetupPassword = () => {
         return;
       }
 
+      console.log("data:: ", data);
+
       setEmail(data.email);
+      setRole(data.role);
       setValid(true);
     };
 
@@ -64,16 +68,36 @@ const SetupPassword = () => {
         return;
       }
 
+      // 1.5 if user role is student,
+      // make student table's status = "enrolled"
+      if (data?.user && role === "student") {
+        const { error: updateError } = await supabase
+          .from("student")
+          .update({ status: "enrolled" })
+          .eq("email", email);
+        if (updateError) {
+          console.error("Error updating student status:", updateError);
+          showToast(
+            "Failed to update student status. Please contact support.",
+            "error",
+          );
+        }
+      }
+
       // a trigger is called in supabase to Link the new auth UID to users_meta by matching email
       // and mark the token as used so it can't be reused
 
-      // 2. Sign out immediately — prevents AuthRedirect from seeing the
-      //    auto-session created by signUp and redirecting to /dashboard
-      //    before we can navigate to /auth/signin?passwordSet=1
+      // 2. Store success flag in sessionStorage BEFORE signing out so it
+      //    survives the redirect chain (query param gets lost when AuthRedirect
+      //    briefly bounces through /dashboard)
+      sessionStorage.setItem("hs_japan_password_set", "1");
+
+      // 3. Sign out first — clears the auto-session from signUp so
+      //    AuthRedirect sees no user and won't flash the dashboard
       await supabase.auth.signOut();
 
-      // 3. Redirect to login with success flag
-      navigate("/auth/signin?passwordSet=1");
+      // 4. Redirect to login
+      navigate("/auth/signin");
     },
   });
 

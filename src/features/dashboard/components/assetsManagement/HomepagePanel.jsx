@@ -10,8 +10,9 @@ import { supabase } from "../../../../config/supabaseClient";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import { Modal } from "antd";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 
-const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3 MB
+const MAX_FILE_SIZE = IMAGE_SIZES.HOMEPAGE_CAROUSEL.maxBytes;
 
 const fetchSlides = async () => {
   const { data, error } = await supabase
@@ -57,7 +58,10 @@ const HomepagePanel = () => {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      showToast(`File too large. Maximum allowed size is ${MAX_FILE_SIZE / (1024 * 1024)} MB.`, "error");
+      showToast(
+        `File too large. Maximum allowed size is ${IMAGE_SIZES.HOMEPAGE_CAROUSEL.label}.`,
+        "error",
+      );
       return;
     }
     setUploading(true);
@@ -126,8 +130,9 @@ const HomepagePanel = () => {
               <span style={{ fontWeight: "bold", color: "#666" }}>
                 Limit: 05 slides.
                 <br />
-                Maximum file size: {MAX_FILE_SIZE / (1024 * 1024)} MB per image. Supported formats: JPG, PNG,
-                JPEG. Recommended dimensions: 1920x1080 pixels.
+                Maximum file size: {IMAGE_SIZES.HOMEPAGE_CAROUSEL.label} per
+                image. Supported formats: JPG, PNG, JPEG. Recommended
+                dimensions: 1920x1080 pixels.
               </span>
             </p>
           </div>

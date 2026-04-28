@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { LoginSchema } from "../schema/LoginSchema";
 import styles from "../styles/LoginPage.module.css";
@@ -10,8 +10,11 @@ import { showToast } from "../../../components/layout/CustomToast";
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const [searchParams] = useSearchParams();
-  const passwordSet = searchParams.get("passwordSet") === "1";
+  const [passwordSet] = useState(() => {
+    const flag = sessionStorage.getItem("hs_japan_password_set") === "1";
+    if (flag) sessionStorage.removeItem("hs_japan_password_set");
+    return flag;
+  });
 
   const [showPassword, setShowPassword] = useState(false);
 

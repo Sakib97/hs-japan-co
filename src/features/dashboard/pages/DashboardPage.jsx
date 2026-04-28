@@ -5,7 +5,6 @@ import {
   ManOutlined,
   TeamOutlined,
   SolutionOutlined,
-  DollarOutlined,
   SettingOutlined,
   QuestionCircleOutlined,
   LogoutOutlined,
@@ -15,7 +14,9 @@ import {
   UserOutlined,
   MenuOutlined,
   CloseOutlined,
-  FileImageOutlined
+  FileImageOutlined,
+  DollarOutlined,
+  ReadOutlined,
 } from "@ant-design/icons";
 import { Layout, Input, Button, Avatar, Badge } from "antd";
 import styles from "../styles/DashboardPage.module.css";
@@ -30,35 +31,57 @@ const mainMenuItems = [
     key: "/dashboard",
     icon: <UserOutlined />,
     label: "Profile",
+    visibleForRoles: ["admin", "student", "employee"],
   },
   {
     key: "/dashboard/employee-management",
     icon: <TeamOutlined />,
     label: "Employee Management",
-    adminOnly: true,
+    // adminOnly: true,
+    visibleForRoles: ["admin"],
   },
   {
     key: "/dashboard/student-management",
     icon: <SolutionOutlined />,
     label: "Student Management",
+    visibleForRoles: ["admin", "employee"],
   },
 
   {
     key: "/dashboard/course-management",
     icon: <SettingOutlined />,
     label: "Course Management",
+    visibleForRoles: ["admin", "employee"],
   },
   {
     key: "/dashboard/finances",
     icon: <DollarOutlined />,
     label: "Financials",
-    adminOnly: true,
+    // adminOnly: true,
+      visibleForRoles: ["admin", "employee"],
   },
   {
     key: "/dashboard/assets-management",
     icon: <FileImageOutlined />,
     label: "Assets Management",
-    adminOnly: true,
+    // adminOnly: true,
+    visibleForRoles: ["admin"],
+  },
+
+  {
+    key: "/dashboard/my-courses",
+    icon: <ReadOutlined />,
+    label: "My Courses",
+    // studentOnly: true,
+    visibleForRoles: ["student"],
+  },
+
+  {
+    key: "/dashboard/my-finances",
+    icon: <DollarOutlined />,
+    label: "My Finances",
+    // studentOnly: true,
+    visibleForRoles: ["student"],
   },
 ];
 
@@ -90,8 +113,11 @@ const DashboardPage = () => {
   if (loading || userMetaLoading) return null;
 
   const isAdmin = userMeta?.role === "admin";
+  const isStudent = userMeta?.role === "student";
+
   const visibleMenuItems = mainMenuItems.filter(
-    (item) => !item.adminOnly || isAdmin,
+    // (item) => !item.adminOnly || isAdmin,
+    (item) => !item.visibleForRoles ||  item.visibleForRoles.includes(userMeta?.role)
   );
 
   if (!user || !userMeta) {

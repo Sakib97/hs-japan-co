@@ -5,9 +5,9 @@ import { showToast } from "../../../components/layout/CustomToast";
 import styles from "../styles/ProfilePage.module.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { uploadImage, deleteImage } from "../../../utils/handleImage";
+import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 
-
-const MAX_FILE_SIZE = 150 * 1024; // 150 KB
+const MAX_FILE_SIZE = IMAGE_SIZES.PROFILE_AVATAR.maxBytes;
 
 const ProfilePage = () => {
   const { user, userMeta, setUserMeta } = useAuth();
@@ -82,7 +82,6 @@ const ProfilePage = () => {
   const avatarUrl = userMeta?.avatar_url ?? null;
 
   const handleAvatarChange = async (e) => {
-    
     const file = e.target.files[0];
     e.target.value = "";
     if (!file) return;
@@ -92,7 +91,10 @@ const ProfilePage = () => {
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
-      showToast(`File too large. Maximum allowed size is ${MAX_FILE_SIZE / 1024} KB.`, "error");
+      showToast(
+        `File too large. Maximum allowed size is ${IMAGE_SIZES.PROFILE_AVATAR.label}.`,
+        "error",
+      );
       return;
     }
     setAvatarUploading(true);
@@ -153,7 +155,7 @@ const ProfilePage = () => {
               className={styles.avatarEditBtn}
               onClick={() => fileInputRef.current.click()}
               disabled={avatarUploading}
-              title={`Change photo / ${MAX_FILE_SIZE / 1024} KB max`}
+              title={`Change photo / ${IMAGE_SIZES.PROFILE_AVATAR.label} max`}
             >
               {avatarUploading ? (
                 <i className="fa-solid fa-spinner fa-spin"></i>
