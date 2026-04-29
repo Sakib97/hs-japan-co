@@ -1,5 +1,5 @@
 import { Modal, Input, Button } from "antd";
-import styles from "./CreateStudentModal.module.css";
+import styles from "../../styles/CreateStudentModal.module.css";
 import { supabase } from "../../../../config/supabaseClient";
 import { useFormik } from "formik";
 import { StudentSchema } from "../../schema/StudentSchema";
@@ -43,10 +43,13 @@ const CreateStudentModal = ({ open, onClose }) => {
         if (error.message.includes("users_meta_email_key")) {
           showToast("An account with this email already exists.", "error");
         } else if (error.message.includes("student_phone_key")) {
-          showToast("An account with this phone number already exists.", "error");
+          showToast(
+            "An account with this phone number already exists.",
+            "error",
+          );
         } else {
           showToast("Failed to create Student: " + error.message, "error");
-        } 
+        }
         return;
       }
 

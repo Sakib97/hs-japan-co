@@ -13,6 +13,9 @@ import {
   STUDENT_STATUS_COLOR,
   STUDENT_STATUS_OPTIONS,
 } from "../../../../config/statusAndRoleConfig";
+import { getFormattedTime } from "../../../../utils/dateUtil";
+
+
 
 const PAGE_SIZE = 10;
 
@@ -67,7 +70,7 @@ const columns = [
     render: (_, record) =>
       record.created_at ? (
         <span className={styles.cellText}>
-          {new Date(record.created_at).toLocaleDateString()}
+          {getFormattedTime(record.created_at)}
         </span>
       ) : (
         "—"

@@ -1,5 +1,5 @@
 import { Modal, Input, Select, Button, Tabs, Spin } from "antd";
-import styles from "./CreateEmployeeModal.module.css";
+import styles from "../../styles/CreateEmployeeModal.module.css";
 import { supabase } from "../../../../config/supabaseClient";
 import { useFormik } from "formik";
 import { AdminSchema } from "../../schema/AdminSchema";

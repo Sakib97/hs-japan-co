@@ -1,8 +1,13 @@
 /* ===== Page ===== */
 .page {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   padding: 32px 16px;
+  max-width: 660px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* ===== Card ===== */
@@ -11,7 +16,6 @@
   border-radius: 16px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 600px;
   overflow: hidden;
 }
 

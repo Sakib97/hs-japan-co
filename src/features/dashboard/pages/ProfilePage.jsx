@@ -6,6 +6,10 @@ import styles from "../styles/ProfilePage.module.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { uploadImage, deleteImage } from "../../../utils/handleImage";
 import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
+import { USER_ROLES } from "../../../config/statusAndRoleConfig";
+import StudentPersonalDetailsComp from "../components/studentManagement/StudentPersonalDetailsComp";
+import StudentContactComp from "../components/studentManagement/StudentContactComp";
+import StudentEducationComp from "../components/studentManagement/StudentEducationComp";
 
 const MAX_FILE_SIZE = IMAGE_SIZES.PROFILE_AVATAR.maxBytes;
 
@@ -16,6 +20,7 @@ const ProfilePage = () => {
   const [editingName, setEditingName] = useState(false);
   const [nameValue, setNameValue] = useState(userMeta?.name ?? "");
   const [nameSaving, setNameSaving] = useState(false);
+  const [role] = useState(userMeta?.role ?? "Member");
 
   const handleSaveName = async () => {
     if (!nameValue.trim()) return;
@@ -297,6 +302,13 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
+      {role === USER_ROLES.STUDENT && (
+        <>
+          <StudentPersonalDetailsComp email={user?.email} />
+          <StudentContactComp email={user?.email} />
+          <StudentEducationComp email={user?.email} />
+        </>
+      )}
     </div>
   );
 };
