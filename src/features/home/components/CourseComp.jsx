@@ -1,11 +1,12 @@
 import { supabase } from "../../../config/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
+import { QK_HOME_COURSES } from "../../../config/queryKeyConfig";
 import { Link } from "react-router-dom";
 import styles from "../styles/CourseComp.module.css";
 
 const CourseComp = () => {
   const { data: courses = [], isLoading } = useQuery({
-    queryKey: ["home-courses"],
+    queryKey: [QK_HOME_COURSES],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("course")

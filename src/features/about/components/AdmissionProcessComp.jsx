@@ -2,6 +2,7 @@ import { supabase } from "../../../config/supabaseClient";
 import styles from "../styles/AdmissionProcessComp.module.css";
 import { showToast } from "../../../components/layout/CustomToast";
 import { useQueryClient } from "@tanstack/react-query";
+import { QK_ABOUT_PAGE } from "../../../config/queryKeyConfig";
 import { useState } from "react";
 
 const AdmissionProcessComp = ({ isEditMode, data = [], isLoading }) => {
@@ -59,7 +60,7 @@ const AdmissionProcessComp = ({ isEditMode, data = [], isLoading }) => {
         if (error) throw error;
       }
 
-      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ABOUT_PAGE] });
       showToast("Updated successfully!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update.", "error");

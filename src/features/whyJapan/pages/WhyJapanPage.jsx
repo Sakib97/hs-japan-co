@@ -10,6 +10,7 @@ import EditModeToggleBtn from "../../../components/common/EditModeToggleBtn";
 import styles from "../styles/WhyJapanPage.module.css";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { QK_WHY_JAPAN_PAGE } from "../../../config/queryKeyConfig";
 import { supabase } from "../../../config/supabaseClient";
 
 const WhyJapanPage = () => {
@@ -17,7 +18,7 @@ const WhyJapanPage = () => {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const { data: pageData, isLoading } = useQuery({
-    queryKey: ["why-japan-page"],
+    queryKey: [QK_WHY_JAPAN_PAGE],
     queryFn: async () => {
       const { data, error } = await supabase.rpc("get_why_japan_page");
 

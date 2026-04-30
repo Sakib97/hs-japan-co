@@ -5,7 +5,8 @@ import { supabase } from "../../../../config/supabaseClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { showToast } from "../../../../components/layout/CustomToast";
 
-export const COURSES_QUERY_KEY = "courses";
+import { QK_COURSES, QK_HOME_COURSES } from "../../../../config/queryKeyConfig";
+
 const PAGE_SIZE = 5;
 
 const LEVEL_COLORS = {
@@ -30,7 +31,7 @@ const CourseInventoryTable = ({ onEdit }) => {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: [COURSES_QUERY_KEY, currentPage],
+    queryKey: [QK_COURSES, currentPage],
     queryFn: async () => {
       const from = (currentPage - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
@@ -61,8 +62,8 @@ const CourseInventoryTable = ({ onEdit }) => {
     if (error) {
       showToast("Failed to update course status.", "error");
     } else {
-      await queryClient.invalidateQueries({ queryKey: [COURSES_QUERY_KEY] });
-      await queryClient.invalidateQueries({ queryKey: ["home-courses"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_COURSES] });
+      await queryClient.invalidateQueries({ queryKey: [QK_HOME_COURSES] });
       showToast(
         `Course ${newStatus ? "activated" : "deactivated"} successfully.`,
         "success",

@@ -13,6 +13,7 @@ import { useAuth } from "../../../context/AuthProvider";
 import { LoadingOutlined } from "@ant-design/icons";
 import EditModeToggleBtn from "../../../components/common/EditModeToggleBtn";
 import { useQuery } from "@tanstack/react-query";
+import { QK_ABOUT_PAGE } from "../../../config/queryKeyConfig";
 import { useState } from "react";
 
 const fetchAboutPageData = async () => {
@@ -26,7 +27,7 @@ const AboutPage = () => {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const { data: aboutData = [], isLoading: aboutLoading } = useQuery({
-    queryKey: ["about-page"],
+    queryKey: [QK_ABOUT_PAGE],
     queryFn: fetchAboutPageData,
   });
 

@@ -1,6 +1,7 @@
 import { supabase } from "../../../config/supabaseClient";
 import styles from "../styles/GalleryGridComp.module.css";
 import { useQuery } from "@tanstack/react-query";
+import { QK_GALLERY_PAGE_IMAGES } from "../../../config/queryKeyConfig";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const fetchGalleryImages = async () => {
@@ -22,7 +23,7 @@ const GalleryGridComp = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["gallery_page_images"],
+    queryKey: [QK_GALLERY_PAGE_IMAGES],
     queryFn: fetchGalleryImages,
   });
 

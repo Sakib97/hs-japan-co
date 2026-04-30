@@ -1,11 +1,12 @@
 import { Tag } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
+import { QK_STUDENT_STATS } from "../../../../config/queryKeyConfig";
 import styles from "../../styles/StudentManagementPage.module.css";
 
 const StudentStatsComp = () => {
   const { data } = useQuery({
-    queryKey: ["student-stats"],
+    queryKey: [QK_STUDENT_STATS],
     queryFn: async () => {
       const { data, error } = await supabase.rpc("get_student_stats");
       if (error) throw error;

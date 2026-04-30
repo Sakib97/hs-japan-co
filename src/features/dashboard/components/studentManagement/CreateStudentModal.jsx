@@ -9,6 +9,10 @@ import { useState } from "react";
 import { generateToken } from "../../../../utils/generateToken";
 import { sendInviteEmail } from "../../../../utils/sendInviteEmail";
 import { useAuth } from "../../../../context/AuthProvider";
+import {
+  QK_STUDENTS,
+  QK_STUDENT_STATS,
+} from "../../../../config/queryKeyConfig";
 
 const CreateStudentModal = ({ open, onClose }) => {
   const { user } = useAuth();
@@ -90,8 +94,8 @@ const CreateStudentModal = ({ open, onClose }) => {
 
       handleClose();
 
-      queryClient.invalidateQueries({ queryKey: ["student"] });
-      queryClient.invalidateQueries({ queryKey: ["student-stats"] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENTS] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_STATS] });
     } catch (err) {
       showToast("Unexpected error: " + err.message, "error");
     } finally {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { QK_WHY_JAPAN_PAGE } from "../../../config/queryKeyConfig";
 import styles from "../styles/BuildDreamComp.module.css";
 import FAIconPicker from "../../../components/common/FAIconPicker";
 import { supabase } from "../../../config/supabaseClient";
@@ -18,7 +19,7 @@ const BuildDreamComp = ({ isEditMode, data = [] }) => {
         .update({ section_icon: newIcon })
         .eq("id", id);
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["why-japan-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_WHY_JAPAN_PAGE] });
       showToast("Icon updated!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update icon.", "error");
@@ -36,7 +37,7 @@ const BuildDreamComp = ({ isEditMode, data = [] }) => {
         .update({ section_content: html })
         .eq("id", id);
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["why-japan-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_WHY_JAPAN_PAGE] });
       showToast("Content updated successfully!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update content.", "error");

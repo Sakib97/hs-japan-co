@@ -9,6 +9,7 @@ import {
 import styles from "../../styles/EmployeeManagementPage.module.css";
 import { supabase } from "../../../../config/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
+import { QK_EMPLOYEES } from "../../../../config/queryKeyConfig";
 
 const PAGE_SIZE = 10;
 
@@ -85,7 +86,7 @@ const EmployeeDirectoryComp = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["employees", currentPage],
+    queryKey: [QK_EMPLOYEES, currentPage],
     queryFn: async () => {
       const from = (currentPage - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;

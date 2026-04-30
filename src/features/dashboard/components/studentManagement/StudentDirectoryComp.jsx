@@ -13,9 +13,8 @@ import {
   STUDENT_STATUS_COLOR,
   STUDENT_STATUS_OPTIONS,
 } from "../../../../config/statusAndRoleConfig";
+import { QK_STUDENTS } from "../../../../config/queryKeyConfig";
 import { getFormattedTime } from "../../../../utils/dateUtil";
-
-
 
 const PAGE_SIZE = 10;
 
@@ -96,7 +95,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["student", currentPage, searchQuery],
+    queryKey: [QK_STUDENTS, currentPage, searchQuery],
     queryFn: async () => {
       const from = (currentPage - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;

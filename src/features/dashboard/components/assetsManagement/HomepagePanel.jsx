@@ -11,6 +11,7 @@ import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import { Modal } from "antd";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
+import { QK_HOMEPAGE_CAROUSEL } from "../../../../config/queryKeyConfig";
 
 const MAX_FILE_SIZE = IMAGE_SIZES.HOMEPAGE_CAROUSEL.maxBytes;
 
@@ -38,7 +39,7 @@ const HomepagePanel = () => {
     isLoading: fetching,
     isError,
   } = useQuery({
-    queryKey: ["homepage_carousel_slides"],
+    queryKey: [QK_HOMEPAGE_CAROUSEL],
     queryFn: fetchSlides,
   });
 
@@ -76,7 +77,7 @@ const HomepagePanel = () => {
 
       if (dbError) throw new Error(dbError.message);
 
-      queryClient.invalidateQueries({ queryKey: ["homepage_carousel_slides"] });
+      queryClient.invalidateQueries({ queryKey: [QK_HOMEPAGE_CAROUSEL] });
       showToast("Slide uploaded successfully!", "success");
     } catch {
       showToast("Upload failed. Please try again.", "error");
@@ -95,7 +96,7 @@ const HomepagePanel = () => {
         // value: slide.id,
         value: slide.url,
       });
-      queryClient.invalidateQueries({ queryKey: ["homepage_carousel_slides"] });
+      queryClient.invalidateQueries({ queryKey: [QK_HOMEPAGE_CAROUSEL] });
       showToast("Slide deleted successfully!", "success");
     } catch {
       showToast("Failed to delete slide. Please try again.", "error");

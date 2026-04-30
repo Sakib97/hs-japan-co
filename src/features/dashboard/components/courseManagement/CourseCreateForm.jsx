@@ -7,7 +7,7 @@ import { supabase } from "../../../../config/supabaseClient";
 import { uploadImage } from "../../../../utils/handleImage";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { useQueryClient } from "@tanstack/react-query";
-import { COURSES_QUERY_KEY } from "./CourseInventoryTable";
+import { QK_COURSES, QK_HOME_COURSES } from "../../../../config/queryKeyConfig";
 
 const BUCKET = "course_images";
 const FOLDER = "course_cover_images";
@@ -74,8 +74,8 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
           onSubmit?.(values);
         }
 
-        await queryClient.invalidateQueries({ queryKey: [COURSES_QUERY_KEY] });
-        await queryClient.invalidateQueries({ queryKey: ["home-courses"] });
+        await queryClient.invalidateQueries({ queryKey: [QK_COURSES] });
+        await queryClient.invalidateQueries({ queryKey: [QK_HOME_COURSES] });
         resetForm();
         setResetKey((k) => k + 1);
       } catch (err) {

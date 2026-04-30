@@ -8,6 +8,7 @@ import { showToast } from "../../../../components/layout/CustomToast";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import { supabase } from "../../../../config/supabaseClient";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
+import { QK_GALLERY_PAGE_IMAGES } from "../../../../config/queryKeyConfig";
 
 const fetchGalleryImages = async () => {
   const { data, error } = await supabase
@@ -38,7 +39,7 @@ const GalleryPanel = () => {
     isLoading: fetching,
     isError,
   } = useQuery({
-    queryKey: ["gallery_page_images"],
+    queryKey: [QK_GALLERY_PAGE_IMAGES],
     queryFn: fetchGalleryImages,
   });
 
@@ -98,7 +99,7 @@ const GalleryPanel = () => {
         }),
       );
       await queryClient.invalidateQueries({
-        queryKey: ["gallery_page_images"],
+        queryKey: [QK_GALLERY_PAGE_IMAGES],
       });
       showToast(
         `${capped.length} image${capped.length > 1 ? "s" : ""} uploaded successfully!`,
@@ -120,7 +121,7 @@ const GalleryPanel = () => {
       showToast("Failed to save caption. Please try again.", "error");
       throw error;
     }
-    await queryClient.invalidateQueries({ queryKey: ["gallery_page_images"] });
+    await queryClient.invalidateQueries({ queryKey: [QK_GALLERY_PAGE_IMAGES] });
     showToast("Caption saved.", "success");
   };
 
@@ -133,7 +134,7 @@ const GalleryPanel = () => {
         value: item.url,
       });
       await queryClient.invalidateQueries({
-        queryKey: ["gallery_page_images"],
+        queryKey: [QK_GALLERY_PAGE_IMAGES],
       });
       showToast("Image deleted successfully!", "success");
     } catch {

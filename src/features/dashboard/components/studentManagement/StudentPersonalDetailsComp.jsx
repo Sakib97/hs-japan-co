@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Spin } from "antd";
 import { supabase } from "../../../../config/supabaseClient";
+import { QK_STUDENT_PERSONAL } from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import styles from "../../styles/StudentPersonalDetailsComp.module.css";
 
@@ -12,11 +13,11 @@ const StudentPersonalDetailsComp = ({ email }) => {
   const [form, setForm] = useState(null);
 
   const { data: student, isLoading } = useQuery({
-    queryKey: ["student-personal", email],
+    queryKey: [QK_STUDENT_PERSONAL, email],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("student")
-        .select("father_name, mother_name, dob")
+        .select("father_name, mother_name, dob, nid")
         .eq("email", email)
         .single();
       if (error) throw new Error(error.message);
@@ -30,6 +31,7 @@ const StudentPersonalDetailsComp = ({ email }) => {
       father_name: student?.father_name ?? "",
       mother_name: student?.mother_name ?? "",
       dob: student?.dob ?? "",
+      nid: student?.nid ?? "",
     });
     setEditing(true);
   };
@@ -43,7 +45,7 @@ const StudentPersonalDetailsComp = ({ email }) => {
     if (error) {
       showToast("Failed to update personal details.", "error");
     } else {
-      queryClient.invalidateQueries({ queryKey: ["student-personal", email] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_PERSONAL, email] });
       showToast("Personal details updated.", "success");
       setEditing(false);
     }
@@ -131,14 +133,14 @@ const StudentPersonalDetailsComp = ({ email }) => {
           {editing ? (
             <input
               className={styles.input}
-              value={form.mother_name}
+              value={form.nid}
               onChange={(e) =>
-                setForm({ ...form, mother_name: e.target.value })
+                setForm({ ...form, nid: e.target.value })
               }
               placeholder="1234567891011"
             />
           ) : (
-            <span className={styles.value}>{student?.mother_name || "—"}</span>
+            <span className={styles.value}>{student?.nid || "—"}</span>
           )}
         </div>
 

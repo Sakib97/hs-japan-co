@@ -10,6 +10,10 @@ import { generateToken } from "../../../../utils/generateToken";
 import { sendInviteEmail } from "../../../../utils/sendInviteEmail";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { useState } from "react";
+import {
+  QK_DEPARTMENTS,
+  QK_DESIGNATIONS,
+} from "../../../../config/queryKeyConfig";
 
 const CreateEmployeeModal = ({ open, onClose }) => {
   const [adminLoading, setAdminLoading] = useState(false);
@@ -19,7 +23,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
     isLoading: departmentsLoading,
     error: departmentsError,
   } = useQuery({
-    queryKey: ["departments"],
+    queryKey: [QK_DEPARTMENTS],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("departments")
@@ -38,7 +42,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
     isLoading: designationsLoading,
     error: designationsError,
   } = useQuery({
-    queryKey: ["designations"],
+    queryKey: [QK_DESIGNATIONS],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("designations")

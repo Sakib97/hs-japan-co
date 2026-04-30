@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { QK_TEAM_PAGE_MEMBERS } from "../../../config/queryKeyConfig";
 import styles from "../styles/TeamMembersComp.module.css";
 import { supabase } from "../../../config/supabaseClient";
 
 const TeamMembersComp = () => {
   const { data = [], isLoading } = useQuery({
-    queryKey: ["team_page_members"],
+    queryKey: [QK_TEAM_PAGE_MEMBERS],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("team_page")

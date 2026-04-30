@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { QK_ABOUT_PAGE } from "../../../config/queryKeyConfig";
 import { Modal } from "antd";
 import { supabase } from "../../../config/supabaseClient";
 import styles from "../styles/AcademicCoursesComp.module.css";
@@ -45,7 +46,7 @@ const AcademicCoursesComp = ({ isEditMode, data = [], isLoading }) => {
         .update({ content_icon: newIcon })
         .eq("id", id);
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ABOUT_PAGE] });
       showToast("Icon updated!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update icon.", "error");
@@ -68,7 +69,7 @@ const AcademicCoursesComp = ({ isEditMode, data = [], isLoading }) => {
         .update({ section_content: label })
         .eq("id", id);
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ABOUT_PAGE] });
       showToast("Label updated!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update label.", "error");
@@ -93,7 +94,7 @@ const AcademicCoursesComp = ({ isEditMode, data = [], isLoading }) => {
     try {
       const { error } = await supabase.from("about_page").delete().eq("id", id);
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ABOUT_PAGE] });
       showToast("Course deleted!", "success");
     } catch (err) {
       showToast(err.message || "Failed to delete course.", "error");
@@ -140,7 +141,7 @@ const AcademicCoursesComp = ({ isEditMode, data = [], isLoading }) => {
         content_icon: row.icon,
       });
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ABOUT_PAGE] });
       setNewRows((prev) => prev.filter((r) => r.tempId !== tempId));
       showToast("Course added!", "success");
     } catch (err) {

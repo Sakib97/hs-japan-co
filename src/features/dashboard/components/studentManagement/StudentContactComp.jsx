@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Spin } from "antd";
 import { supabase } from "../../../../config/supabaseClient";
+import { QK_STUDENT_CONTACT } from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import styles from "../../styles/StudentContactComp.module.css";
 
@@ -12,7 +13,7 @@ const StudentContactComp = ({ email }) => {
   const [form, setForm] = useState(null);
 
   const { data: student, isLoading } = useQuery({
-    queryKey: ["student-contact", email],
+    queryKey: [QK_STUDENT_CONTACT, email],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("student")
@@ -27,7 +28,7 @@ const StudentContactComp = ({ email }) => {
 
   const handleEdit = () => {
     setForm({
-      phone: student?.phone ?? "",
+      //   phone: student?.phone ?? "",
       present_address: student?.present_address ?? "",
       permanent_address: student?.permanent_address ?? "",
     });
@@ -43,7 +44,7 @@ const StudentContactComp = ({ email }) => {
     if (error) {
       showToast("Failed to update contact information.", "error");
     } else {
-      queryClient.invalidateQueries({ queryKey: ["student-contact", email] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_CONTACT, email] });
       showToast("Contact information updated.", "success");
       setEditing(false);
     }
@@ -87,16 +88,8 @@ const StudentContactComp = ({ email }) => {
       <div className={styles.grid}>
         <div className={styles.field}>
           <span className={styles.label}>PHONE NUMBER</span>
-          {editing ? (
-            <input
-              className={styles.input}
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              placeholder="+81 90-1234-5678"
-            />
-          ) : (
-            <span className={styles.value}>{student?.phone || "—"}</span>
-          )}
+
+          <span className={styles.value}>{student?.phone || "—"}</span>
         </div>
 
         <div className={styles.field}>

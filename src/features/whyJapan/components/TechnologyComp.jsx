@@ -3,6 +3,7 @@ import styles from "../styles/TechnologyComp.module.css";
 import TiptapRTE from "../../../components/layout/TiptapRTE";
 import { supabase } from "../../../config/supabaseClient";
 import { useQueryClient } from "@tanstack/react-query";
+import { QK_WHY_JAPAN_PAGE } from "../../../config/queryKeyConfig";
 import { replaceImage } from "../../../utils/handleImage";
 import { showToast } from "../../../components/layout/CustomToast";
 import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
@@ -53,7 +54,7 @@ const TechnologyComp = ({ isEditMode, data }) => {
         .update({ section_image_link: publicUrl, image_size: file.size })
         .eq("section_name", "advanced_technology");
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["why-japan-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_WHY_JAPAN_PAGE] });
       showToast("Image updated successfully!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update image.", "error");
@@ -72,7 +73,7 @@ const TechnologyComp = ({ isEditMode, data }) => {
         .update({ section_content: editContent })
         .eq("section_name", "advanced_technology");
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["why-japan-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_WHY_JAPAN_PAGE] });
       showToast("Content updated successfully!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update content.", "error");

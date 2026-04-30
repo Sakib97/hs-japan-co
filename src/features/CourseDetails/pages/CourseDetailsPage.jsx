@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { QK_COURSE_DETAIL } from "../../../config/queryKeyConfig";
 import { supabase } from "../../../config/supabaseClient";
 import { useAuth } from "../../../context/AuthProvider";
 import styles from "../styles/CourseDetailsPage.module.css";
@@ -14,7 +15,7 @@ const CourseDetailsPage = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["course-detail", id],
+    queryKey: [QK_COURSE_DETAIL, id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("course")
@@ -69,7 +70,6 @@ const CourseDetailsPage = () => {
               </span>
             )}
           </h1>
-          
         </div>
 
         {/* ── Hero image ── */}

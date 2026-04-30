@@ -6,6 +6,7 @@ import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 import styles from "../styles/ChairmanComp.module.css";
 import { supabase } from "../../../config/supabaseClient";
 import { useQueryClient } from "@tanstack/react-query";
+import { QK_ABOUT_PAGE } from "../../../config/queryKeyConfig";
 
 const BUCKET = "combined_page_images";
 const FOLDER = "about_page";
@@ -57,7 +58,7 @@ const ChairmanComp = ({ isEditMode, data = [] }) => {
         .update({ section_image_url: publicUrl, image_size: file.size })
         .eq("section_name", "chairman_section");
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ABOUT_PAGE] });
       showToast("Image updated successfully!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update image.", "error");
@@ -76,7 +77,7 @@ const ChairmanComp = ({ isEditMode, data = [] }) => {
         .update({ section_content: chairmanContent })
         .eq("section_name", "chairman_section");
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ABOUT_PAGE] });
       showToast("Chairman content updated!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update content.", "error");
@@ -94,7 +95,7 @@ const ChairmanComp = ({ isEditMode, data = [] }) => {
         .update({ section_content: featuresContent })
         .eq("section_name", "features_section");
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["about-page"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ABOUT_PAGE] });
       showToast("Features content updated!", "success");
     } catch (err) {
       showToast(err.message || "Failed to update content.", "error");

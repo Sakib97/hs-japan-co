@@ -24,6 +24,7 @@ import { showToast } from "../../../../components/layout/CustomToast";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import styles from "../../styles/TeamStaffPanel.module.css";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
+import { QK_TEAM_PAGE_MEMBERS } from "../../../../config/queryKeyConfig";
 
 const PAGE_SIZE = 8;
 const MAX_FILE_SIZE = IMAGE_SIZES.TEAM_STAFF.maxBytes;
@@ -93,7 +94,7 @@ const TeamStaffPanel = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: dbData = [], isLoading } = useQuery({
-    queryKey: ["team_page_members"],
+    queryKey: [QK_TEAM_PAGE_MEMBERS],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("team_page")
@@ -202,7 +203,7 @@ const TeamStaffPanel = () => {
       setEditingKey("");
       setSelectedFile(null);
       setPreviewUrl(null);
-      await queryClient.invalidateQueries({ queryKey: ["team_page_members"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_TEAM_PAGE_MEMBERS] });
     } catch (err) {
       if (!err.errorFields) showToast(err.message || "Failed to save", "error");
     } finally {
@@ -218,7 +219,7 @@ const TeamStaffPanel = () => {
         column: "id",
         value: record.id,
       });
-      await queryClient.invalidateQueries({ queryKey: ["team_page_members"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_TEAM_PAGE_MEMBERS] });
       showToast("Member deleted", "success");
     } catch (err) {
       showToast(err.message || "Failed to delete", "error");
@@ -277,7 +278,7 @@ const TeamStaffPanel = () => {
             .eq("id", item.id),
         ),
       );
-      await queryClient.invalidateQueries({ queryKey: ["team_page_members"] });
+      await queryClient.invalidateQueries({ queryKey: [QK_TEAM_PAGE_MEMBERS] });
       showToast("Order updated!", "success");
     } catch (e) {
       console.error("Order sync failed:", e);
