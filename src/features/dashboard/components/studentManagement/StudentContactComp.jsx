@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Spin } from "antd";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_STUDENT_CONTACT } from "../../../../config/queryKeyConfig";
+import {
+  QK_STUDENT_CONTACT,
+  QK_STUDENT_PROFILE,
+} from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import styles from "../../styles/StudentContactComp.module.css";
 
@@ -45,6 +48,7 @@ const StudentContactComp = ({ email }) => {
       showToast("Failed to update contact information.", "error");
     } else {
       queryClient.invalidateQueries({ queryKey: [QK_STUDENT_CONTACT, email] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_PROFILE, email] });
       showToast("Contact information updated.", "success");
       setEditing(false);
     }

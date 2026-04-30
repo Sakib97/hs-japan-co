@@ -6,6 +6,7 @@ export const QK_STUDENT_STATS = "student-stats";
 export const QK_STUDENT_PERSONAL = "student-personal";
 export const QK_STUDENT_CONTACT = "student-contact";
 export const QK_STUDENT_EDUCATION = "student-education";
+export const QK_STUDENT_PROFILE = "student-profile"; // full profile via RPC (read-only modal)
 
 // ─── Employee / HR ─────────────────────────────────────────────────────────────
 // Used in: EmployeeDirectoryComp, CreateEmployeeModal

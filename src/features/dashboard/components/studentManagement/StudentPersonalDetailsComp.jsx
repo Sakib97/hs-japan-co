@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Spin } from "antd";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_STUDENT_PERSONAL } from "../../../../config/queryKeyConfig";
+import {
+  QK_STUDENT_PERSONAL,
+  QK_STUDENT_PROFILE,
+} from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import styles from "../../styles/StudentPersonalDetailsComp.module.css";
 
@@ -46,6 +49,7 @@ const StudentPersonalDetailsComp = ({ email }) => {
       showToast("Failed to update personal details.", "error");
     } else {
       queryClient.invalidateQueries({ queryKey: [QK_STUDENT_PERSONAL, email] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_PROFILE, email] });
       showToast("Personal details updated.", "success");
       setEditing(false);
     }
@@ -134,9 +138,7 @@ const StudentPersonalDetailsComp = ({ email }) => {
             <input
               className={styles.input}
               value={form.nid}
-              onChange={(e) =>
-                setForm({ ...form, nid: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, nid: e.target.value })}
               placeholder="1234567891011"
             />
           ) : (

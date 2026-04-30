@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Modal, Spin } from "antd";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_STUDENT_EDUCATION } from "../../../../config/queryKeyConfig";
+import {
+  QK_STUDENT_EDUCATION,
+  QK_STUDENT_PROFILE,
+} from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import styles from "../../styles/StudentEducationComp.module.css";
 
@@ -124,6 +127,9 @@ const StudentEducationComp = ({ email }) => {
       queryClient.invalidateQueries({
         queryKey: [QK_STUDENT_EDUCATION, email],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QK_STUDENT_PROFILE, email],
+      });
       showToast(
         editingEntry ? "Education updated." : "Education added.",
         "success",
@@ -151,6 +157,9 @@ const StudentEducationComp = ({ email }) => {
         } else {
           queryClient.invalidateQueries({
             queryKey: [QK_STUDENT_EDUCATION, email],
+          });
+          queryClient.invalidateQueries({
+            queryKey: [QK_STUDENT_PROFILE, email],
           });
           showToast("Education entry removed.", "success");
         }
