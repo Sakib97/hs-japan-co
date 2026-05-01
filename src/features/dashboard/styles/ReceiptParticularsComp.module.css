@@ -1,0 +1,308 @@
+.card {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+/* ── Student profile strip ───────────────────────── */
+.studentProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  width: fit-content;
+}
+
+.profileAvatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #e8f0ff;
+  color: #1677ff;
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarInitials {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1677ff;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.profileName {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profileMeta {
+  font-size: 0.75rem;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.studentProfileEmpty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fafafa;
+  border: 1px dashed #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.78rem;
+  color: #bbb;
+  width: fit-content;
+}
+
+.iconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #fff4f0;
+  color: #e8533a;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 2px;
+}
+
+.subtitle {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0;
+}
+
+.studentHighlight {
+  color: #e8533a;
+  font-weight: 500;
+}
+
+.watermark {
+  position: absolute;
+  right: -8px;
+  top: -4px;
+  font-size: 8rem;
+  color: #f0f0f0;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: -1;
+}
+
+/* ── Form ──────────────────────────────────────────── */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+  margin-bottom: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #aaa;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.select {
+  width: 100%;
+  height: 38px;
+}
+
+.datePicker {
+  width: 100%;
+  height: 38px;
+}
+
+/* ── Other fee type input ────────────────────────────── */
+.otherInput {
+  margin-top: 6px;
+  width: 100%;
+  height: 36px;
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  color: #111;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.otherInput:focus {
+  border-color: #4096ff !important;
+  box-shadow: 0 0 0 2px rgba(64, 150, 255, 0.1);
+  outline: none;
+}
+
+/* ── Amount ─────────────────────────────────────────── */
+.amountWrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  height: 42px;
+  padding: 0 12px;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+
+.amountWrap:focus-within {
+  border-color: #4096ff;
+  box-shadow: 0 0 0 2px rgba(64, 150, 255, 0.1);
+}
+
+.currencySymbol {
+  font-size: 1rem;
+  color: #555;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.amountInput {
+  border: none;
+  outline: none;
+  flex: 1;
+  /* font-size: 1rem; */
+  color: #111;
+  background: transparent;
+  min-width: 0;
+}
+
+.amountInput::-webkit-inner-spin-button,
+.amountInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btnRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.viewBtn {
+  flex: 0 0 auto;
+  width: fit-content;
+  height: 44px !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  border-color: #1677ff !important;
+  color: #1677ff !important;
+  background: #fff !important;
+  white-space: nowrap;
+  padding: 0 18px !important;
+}
+
+.viewBtn:not(:disabled):hover {
+  background: #e8f0ff !important;
+}
+
+.viewBtn:disabled {
+  background: #fff !important;
+  border-color: #d9d9d9 !important;
+  color: #bbb !important;
+  cursor: not-allowed !important;
+}
+
+.sendBtn {
+  flex: 1;
+  height: 44px !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  background: #c0182d !important;
+  border-color: #c0182d !important;
+  color: #fff !important;
+}
+
+.sendBtn:not(:disabled):hover {
+  background: #a01325 !important;
+  border-color: #a01325 !important;
+}
+
+.sendBtn:disabled {
+  background: #e0a2aa !important;
+  border-color: #e0a2aa !important;
+  color: #fff !important;
+  cursor: not-allowed !important;
+}
+
+/* mobile view */
+@media (max-width: 900px) {
+  .card {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 16px;
+  }
+  .btnRow {
+    flex-direction: column;
+  }
+  .viewBtn,
+  .sendBtn {
+    width: 100% !important;
+    flex: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}

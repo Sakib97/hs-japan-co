@@ -29,7 +29,7 @@ const getColumns = (onViewProfile) => [
     key: "name",
     render: (_, record) => (
       <div className={styles.nameCell}>
-        <Avatar size={36} className={styles.studentAvatar}>
+        <Avatar size={36} className={styles.studentAvatar} src={record.avatar_url}>
           {record.name?.charAt(0) ?? "S"}
         </Avatar>
         <div>
@@ -138,7 +138,8 @@ const StudentDirectoryComp = ({ searchQuery }) => {
           phone,
           status,
           created_at,
-          dob
+          dob,
+          avatar_url
           `,
           { count: "exact" },
         )

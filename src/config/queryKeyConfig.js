@@ -8,6 +8,10 @@ export const QK_STUDENT_CONTACT = "student-contact";
 export const QK_STUDENT_EDUCATION = "student-education";
 export const QK_STUDENT_PROFILE = "student-profile"; // full profile via RPC (read-only modal)
 
+// ─── Finances ─────────────────────────────────────────────────────────────────
+// Used in: ReceiptParticularsComp
+export const QK_FEE_TYPES = "fee-types";
+
 // ─── Employee / HR ─────────────────────────────────────────────────────────────
 // Used in: EmployeeDirectoryComp, CreateEmployeeModal
 export const QK_EMPLOYEES = "employees";
