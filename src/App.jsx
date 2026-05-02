@@ -37,6 +37,8 @@ import AssetsManagementPage from "./features/dashboard/pages/AssetsManagementPag
 import CourseDetailsPage from "./features/CourseDetails/pages/CourseDetailsPage.jsx";
 import MyCoursesPage from "./features/dashboard/pages/MyCoursesPage.jsx";
 import MyFinancesPage from "./features/dashboard/pages/MyFinancesPage.jsx";
+import PaymentVerifyPage from "./features/verify/pages/paymentVerifyPage.jsx";
+
 
 const SPLASH_KEY = "hs_japan_splash_shown";
 
@@ -66,6 +68,7 @@ function App() {
         <Route path="/team" element={<TeamPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/courses/:id" element={<CourseDetailsPage />} />
+        <Route path="/payment/verify/:receiptId" element={<PaymentVerifyPage />} />
         <Route
           path="/auth/signin"
           element={

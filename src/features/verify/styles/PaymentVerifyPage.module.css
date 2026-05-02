@@ -1,0 +1,321 @@
+.page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 16px 60px;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.brandTagline {
+  font-size: 0.72rem;
+  color: #888;
+  margin: 0;
+}
+
+/* ── Container ── */
+.container {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Status Banner ── */
+.statusBanner {
+  border-radius: 12px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.statusBanner.paid {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+}
+
+.statusBanner.pending {
+  background: #fff7ed;
+  border: 1.5px solid #fed7aa;
+}
+
+.statusBanner.verification_pending {
+  background: #fefce8;
+  border: 1.5px solid #fde68a;
+}
+
+.statusBanner.failed {
+  background: #fef2f2;
+  border: 1.5px solid #fca5a5;
+}
+
+.statusBanner.refunded {
+  background: #eff6ff;
+  border: 1.5px solid #93c5fd;
+}
+
+.statusIcon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.statusBanner.paid .statusIcon {
+  color: #16a34a;
+}
+.statusBanner.pending .statusIcon {
+  color: #ea580c;
+}
+.statusBanner.verification_pending .statusIcon {
+  color: #ca8a04;
+}
+.statusBanner.failed .statusIcon {
+  color: #dc2626;
+}
+.statusBanner.refunded .statusIcon {
+  color: #2563eb;
+}
+
+.statusLabel {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.statusBanner.paid .statusLabel {
+  color: #15803d;
+}
+.statusBanner.pending .statusLabel {
+  color: #c2410c;
+}
+.statusBanner.verification_pending .statusLabel {
+  color: #a16207;
+}
+.statusBanner.failed .statusLabel {
+  color: #b91c1c;
+}
+.statusBanner.refunded .statusLabel {
+  color: #1d4ed8;
+}
+
+.statusSub {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+}
+
+/* ── Card ── */
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cardTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #aaa;
+  padding: 12px 18px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* ── Student Row ── */
+.studentRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarFallback {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.studentName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 2px;
+}
+
+.studentMeta {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Detail Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.gridItem {
+  padding: 12px 18px;
+  border-bottom: 1px solid #f5f5f5;
+  border-right: 1px solid #f5f5f5;
+}
+
+.gridItem:nth-child(even) {
+  border-right: none;
+}
+
+.gridItem:nth-last-child(-n + 2) {
+  border-bottom: none;
+}
+
+/* Full-width item (span 2 cols) */
+.gridItemFull {
+  padding: 12px 18px;
+  border-bottom: 1px solid #f5f5f5;
+  grid-column: span 2;
+}
+
+.gridItemFull:last-child {
+  border-bottom: none;
+}
+
+.itemKey {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #aaa;
+  text-transform: uppercase;
+  margin: 0 0 3px;
+}
+
+.itemVal {
+  font-size: 0.82rem;
+  color: #222;
+  font-weight: 500;
+  margin: 0;
+  word-break: break-word;
+}
+
+.itemValMuted {
+  font-size: 0.82rem;
+  color: #aaa;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Amount highlight ── */
+.amount {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+/* ── Receipt ID ── */
+.receiptId {
+  font-family: monospace;
+  font-size: 0.82rem;
+  color: #555;
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ── Footer ── */
+.footer {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.72rem;
+  color: #bbb;
+  line-height: 1.7;
+}
+
+/* ── States ── */
+.loadingWrap,
+.errorWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 300px;
+  color: #888;
+  font-size: 0.88rem;
+}
+
+.errorIcon {
+  font-size: 2rem;
+  color: #e5533a;
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gridItem {
+    border-right: none;
+  }
+
+  .gridItem:nth-last-child(-n + 2) {
+    border-bottom: 1px solid #f5f5f5;
+  }
+
+  .gridItem:last-child {
+    border-bottom: none;
+  }
+
+  .gridItemFull {
+    grid-column: span 1;
+  }
+}
