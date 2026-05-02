@@ -7,8 +7,12 @@ import ReceiptParticularsComp from "../components/financesManagement/ReceiptPart
 import AllTransactionsComp from "../components/financesManagement/AllTransactionsComp";
 import FinancialOverviewComp from "../components/financesManagement/FinancialOverviewComp";
 import RecentRecordsComp from "../components/financesManagement/RecentRecordsComp";
+import { USER_ROLES } from "../../../config/statusAndRoleConfig";
+import { useAuth } from "../../../context/AuthProvider";
 
 const FinancesPage = () => {
+  const { userMeta } = useAuth();
+  const isAdmin = userMeta?.role === USER_ROLES.ADMIN;
   const [foundStudent, setFoundStudent] = useState(null);
 
   const handleStudentFound = async (query) => {
@@ -46,18 +50,16 @@ const FinancesPage = () => {
             studentEmail={foundStudent?.email}
             studentPhone={foundStudent?.phone}
             studentAvatar={foundStudent?.avatar_url}
-            
           />
-         
         </div>
 
         {/* ── Right column ── */}
         <div className={styles.rightCol}>
-          <FinancialOverviewComp />
+          {isAdmin && <FinancialOverviewComp />}
           {/* <RecentRecordsComp /> */}
         </div>
       </div>
-       <AllTransactionsComp />
+      <AllTransactionsComp />
     </div>
   );
 };
