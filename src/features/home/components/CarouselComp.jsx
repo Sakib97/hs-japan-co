@@ -29,7 +29,7 @@ const CarouselComp = () => {
   if (slides.length === 0) return null;
 
   return (
-    <div>
+    <div className={styles.carouselContainer}>
       <Carousel fade>
         {slides.map((s) => (
           <Carousel.Item key={s.id} interval={2000}>

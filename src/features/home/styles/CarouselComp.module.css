@@ -1,5 +1,13 @@
+.carouselContainer{
+  /* height: 20%; */
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
 .carouselImg {
-  height: 85vh; /* Takes up most of the viewport height */
+  border-radius: 20px;
+  height: 55vh; /* Takes up most of the viewport height */
   object-fit: cover; /* Ensures the image covers the area without distortion */
   filter: brightness(0.7); /* Darkens image slightly for better text readability */
 }
@@ -31,6 +39,7 @@
 
 /* Optional: Additional overlay if filter isn't enough or need gradient */
 .overlay {
+  border-radius: 20px;
   position: absolute;
   top: 0;
   left: 0;
@@ -39,4 +48,16 @@
   background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
   pointer-events: none;
   z-index: 1;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .carouselContainer {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .carouselImg {
+    height: 50vh; /* Smaller height for mobile */
+  }
 }
