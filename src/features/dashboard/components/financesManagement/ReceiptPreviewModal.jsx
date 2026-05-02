@@ -1,6 +1,8 @@
-import { useState, useRef } from "react";
-import { Modal, Button } from "antd";
+import { useState } from "react";
+import { Modal, Button, Divider } from "antd";
+import { pdf } from "@react-pdf/renderer";
 import styles from "../../styles/ReceiptPreviewModal.module.css";
+import ReceiptPDFDocument from "./ReceiptPDFDocument";
 
 const COMPANY = {
   name: "HS Japan Academy",
@@ -38,58 +40,54 @@ const ReceiptPreviewModal = ({
   const [paymentDate, setPaymentDate] = useState("");
   const [transactionId, setTransactionId] = useState("");
   const [remarks, setRemarks] = useState("");
-  const printRef = useRef(null);
+  const [downloading, setDownloading] = useState(false);
 
-  const handlePrint = () => {
-    const content = printRef.current;
-    if (!content) return;
-    const printWindow = window.open("", "_blank", "width=800,height=900");
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Receipt – ${receiptId}</title>
-          <style>
-            * { box-sizing: border-box; margin: 0; padding: 0; }
-            body { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; color: #111; }
-            .receipt { max-width: 680px; margin: 30px auto; padding: 36px 40px; border: 1px solid #ddd; }
-            .header { display: flex; align-items: center; gap: 16px; border-bottom: 2px solid #b91c1c; padding-bottom: 16px; margin-bottom: 20px; }
-            .logo { width: 56px; height: 56px; object-fit: contain; }
-            .company-name { font-size: 1.25rem; font-weight: 800; color: #b91c1c; }
-            .company-sub { font-size: 0.72rem; color: #888; }
-            .company-addr { font-size: 0.72rem; color: #555; margin-top: 2px; }
-            .receipt-title { text-align: center; font-size: 1rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #333; margin: 16px 0; }
-            .meta-row { display: flex; justify-content: space-between; font-size: 0.78rem; color: #666; margin-bottom: 18px; }
-            .section-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; margin-bottom: 6px; }
-            .info-box { background: #fafafa; border: 1px solid #eee; border-radius: 6px; padding: 12px 14px; margin-bottom: 14px; }
-            .info-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 4px 0; border-bottom: 1px dashed #f0f0f0; }
-            .info-row:last-child { border-bottom: none; }
-            .info-key { color: #666; }
-            .info-val { font-weight: 600; color: #111; text-align: right; }
-            .amount-block { border: 2px solid #b91c1c; border-radius: 6px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-            .amount-label { font-size: 0.8rem; font-weight: 700; color: #b91c1c; text-transform: uppercase; letter-spacing: 0.06em; }
-            .amount-value { font-size: 1.5rem; font-weight: 800; color: #b91c1c; }
-            .field-row { margin-bottom: 12px; }
-            .field-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; margin-bottom: 4px; }
-            .field-line { border: none; border-bottom: 1px solid #ccc; width: 100%; font-size: 0.9rem; padding: 4px 0; background: transparent; }
-            .footer { border-top: 1px solid #eee; margin-top: 24px; padding-top: 14px; text-align: center; font-size: 0.7rem; color: #aaa; }
-            .sig-row { display: flex; justify-content: space-between; margin-top: 36px; }
-            .sig-box { text-align: center; width: 160px; }
-            .sig-line { border-bottom: 1px solid #999; margin-bottom: 6px; height: 36px; }
-            .sig-label { font-size: 0.7rem; color: #777; }
-          </style>
-        </head>
-        <body>
-          ${content.innerHTML}
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 400);
+  const handleDownloadPDF = async () => {
+    setDownloading(true);
+    try {
+      // fetch logo and convert to base64 so react-pdf can embed it
+      let logoBase64 = null;
+      try {
+        const res = await fetch("/assets/logo_cut_nobg.png");
+        const blob = await res.blob();
+        logoBase64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+      } catch (_) {
+        // logo optional — proceed without it
+      }
+
+      const blob = await pdf(
+        <ReceiptPDFDocument
+          receiptId={receiptId}
+          issuedDate={issuedDate}
+          studentName={studentName}
+          studentEmail={studentEmail}
+          studentPhone={studentPhone}
+          feeType={feeType}
+          otherText={otherText}
+          formattedDueDate={formattedDueDate}
+          amount={amount}
+          additionalInfo={additionalInfo}
+          paymentMode={paymentMode}
+          paymentDate={paymentDate}
+          transactionId={transactionId}
+          remarks={remarks}
+          logoBase64={logoBase64}
+        />,
+      ).toBlob();
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `receipt-${receiptId}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const formattedDueDate = dueDate
@@ -122,9 +120,13 @@ const ReceiptPreviewModal = ({
           Receipt Preview
         </span>
         <div className={styles.actionBtns}>
-          <Button className={styles.printBtn} onClick={handlePrint}>
-            <i className="fa-solid fa-print" style={{ marginRight: 6 }}></i>
-            Print / Save PDF
+          <Button
+            className={styles.printBtn}
+            onClick={handleDownloadPDF}
+            loading={downloading}
+          >
+            <i className="fi fi-rr-down-to-line" style={{ fontSize: 16, marginRight: 1 }}></i>
+            Download PDF
           </Button>
           <Button onClick={onClose}>Close</Button>
         </div>
@@ -132,7 +134,7 @@ const ReceiptPreviewModal = ({
 
       {/* ── Receipt ── */}
       <div className={styles.receiptWrap}>
-        <div className={styles.receipt} ref={printRef}>
+        <div className={styles.receipt}>
           {/* Header */}
           <div className={styles.header}>
             <img src={COMPANY.logo} alt="Logo" className={styles.logo} />
@@ -189,7 +191,7 @@ const ReceiptPreviewModal = ({
               <span className={styles.infoKey}>Due Date</span>
               <span className={styles.infoVal}>{formattedDueDate}</span>
             </div>
-            {additionalInfo && feeType !== "other" && (
+            {additionalInfo && (
               <div className={styles.infoRow}>
                 <span className={styles.infoKey}>Additional Info</span>
                 <span className={styles.infoVal}>{additionalInfo}</span>
@@ -205,10 +207,22 @@ const ReceiptPreviewModal = ({
             </span>
           </div>
 
+          <Divider
+            variant="dashed"
+            style={{
+              borderColor: "#000000",
+              margin: "0 0 30px 0",
+              fontSize: "12px",
+            }}
+            dashed
+          >
+            TO BE FILLED BY STUDENT / PAYER
+          </Divider>
+
           {/* Student-fillable fields */}
-          <div className={styles.sectionLabel}>
+          {/* <div className={styles.sectionLabel}>
             To be completed by student / payer
-          </div>
+          </div> */}
           <div className={styles.fillGrid}>
             <div className={styles.fillField}>
               <label className={styles.fillLabel}>Mode of Payment</label>
@@ -259,7 +273,7 @@ const ReceiptPreviewModal = ({
           </div>
 
           {/* Signatures */}
-          <div className={styles.sigRow}>
+          {/* <div className={styles.sigRow}>
             <div className={styles.sigBox}>
               <div className={styles.sigLine}></div>
               <div className={styles.sigLabel}>Student Signature</div>
@@ -272,7 +286,7 @@ const ReceiptPreviewModal = ({
               <div className={styles.sigLine}></div>
               <div className={styles.sigLabel}>Accounts Department</div>
             </div>
-          </div>
+          </div> */}
 
           {/* Footer */}
           <div className={styles.footer}>
@@ -286,6 +300,11 @@ const ReceiptPreviewModal = ({
               This is a computer-generated receipt. Please retain for your
               records.
             </div>
+          </div>
+
+          {/* UNPAID watermark */}
+          <div className={styles.watermark}>
+            <span className={styles.watermarkText}>UNPAID</span>
           </div>
         </div>
       </div>

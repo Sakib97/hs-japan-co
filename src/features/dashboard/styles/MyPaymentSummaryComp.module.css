@@ -1,0 +1,108 @@
+/* ── Summary row ──────────────────────────────────── */
+.summaryRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* ── Card base ────────────────────────────────────── */
+.card {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 120px;
+}
+
+/* ── Icon ─────────────────────────────────────────── */
+.cardIcon {
+  font-size: 1.1rem;
+  color: #b91c1c;
+  margin-bottom: 4px;
+}
+
+.pendingIcon {
+  color: #d97706;
+}
+
+/* ── Label ────────────────────────────────────────── */
+.cardLabel {
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+/* ── Value ────────────────────────────────────────── */
+.cardValue {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.02em;
+  margin-top: 2px;
+}
+
+.pendingValue {
+  color: #d97706;
+}
+
+/* ── Next Due card ────────────────────────────────── */
+.nextDueCard {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.nextDueCard .cardIcon {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nextDueLabel {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.nextDueValue {
+  color: #fff !important;
+  font-size: 1.25rem !important;
+}
+
+.nextDueDesc {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+}
+
+/* ── Skeleton ─────────────────────────────────────── */
+.skeleton {
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(90deg, #f5f5f5 25%, #ebebeb 50%, #f5f5f5 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ── Mobile ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .summaryRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .cardValue {
+    font-size: 1.15rem;
+  }
+}

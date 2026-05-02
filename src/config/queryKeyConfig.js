@@ -11,6 +11,12 @@ export const QK_STUDENT_PROFILE = "student-profile"; // full profile via RPC (re
 // ─── Finances ─────────────────────────────────────────────────────────────────
 // Used in: ReceiptParticularsComp
 export const QK_FEE_TYPES = "fee-types";
+// Used in: MyFinancesPage — student's own payment history
+export const QK_MY_PAYMENTS = "my-payments";
+// Used in: MyFinancesPage — student's own name/phone for PDF
+export const QK_MY_STUDENT_INFO = "my-student-info";
+// Used in: AllTransactionsComp — admin view of all student payments
+export const QK_ALL_TRANSACTIONS = "all-transactions";
 
 // ─── Employee / HR ─────────────────────────────────────────────────────────────
 // Used in: EmployeeDirectoryComp, CreateEmployeeModal

@@ -1,0 +1,28 @@
+/* ── Page ─────────────────────────────────────────── */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ── Header ───────────────────────────────────────── */
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pageTitle {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+}
+
+.pageSubtitle {
+  font-size: 0.82rem;
+  color: #888;
+  margin: 0;
+  max-width: 480px;
+  line-height: 1.5;
+}

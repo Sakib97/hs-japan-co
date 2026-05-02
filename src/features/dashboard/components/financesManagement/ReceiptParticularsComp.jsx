@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Select, DatePicker, Button } from "antd";
+import { Select, DatePicker, Button, Modal } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
 import { QK_FEE_TYPES } from "../../../../config/queryKeyConfig";
+import { PAYMENT_STATUS } from "../../../../config/statusAndRoleConfig";
 import styles from "../../styles/ReceiptParticularsComp.module.css";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { generateReceiptId } from "../../../../utils/generateToken";
+import { useAuth } from "../../../../context/AuthProvider";
 import ReceiptPreviewModal from "./ReceiptPreviewModal";
 
 const ReceiptParticularsComp = ({
@@ -21,7 +23,9 @@ const ReceiptParticularsComp = ({
   const [sending, setSending] = useState(false);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [receiptId, setReceiptId] = useState("");
+  const [receiptId, setReceiptId] = useState(() => generateReceiptId());
+
+  const { user } = useAuth();
 
   const { data: feeTypesData = [] } = useQuery({
     queryKey: [QK_FEE_TYPES],
@@ -52,20 +56,64 @@ const ReceiptParticularsComp = ({
     !!dueDate &&
     !!amount;
 
-  const handleSend = async () => {
+  const doSend = async () => {
+    setSending(true);
+    try {
+      const feeTitle = feeType === "other" ? otherText.trim() : feeType;
+      const dueDateStr = dueDate
+        ? typeof dueDate === "string"
+          ? dueDate
+          : (dueDate.format?.("YYYY-MM-DD") ?? String(dueDate))
+        : null;
+
+      const { error } = await supabase.from("student_payment").insert({
+        receipt_id: receiptId,
+        student_email: studentEmail,
+        student_phone: studentPhone || null,
+        receipt_gen_date: new Date().toISOString(),
+        fee_type_title: feeTitle,
+        fee_type_xtra_info: additionalInfo.trim() || null,
+        amount: Number(amount),
+        due_date: dueDateStr,
+        receipt_gen_by_email: user?.email ?? null,
+        payment_status: PAYMENT_STATUS.PENDING,
+      });
+
+      if (error) throw error;
+
+      showToast("Receipt sent successfully!", "success");
+      // Reset form and generate a fresh receipt ID for the next receipt
+      setFeeType(null);
+      setOtherText("");
+      setDueDate(null);
+      setAmount("");
+      setAdditionalInfo("");
+      setReceiptId(generateReceiptId());
+    } catch (err) {
+      console.error("Failed to save receipt:", err);
+      showToast("Failed to send receipt. Please try again.", "error");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleSend = () => {
     if (!isFormValid) {
       showToast("Please fill in all required fields.", "error");
       return;
     }
-    setSending(true);
-    // TODO: insert into receipts table + send notification email
-    showToast("Receipt sent successfully", "success");
-    setSending(false);
+    Modal.confirm({
+      title: "Send Receipt",
+      content: `Send receipt ${receiptId} to ${studentEmail}?`,
+      okText: "Send",
+      okType: "primary",
+      cancelText: "Cancel",
+      onOk: doSend,
+    });
   };
 
   const handleViewReceipt = () => {
     if (!isFormValid) return;
-    setReceiptId(generateReceiptId());
     setPreviewOpen(true);
   };
 
@@ -206,7 +254,7 @@ const ReceiptParticularsComp = ({
           loading={sending}
           disabled={!isFormValid}
         >
-          SEND RECEIPT &amp; NOTIFY STUDENT
+          SEND RECEIPT TO STUDENT
         </Button>
       </div>
 

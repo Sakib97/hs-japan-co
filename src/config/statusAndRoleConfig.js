@@ -98,6 +98,7 @@ export const ENQUIRY_STATUS_COLOR = {
 // Used in: finances / transactions / payments table (future)
 export const PAYMENT_STATUS = {
   PENDING: "pending",
+  VERIFICATION_PENDING: "verification_pending",
   PAID: "paid",
   FAILED: "failed",
   REFUNDED: "refunded",
@@ -105,6 +106,7 @@ export const PAYMENT_STATUS = {
 
 export const PAYMENT_STATUS_OPTIONS = [
   { value: PAYMENT_STATUS.PENDING, label: "Pending" },
+  { value: PAYMENT_STATUS.VERIFICATION_PENDING, label: "Verification Pending" },
   { value: PAYMENT_STATUS.PAID, label: "Paid" },
   { value: PAYMENT_STATUS.FAILED, label: "Failed" },
   { value: PAYMENT_STATUS.REFUNDED, label: "Refunded" },
@@ -112,6 +114,7 @@ export const PAYMENT_STATUS_OPTIONS = [
 
 export const PAYMENT_STATUS_COLOR = {
   [PAYMENT_STATUS.PENDING]: "orange",
+  [PAYMENT_STATUS.VERIFICATION_PENDING]: "yellow",
   [PAYMENT_STATUS.PAID]: "green",
   [PAYMENT_STATUS.FAILED]: "red",
   [PAYMENT_STATUS.REFUNDED]: "blue",

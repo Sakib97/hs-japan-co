@@ -4,7 +4,7 @@ import { showToast } from "../../../components/layout/CustomToast";
 import styles from "../styles/FinancesPage.module.css";
 import FindStudentComp from "../components/financesManagement/FindStudentComp";
 import ReceiptParticularsComp from "../components/financesManagement/ReceiptParticularsComp";
-import RecentTransactionsComp from "../components/financesManagement/RecentTransactionsComp";
+import AllTransactionsComp from "../components/financesManagement/AllTransactionsComp";
 import FinancialOverviewComp from "../components/financesManagement/FinancialOverviewComp";
 import RecentRecordsComp from "../components/financesManagement/RecentRecordsComp";
 
@@ -48,7 +48,7 @@ const FinancesPage = () => {
             studentAvatar={foundStudent?.avatar_url}
             
           />
-          <RecentTransactionsComp />
+         
         </div>
 
         {/* ── Right column ── */}
@@ -57,6 +57,7 @@ const FinancesPage = () => {
           <RecentRecordsComp />
         </div>
       </div>
+       <AllTransactionsComp />
     </div>
   );
 };
