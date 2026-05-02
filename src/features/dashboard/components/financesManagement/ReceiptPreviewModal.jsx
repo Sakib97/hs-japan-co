@@ -272,21 +272,6 @@ const ReceiptPreviewModal = ({
             </div>
           </div>
 
-          {/* Signatures */}
-          {/* <div className={styles.sigRow}>
-            <div className={styles.sigBox}>
-              <div className={styles.sigLine}></div>
-              <div className={styles.sigLabel}>Student Signature</div>
-            </div>
-            <div className={styles.sigBox}>
-              <div className={styles.sigLine}></div>
-              <div className={styles.sigLabel}>Authorized Signatory</div>
-            </div>
-            <div className={styles.sigBox}>
-              <div className={styles.sigLine}></div>
-              <div className={styles.sigLabel}>Accounts Department</div>
-            </div>
-          </div> */}
 
           {/* Footer */}
           <div className={styles.footer}>

@@ -1,76 +1,81 @@
-import { useState } from "react";
-import { Select, Progress } from "antd";
-import { CaretUpOutlined } from "@ant-design/icons";
+import { useQuery } from "@tanstack/react-query";
 import styles from "../../styles/FinancialOverviewComp.module.css";
-
-const MONTH_OPTIONS = [
-  { value: "2023-11", label: "NOV 2023" },
-  { value: "2023-10", label: "OCT 2023" },
-  { value: "2023-09", label: "SEP 2023" },
-];
+import { supabase } from "../../../../config/supabaseClient";
+import { PAYMENT_STATUS } from "../../../../config/statusAndRoleConfig";
+import { QK_FINANCIAL_OVERVIEW } from "../../../../config/queryKeyConfig";
 
 const FinancialOverviewComp = () => {
-  const [month, setMonth] = useState("2023-11");
+  const { data, isLoading } = useQuery({
+    queryKey: [QK_FINANCIAL_OVERVIEW],
+    queryFn: async () => {
+      const { data: rows, error } = await supabase
+        .from("student_payment")
+        .select("payment_status, amount");
+      if (error) throw new Error(error.message);
 
-  // Placeholder data — replace with useQuery when DB is ready
-  const totalCollected = 12450000;
-  const growthPercent = 14.2;
-  const receiptsCount = 284;
-  const pendingCount = 12;
-  const targetProgress = 78;
-  const target = "¥16M";
+      const total = rows.length;
+      const paid = rows.filter(
+        (r) => r.payment_status === PAYMENT_STATUS.PAID,
+      ).length;
+      const pending = rows.filter(
+        (r) => r.payment_status === PAYMENT_STATUS.PENDING,
+      ).length;
+      const verificationPending = rows.filter(
+        (r) => r.payment_status === PAYMENT_STATUS.VERIFICATION_PENDING,
+      ).length;
+      const totalCollected = rows
+        .filter((r) => r.payment_status === PAYMENT_STATUS.PAID)
+        .reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
+
+      return { total, paid, pending, verificationPending, totalCollected };
+    },
+  });
+
+  const totalCollected = data?.totalCollected ?? 0;
+  const receiptsCount = data?.total ?? "—";
+  const paidCount = data?.paid ?? "—";
+  const pendingCount = data?.pending ?? "—";
+  const verificationPendingCount = data?.verificationPending ?? "—";
 
   return (
     <div className={styles.card}>
-      <div className={styles.cardHeader}>
-        <div>
-          <p className={styles.overviewLabel}>FINANCIAL</p>
-          <p className={styles.overviewLabel}>OVERVIEW</p>
-          <p className={styles.overviewSub}>Aggregate collection data.</p>
+      <div className={styles.header}>
+        <div className={styles.headerIcon}>
+          <i className="fi fi-rr-chart-mixed-up-circle-dollar"></i>
         </div>
-        <Select
-          className={styles.monthSelect}
-          value={month}
-          onChange={setMonth}
-          options={MONTH_OPTIONS}
-          size="small"
-        />
+        <div>
+          <p className={styles.title}>Financial Overview</p>
+          <p className={styles.subtitle}>Aggregate collection data</p>
+        </div>
       </div>
 
       <div className={styles.totalBlock}>
         <span className={styles.totalLabel}>TOTAL COLLECTED</span>
         <span className={styles.totalValue}>
-          ¥{totalCollected.toLocaleString()}
-        </span>
-        <span className={styles.growth}>
-          <CaretUpOutlined className={styles.growthIcon} />+{growthPercent}%
-          FROM LAST MONTH
+          {isLoading ? "—" : `BDT ${totalCollected.toLocaleString()}`}
         </span>
       </div>
 
-      <div className={styles.statRow}>
-        <div className={styles.statBox}>
+      <div className={styles.statsGrid}>
+        <div className={`${styles.statCard} ${styles.blue}`}>
+          <i className={`fi fi-rr-receipt ${styles.statIcon}`}></i>
           <span className={styles.statValue}>{receiptsCount}</span>
-          <span className={styles.statLabel}>RECEIPTS</span>
+          <span className={styles.statLabel}>Total Receipts</span>
         </div>
-        <div className={`${styles.statBox} ${styles.statBoxRight}`}>
+        <div className={`${styles.statCard} ${styles.green}`}>
+          <i className={`fi fi-rr-badge-check ${styles.statIcon}`}></i>
+          <span className={styles.statValue}>{paidCount}</span>
+          <span className={styles.statLabel}>Paid</span>
+        </div>
+        <div className={`${styles.statCard} ${styles.orange}`}>
+          <i className={`fi fi-rr-clock ${styles.statIcon}`}></i>
           <span className={styles.statValue}>{pendingCount}</span>
-          <span className={styles.statLabel}>PENDING</span>
+          <span className={styles.statLabel}>Payment Pending</span>
         </div>
-      </div>
-
-      <div className={styles.progressSection}>
-        <span className={styles.progressLabel}>TARGET PROGRESS</span>
-        <Progress
-          percent={targetProgress}
-          showInfo={false}
-          strokeColor="#e8533a"
-          trailColor="#f0f0f0"
-          size={["100%", 6]}
-        />
-        <div className={styles.progressMeta}>
-          <span>Current: {targetProgress}%</span>
-          <span>Target: {target}</span>
+        <div className={`${styles.statCard} ${styles.yellow}`}>
+          <i className={`fi fi-rr-search ${styles.statIcon}`}></i>
+          <span className={styles.statValue}>{verificationPendingCount}</span>
+          <span className={styles.statLabel}>Pending Verification</span>
         </div>
       </div>
     </div>

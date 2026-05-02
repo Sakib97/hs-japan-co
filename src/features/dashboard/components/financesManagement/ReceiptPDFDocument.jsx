@@ -239,7 +239,7 @@ const s = StyleSheet.create({
     textAlign: "center",
   },
 
-  /* ── UNPAID watermark ── */
+  /* ── watermark ── */
   watermarkWrap: {
     position: "absolute",
     top: 0,
@@ -409,9 +409,29 @@ const ReceiptPDFDocument = ({
       </View>
 
       {/* Amount */}
-      <View style={s.amountBlock}>
-        <Text style={s.amountLabel}>TOTAL AMOUNT DUE</Text>
-        <Text style={s.amountValue}>
+      <View
+        style={[
+          s.amountBlock,
+          watermarkText === "PAID" && {
+            borderColor: "#15803d",
+            backgroundColor: "#f0fdf4",
+          },
+        ]}
+      >
+        <Text
+          style={[
+            s.amountLabel,
+            watermarkText === "PAID" && { color: "#15803d" },
+          ]}
+        >
+          {watermarkText === "PAID" ? "TOTAL AMOUNT PAID" : "TOTAL AMOUNT DUE"}
+        </Text>
+        <Text
+          style={[
+            s.amountValue,
+            watermarkText === "PAID" && { color: "#15803d" },
+          ]}
+        >
           BDT {Number(amount).toLocaleString("en-BD")}
         </Text>
       </View>
@@ -428,7 +448,6 @@ const ReceiptPDFDocument = ({
         <FillField label="Transaction / Reference ID" value={transactionId} />
         <FillField label="Remarks" value={remarks} />
       </View>
-
 
       {/* QR code */}
       {qrCodeSrc ? (
@@ -454,10 +473,18 @@ const ReceiptPDFDocument = ({
 
       {/* Watermark */}
       <View style={s.watermarkWrap}>
-        <View style={s.watermarkCartouche}>
+        <View
+          style={[
+            s.watermarkCartouche,
+            {
+              borderColor: watermarkText === "PAID" ? "#15803d" : "#b91c1c",
+            },
+          ]}
+        >
           <Text
             style={[
               s.watermarkText,
+              { color: watermarkText === "PAID" ? "#15803d" : "#b91c1c" },
               watermarkText.length > 6
                 ? { fontSize: 26, letterSpacing: 4 }
                 : { fontSize: 64, letterSpacing: 12 },

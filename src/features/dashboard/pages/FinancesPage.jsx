@@ -54,7 +54,7 @@ const FinancesPage = () => {
         {/* ── Right column ── */}
         <div className={styles.rightCol}>
           <FinancialOverviewComp />
-          <RecentRecordsComp />
+          {/* <RecentRecordsComp /> */}
         </div>
       </div>
        <AllTransactionsComp />

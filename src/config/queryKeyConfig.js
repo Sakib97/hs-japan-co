@@ -17,6 +17,8 @@ export const QK_MY_PAYMENTS = "my-payments";
 export const QK_MY_STUDENT_INFO = "my-student-info";
 // Used in: AllTransactionsComp — admin view of all student payments
 export const QK_ALL_TRANSACTIONS = "all-transactions";
+// Used in: FinancialOverviewComp — aggregate payment stats
+export const QK_FINANCIAL_OVERVIEW = "financial-overview";
 // Used in: PaymentVerifyPage — public receipt verification by receiptId
 export const QK_VERIFY_RECEIPT = "verify-receipt";
 
