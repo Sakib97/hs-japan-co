@@ -47,6 +47,11 @@
   background: #fef2f2;
 }
 
+.editBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .headerActions {
   display: flex;
   gap: 8px;

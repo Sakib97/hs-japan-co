@@ -31,41 +31,93 @@ const mainMenuItems = [
     key: "/dashboard",
     icon: <UserOutlined />,
     label: "Profile",
-    visibleForRoles: ["admin", "student", "employee"],
+    // visibleForRoles: ["admin", "student", "employee"],
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+      {
+        role: "employee",
+        isActive: true,
+      },
+      {
+        role: "student",
+        isActive: true,
+        // studentStatus: ["enrolled"],
+      },
+    ],
   },
   {
     key: "/dashboard/employee-management",
     icon: <TeamOutlined />,
     label: "Employee Management",
     // adminOnly: true,
-    visibleForRoles: ["admin"],
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+    ],
   },
   {
     key: "/dashboard/student-management",
     icon: <SolutionOutlined />,
     label: "Student Management",
-    visibleForRoles: ["admin", "employee"],
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+      {
+        role: "employee",
+        isActive: true,
+      },
+    ],
   },
 
   {
     key: "/dashboard/course-management",
     icon: <SettingOutlined />,
     label: "Course Management",
-    visibleForRoles: ["admin", "employee"],
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+      {
+        role: "employee",
+        isActive: true,
+      },
+    ],
   },
   {
     key: "/dashboard/finances",
     icon: <DollarOutlined />,
     label: "Financials",
     // adminOnly: true,
-      visibleForRoles: ["admin", "employee"],
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+      {
+        role: "employee",
+        isActive: true,
+      },
+    ],
   },
   {
     key: "/dashboard/assets-management",
     icon: <FileImageOutlined />,
     label: "Assets Management",
     // adminOnly: true,
-    visibleForRoles: ["admin"],
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+    ],
   },
 
   {
@@ -73,7 +125,13 @@ const mainMenuItems = [
     icon: <ReadOutlined />,
     label: "My Courses",
     // studentOnly: true,
-    visibleForRoles: ["student"],
+    visibleForRoles: [
+      {
+        role: "student",
+        isActive: true,
+        studentStatus: ["enrolled"],
+      },
+    ],
   },
 
   {
@@ -81,7 +139,13 @@ const mainMenuItems = [
     icon: <DollarOutlined />,
     label: "My Finances",
     // studentOnly: true,
-    visibleForRoles: ["student"],
+    visibleForRoles: [
+      {
+        role: "student",
+        isActive: true,
+        studentStatus: ["enrolled"],
+      },
+    ],
   },
 ];
 
@@ -103,7 +167,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRef = useRef(null);
-  const { user, userMeta, loading, userMetaLoading } = useAuth();
+  const { user, userMeta, loading, userMetaLoading, studentStatus } = useAuth();
 
   const handleMenuClick = (path) => {
     navigate(path);
@@ -115,10 +179,13 @@ const DashboardPage = () => {
   const isAdmin = userMeta?.role === "admin";
   const isStudent = userMeta?.role === "student";
 
-  const visibleMenuItems = mainMenuItems.filter(
-    // (item) => !item.adminOnly || isAdmin,
-    (item) => !item.visibleForRoles ||  item.visibleForRoles.includes(userMeta?.role)
-  );
+  const visibleMenuItems = mainMenuItems.filter((item) => {
+    if (!item.visibleForRoles) return true;
+    const match = item.visibleForRoles.find((r) => r.role === userMeta?.role);
+    if (!match || !match.isActive) return false;
+    if (match.studentStatus) return match.studentStatus.includes(studentStatus);
+    return true;
+  });
 
   if (!user || !userMeta) {
     return (

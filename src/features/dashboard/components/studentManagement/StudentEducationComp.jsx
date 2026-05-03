@@ -8,6 +8,11 @@ import {
 } from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import styles from "../../styles/StudentEducationComp.module.css";
+import { useAuth } from "../../../../context/AuthProvider";
+import {
+  USER_ROLES,
+  STUDENT_STATUS,
+} from "../../../../config/statusAndRoleConfig";
 
 const defaultForm = () => ({
   degree: "",
@@ -23,6 +28,10 @@ const defaultForm = () => ({
 
 const StudentEducationComp = ({ email }) => {
   const queryClient = useQueryClient();
+  const { userMeta, studentStatus } = useAuth();
+  const canEdit =
+    userMeta?.role !== USER_ROLES.STUDENT ||
+    studentStatus === STUDENT_STATUS.ENROLLED;
   const [modalOpen, setModalOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -217,15 +226,20 @@ const StudentEducationComp = ({ email }) => {
                     <button
                       className={styles.iconBtn}
                       onClick={() => openEdit(edu)}
-                      title="Edit"
+                      disabled={!canEdit}
+                      title={
+                        canEdit ? "Edit" : "Only enrolled students can edit"
+                      }
                     >
                       <i className="fa-solid fa-pen"></i>
                     </button>
                     <button
                       className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
                       onClick={() => confirmDelete(edu.id)}
-                      disabled={deleting === edu.id}
-                      title="Delete"
+                      disabled={deleting === edu.id || !canEdit}
+                      title={
+                        canEdit ? "Delete" : "Only enrolled students can edit"
+                      }
                     >
                       {deleting === edu.id ? (
                         <i className="fa-solid fa-spinner fa-spin"></i>
@@ -241,7 +255,14 @@ const StudentEducationComp = ({ email }) => {
         </div>
       )}
 
-      <button className={styles.addBtn} onClick={openAdd}>
+      <button
+        className={styles.addBtn}
+        onClick={openAdd}
+        disabled={!canEdit}
+        title={
+          canEdit ? undefined : "Only enrolled students can edit their profile"
+        }
+      >
         + ADD EDUCATION
       </button>
 

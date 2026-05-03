@@ -202,6 +202,11 @@
   background: #fef2f2;
 }
 
+.editIconBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .saveBtn {
   background: #b91c1c;
   color: #fff;

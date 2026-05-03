@@ -6,21 +6,30 @@ import styles from "../styles/ProfilePage.module.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { uploadImage, deleteImage } from "../../../utils/handleImage";
 import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
-import { USER_ROLES } from "../../../config/statusAndRoleConfig";
+import {
+  USER_ROLES,
+  STUDENT_STATUS,
+} from "../../../config/statusAndRoleConfig";
 import StudentPersonalDetailsComp from "../components/studentManagement/StudentPersonalDetailsComp";
 import StudentContactComp from "../components/studentManagement/StudentContactComp";
 import StudentEducationComp from "../components/studentManagement/StudentEducationComp";
+import StudentEnrollmentStatusComp from "../components/studentManagement/StudentEnrollmentStatusComp";
 
 const MAX_FILE_SIZE = IMAGE_SIZES.PROFILE_AVATAR.maxBytes;
 
 const ProfilePage = () => {
-  const { user, userMeta, setUserMeta } = useAuth();
+  const { user, userMeta, setUserMeta, studentStatus } = useAuth();
 
   // --- Edit Name ---
   const [editingName, setEditingName] = useState(false);
   const [nameValue, setNameValue] = useState(userMeta?.name ?? "");
   const [nameSaving, setNameSaving] = useState(false);
   const [role] = useState(userMeta?.role ?? "Member");
+  const [enrollmentStatus] = useState(studentStatus ?? "unknown");
+
+  // Students can only edit their profile when enrolled
+  const canEdit =
+    role !== USER_ROLES.STUDENT || studentStatus === STUDENT_STATUS.ENROLLED;
 
   const handleSaveName = async () => {
     if (!nameValue.trim()) return;
@@ -156,11 +165,16 @@ const ProfilePage = () => {
             ) : (
               <div className={styles.avatarFallback}>{initials}</div>
             )}
+
             <button
               className={styles.avatarEditBtn}
               onClick={() => fileInputRef.current.click()}
-              disabled={avatarUploading}
-              title={`Change photo / ${IMAGE_SIZES.PROFILE_AVATAR.label} max`}
+              disabled={avatarUploading || !canEdit}
+              title={
+                canEdit
+                  ? `Change photo / ${IMAGE_SIZES.PROFILE_AVATAR.label} max`
+                  : "Only enrolled students can edit their profile"
+              }
             >
               {avatarUploading ? (
                 <i className="fa-solid fa-spinner fa-spin"></i>
@@ -221,7 +235,12 @@ const ProfilePage = () => {
                 <button
                   className={styles.editIconBtn}
                   onClick={() => setEditingName(true)}
-                  title="Edit name"
+                  disabled={!canEdit}
+                  title={
+                    canEdit
+                      ? "Edit name"
+                      : "Only enrolled students can edit their profile"
+                  }
                 >
                   <i className="fa-solid fa-pen"></i>
                 </button>
@@ -293,7 +312,12 @@ const ProfilePage = () => {
                 <button
                   className={styles.editIconBtn}
                   onClick={() => setChangingPassword(true)}
-                  title="Change password"
+                  disabled={!canEdit}
+                  title={
+                    canEdit
+                      ? "Change password"
+                      : "Only enrolled students can edit their profile"
+                  }
                 >
                   <i className="fa-solid fa-pen"></i>
                 </button>
@@ -304,6 +328,7 @@ const ProfilePage = () => {
       </div>
       {role === USER_ROLES.STUDENT && (
         <>
+          <StudentEnrollmentStatusComp email={user?.email} />
           <StudentPersonalDetailsComp email={user?.email} />
           <StudentContactComp email={user?.email} />
           <StudentEducationComp email={user?.email} />

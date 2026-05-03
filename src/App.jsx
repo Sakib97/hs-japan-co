@@ -38,6 +38,7 @@ import CourseDetailsPage from "./features/CourseDetails/pages/CourseDetailsPage.
 import MyCoursesPage from "./features/dashboard/pages/MyCoursesPage.jsx";
 import MyFinancesPage from "./features/dashboard/pages/MyFinancesPage.jsx";
 import PaymentVerifyPage from "./features/verify/pages/paymentVerifyPage.jsx";
+import RoleBasedRoute from "./components/common/RoleBasedRoute.jsx";
 
 
 const SPLASH_KEY = "hs_japan_splash_shown";
@@ -98,49 +99,58 @@ function App() {
           <Route index element={<ProfilePage />} />
           <Route
             path="student-management"
-            element={<StudentManagementPage />}
+            element={
+              <RoleBasedRoute allowedRoles={["admin", "employee"]}>
+                <StudentManagementPage />
+              </RoleBasedRoute>
+            }
           />
-          <Route path="course-management" element={<CourseManagementPage />} />
+          <Route path="course-management" element={
+            <RoleBasedRoute allowedRoles={["admin", "employee"]}>
+              <CourseManagementPage />
+            </RoleBasedRoute>
+            }
+            />
           <Route
             path="employee-management"
             element={
-              <AdminOnlyRoute>
+              <RoleBasedRoute allowedRoles={["admin"]}>
                 <EmployeeManagementPage />
-              </AdminOnlyRoute>
+              </RoleBasedRoute>
             }
           />
           <Route
             path="finances"
             element={
-              // <AdminOnlyRoute>
+              <RoleBasedRoute allowedRoles={["admin", "employee"]}>
                 <FinancesPage />
-              // </AdminOnlyRoute>
+              </RoleBasedRoute>
             }
           />
           <Route
             path="assets-management"
             element={
-              <AdminOnlyRoute>
+              <RoleBasedRoute allowedRoles={["admin"]}>
                 <AssetsManagementPage />
-              </AdminOnlyRoute>
+              </RoleBasedRoute>
             }
           />
 
           <Route
             path="my-courses"
             element={
-              <StudentOnlyRoute>
+              <RoleBasedRoute allowedRoles={["student"]}>
                 <MyCoursesPage />
-              </StudentOnlyRoute>
+              </RoleBasedRoute>
             }
           />
 
           <Route
             path="my-finances"
             element={
-              <StudentOnlyRoute>
+              <RoleBasedRoute allowedRoles={["student"]}>
                 <MyFinancesPage />
-              </StudentOnlyRoute>
+              </RoleBasedRoute>
             }
           />
         </Route>

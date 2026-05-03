@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Table, Tag, Avatar, Button, Space, Tooltip } from "antd";
+import { Table, Tag, Avatar, Button, Space, Tooltip, Dropdown } from "antd";
 import {
   FilterOutlined,
   DownloadOutlined,
@@ -29,7 +29,11 @@ const getColumns = (onViewProfile) => [
     key: "name",
     render: (_, record) => (
       <div className={styles.nameCell}>
-        <Avatar size={36} className={styles.studentAvatar} src={record.avatar_url}>
+        <Avatar
+          size={36}
+          className={styles.studentAvatar}
+          src={record.avatar_url}
+        >
           {record.name?.charAt(0) ?? "S"}
         </Avatar>
         <div>
@@ -46,15 +50,6 @@ const getColumns = (onViewProfile) => [
       <span className={styles.cellText}>{record.phone ?? "—"}</span>
     ),
   },
-  //   {
-  //     title: "EMAIL",
-  //     key: "email",
-  //     render: (_, record) => (
-  //       <span className={styles.cellText}>
-  //         {record.email?.eamil ?? "—"}
-  //       </span>
-  //     ),
-  //   },
   {
     title: "STATUS",
     key: "status",
@@ -77,7 +72,6 @@ const getColumns = (onViewProfile) => [
       ),
   },
   {
-    // <i class="fi fi-rr-paper-plane-launch"></i>
     title: "ACTIONS",
     key: "actions",
     render: (_, record) => (
@@ -92,16 +86,6 @@ const getColumns = (onViewProfile) => [
             onClick={() => onViewProfile(record.email)}
           ></i>
         </Tooltip>
-        <Tooltip title="View Financial Details">
-          <i className={`${styles.actionIcon} fi fi-rr-credit-card-eye`}></i>
-        </Tooltip>
-
-        {/* <Tooltip title="Resend Invite Email">
-          <i className={`${styles.actionIcon} fi fi-rr-paper-plane-launch`}></i>
-        </Tooltip>
-        <Tooltip title="Resend Invite Email">
-          <i className={`${styles.actionIcon} fi fi-rr-paper-plane-launch`}></i>
-        </Tooltip> */}
         <Tooltip title="Change Status">
           <i className={`${styles.actionIcon} fi fi-rr-career-growth`}></i>
         </Tooltip>
@@ -112,6 +96,7 @@ const getColumns = (onViewProfile) => [
 
 const StudentDirectoryComp = ({ searchQuery }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedStatus, setSelectedStatus] = useState(null);
   const [profileEmail, setProfileEmail] = useState(null);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
 
@@ -122,8 +107,8 @@ const StudentDirectoryComp = ({ searchQuery }) => {
 
   const columns = getColumns(openProfile);
 
-  const { data, isLoading } = useQuery({
-    queryKey: [QK_STUDENTS, currentPage, searchQuery],
+  const { data, isLoading, isFetching, refetch } = useQuery({
+    queryKey: [QK_STUDENTS, currentPage, searchQuery, selectedStatus],
     queryFn: async () => {
       const from = (currentPage - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
@@ -152,6 +137,10 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         );
       }
 
+      if (selectedStatus) {
+        query = query.eq("status", selectedStatus);
+      }
+
       const { data, error, count } = await query;
       if (error) throw new Error(error.message);
       return { rows: data, total: count };
@@ -169,8 +158,54 @@ const StudentDirectoryComp = ({ searchQuery }) => {
           </p>
         </div>
         <div className={styles.directoryActions}>
-          {/* <Button icon={<FilterOutlined />}>Filter</Button> */}
-          <Button icon={<DownloadOutlined />}>Export CSV</Button>
+          {/* <Button icon={<DownloadOutlined />}>Export CSV</Button> */}
+          <Button
+            icon={<i className="fi fi-rr-refresh"></i>}
+            size={"medium"}
+            loading={isFetching}
+            onClick={() => {
+              if (currentPage !== 1) {
+                setCurrentPage(1);
+              } else {
+                refetch();
+              }
+            }}
+          >
+            Refresh
+          </Button>
+
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: "__all__",
+                  label: <span>All Statuses</span>,
+                  onClick: () => {
+                    setSelectedStatus(null);
+                    setCurrentPage(1);
+                  },
+                },
+                ...STUDENT_STATUS_OPTIONS.map((opt) => ({
+                  key: opt.value,
+                  label: <span>{opt.label}</span>,
+                  onClick: () => {
+                    setSelectedStatus(opt.value);
+                    setCurrentPage(1);
+                  },
+                })),
+              ],
+            }}
+            placement="bottomLeft"
+          >
+            <Button
+              type={selectedStatus ? "primary" : ""}
+              icon={<i className="fi fi-rr-filter"></i>}
+              size={"medium"}
+            >
+              {STUDENT_STATUS_OPTIONS.find((o) => o.value === selectedStatus)
+                ?.label ?? "Status"}
+            </Button>
+          </Dropdown>
         </div>
       </div>
 
@@ -178,7 +213,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         columns={columns}
         dataSource={data?.rows ?? []}
         rowKey="id"
-        loading={isLoading}
+        loading={isLoading || isFetching}
         pagination={{
           current: currentPage,
           pageSize: PAGE_SIZE,

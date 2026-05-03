@@ -8,9 +8,18 @@ import {
 } from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import styles from "../../styles/StudentPersonalDetailsComp.module.css";
+import { useAuth } from "../../../../context/AuthProvider";
+import {
+  USER_ROLES,
+  STUDENT_STATUS,
+} from "../../../../config/statusAndRoleConfig";
 
 const StudentPersonalDetailsComp = ({ email }) => {
   const queryClient = useQueryClient();
+  const { userMeta, studentStatus } = useAuth();
+  const canEdit =
+    userMeta?.role !== USER_ROLES.STUDENT ||
+    studentStatus === STUDENT_STATUS.ENROLLED;
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(null);
@@ -77,7 +86,14 @@ const StudentPersonalDetailsComp = ({ email }) => {
       <div className={styles.cardHeader}>
         <h3 className={styles.cardTitle}>Personal Details</h3>
         {!editing ? (
-          <button className={styles.editBtn} onClick={handleEdit}>
+          <button
+            className={styles.editBtn}
+            onClick={handleEdit}
+            disabled={!canEdit}
+            title={
+              canEdit ? "Edit" : "Only enrolled students can edit their profile"
+            }
+          >
             <i className="fa-solid fa-pen"></i> EDIT
           </button>
         ) : (

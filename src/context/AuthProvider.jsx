@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { supabase } from "../config/supabaseClient";
+import { USER_ROLES } from "../config/statusAndRoleConfig";
 
 const AuthContext = createContext();
 
@@ -8,7 +9,17 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [userMeta, setUserMeta] = useState(null);
   const [userMetaLoading, setUserMetaLoading] = useState(true);
+  const [studentStatus, setStudentStatus] = useState(null);
   const fetchedUid = useRef(null);
+
+  const fetchStudentStatus = async (email) => {
+    const { data } = await supabase
+      .from("student")
+      .select("status")
+      .eq("email", email)
+      .single();
+    setStudentStatus(data?.status ?? null);
+  };
 
   // Supabase automatically stores the session token in localStorage.
   // On every page refresh, getSession() finds it and restores the session.
@@ -46,6 +57,9 @@ export const AuthProvider = ({ children }) => {
           fetchedUid.current = null;
         } else {
           setUserMeta(userMetaData);
+          if (userMetaData?.role === USER_ROLES.STUDENT) {
+            await fetchStudentStatus(session.user.email);
+          }
         }
       }
       setUserMetaLoading(false);
@@ -85,21 +99,26 @@ export const AuthProvider = ({ children }) => {
           .select("*")
           .eq("uid", session.user.id)
           .single()
-          .then(({ data }) => {
+          .then(async ({ data }) => {
             if (data?.is_active === false) {
               // Account deactivated — kill the session
               supabase.auth.signOut().then(() => {
                 setUser(null);
                 setUserMeta(null);
+                setStudentStatus(null);
                 fetchedUid.current = null;
               });
             } else {
               setUserMeta(data ?? null);
+              if (data?.role === USER_ROLES.STUDENT) {
+                await fetchStudentStatus(session.user.email);
+              }
             }
             setUserMetaLoading(false);
           });
       } else {
         setUserMeta(null);
+        setStudentStatus(null);
         setUserMetaLoading(false);
         fetchedUid.current = null;
       }
@@ -117,6 +136,8 @@ export const AuthProvider = ({ children }) => {
         userMeta,
         loading,
         userMetaLoading,
+        studentStatus,
+        setStudentStatus,
       }}
     >
       {children}

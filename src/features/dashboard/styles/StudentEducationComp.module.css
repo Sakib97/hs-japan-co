@@ -190,6 +190,17 @@
   background: #fef2f2;
 }
 
+.addBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.addBtn:disabled:hover {
+  border-color: #d1d5db;
+  color: #6b7280;
+  background: none;
+}
+
 /* ===== Modal form ===== */
 .modalForm {
   display: flex;
