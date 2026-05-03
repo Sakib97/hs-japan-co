@@ -105,7 +105,7 @@ export const PAYMENT_STATUS = {
 };
 
 export const PAYMENT_STATUS_OPTIONS = [
-  { value: PAYMENT_STATUS.PENDING, label: "Pending" },
+  { value: PAYMENT_STATUS.PENDING, label: "Payment Due" },
   { value: PAYMENT_STATUS.VERIFICATION_PENDING, label: "Verification Pending" },
   { value: PAYMENT_STATUS.PAID, label: "Paid" },
   { value: PAYMENT_STATUS.FAILED, label: "Failed" },

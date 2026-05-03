@@ -95,7 +95,7 @@ const getColumns = (onViewProfile, onChangeStatus) => [
           <i className={`${styles.actionIcon} fi fi-rr-paper-plane-launch`}></i>
         </Tooltip>
 
-        <Tooltip title="View Profile">
+        <Tooltip title="View Details">
           <i
             className={`${styles.actionIcon} fi fi-rr-overview`}
             onClick={() => onViewProfile(record.email)}

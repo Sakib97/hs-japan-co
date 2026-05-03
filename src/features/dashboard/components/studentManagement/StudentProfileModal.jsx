@@ -5,12 +5,27 @@ import { QK_STUDENT_PROFILE } from "../../../../config/queryKeyConfig";
 import {
   STUDENT_STATUS_COLOR,
   STUDENT_STATUS_OPTIONS,
+  PAYMENT_STATUS_COLOR,
+  PAYMENT_STATUS_OPTIONS,
 } from "../../../../config/statusAndRoleConfig";
 import styles from "../../styles/StudentProfileModal.module.css";
 
 const statusLabelMap = Object.fromEntries(
   STUDENT_STATUS_OPTIONS.map(({ value, label }) => [value, label]),
 );
+
+const paymentStatusLabelMap = Object.fromEntries(
+  PAYMENT_STATUS_OPTIONS.map(({ value, label }) => [value, label]),
+);
+
+const formatReceiptDate = (dateStr) => {
+  if (!dateStr) return "—";
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
 const formatDob = (dob) => {
   if (!dob) return "—";
@@ -42,6 +57,7 @@ const StudentProfileModal = ({ email, open, onClose }) => {
 
   const student = data?.student ?? {};
   const education = data?.education ?? [];
+  const payments = data?.payments ?? [];
   const avatarUrl = data?.avatar_url ?? null;
 
   const initials = (student?.name ?? email ?? "?")
@@ -142,7 +158,72 @@ const StudentProfileModal = ({ email, open, onClose }) => {
                       <span className={styles.note}>Board: {edu.board}</span>
                     )}
                     {edu.additional_note && (
-                      <span className={styles.note}>Note: {edu.additional_note}</span>
+                      <span className={styles.note}>
+                        Note: {edu.additional_note}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: "payments",
+      label: "Payments",
+      children: (
+        <div className={styles.section}>
+          {payments.length === 0 ? (
+            <p className={styles.empty}>No payment records.</p>
+          ) : (
+            <div className={styles.paymentList}>
+              {payments.map((p) => (
+                <div key={p.receipt_id} className={styles.paymentItem}>
+                  <div className={styles.paymentRow}>
+                    <div className={styles.paymentLeft}>
+                      <span className={styles.paymentTitle}>
+                        {p.fee_type_title || "—"}
+                      </span>
+                      {p.fee_type_xtra_info && (
+                        <span className={styles.paymentSub}>
+                          {p.fee_type_xtra_info}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.paymentRight}>
+                      <span className={styles.paymentAmount}>
+                        ৳{Number(p.amount).toLocaleString()}
+                      </span>
+                      <Tag
+                        color={
+                          PAYMENT_STATUS_COLOR[p.payment_status] ?? "default"
+                        }
+                      >
+                        {paymentStatusLabelMap[p.payment_status] ??
+                          p.payment_status ??
+                          "—"}
+                      </Tag>
+                    </div>
+                  </div>
+                  <div className={styles.paymentMeta}>
+                    <span>#{p.receipt_id}</span>
+                    <span className={styles.paymentMetaDot} />
+                    <span>Issued {formatReceiptDate(p.receipt_gen_date)}</span>
+                    {p.payment_status === "pending" && p.due_date && (
+                      <>
+                        <span className={styles.paymentMetaDot} />
+                        <span className={styles.paymentDue}>
+                          Due {formatReceiptDate(p.due_date)}
+                        </span>
+                      </>
+                    )}
+                    {p.payment_status === "paid" && p.payment_date && (
+                      <>
+                        <span className={styles.paymentMetaDot} />
+                        <span>Paid {formatReceiptDate(p.payment_date)}</span>
+                      </>
                     )}
                   </div>
                 </div>

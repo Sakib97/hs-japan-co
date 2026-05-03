@@ -7,10 +7,15 @@ import styles from "../../styles/MyPaymentHistoryComp.module.css";
 import {
   PAYMENT_STATUS,
   PAYMENT_STATUS_COLOR,
+  PAYMENT_STATUS_OPTIONS,
 } from "../../../../config/statusAndRoleConfig";
 import ReceiptPDFDocument from "../financesManagement/ReceiptPDFDocument";
 import { showToast } from "../../../../components/layout/CustomToast";
 import PayNowModal from "./PayNowModal";
+
+const paymentStatusLabelMap = Object.fromEntries(
+  PAYMENT_STATUS_OPTIONS.map(({ value, label }) => [value, label]),
+);
 
 const WATERMARK_TEXT = {
   [PAYMENT_STATUS.PENDING]: "UNPAID",
@@ -178,7 +183,7 @@ const MyPaymentHistoryComp = ({
       key: "payment_status",
       render: (v) => (
         <Tag color={PAYMENT_STATUS_COLOR[v] ?? "default"}>
-          {v?.toUpperCase() ?? "—"}
+          {paymentStatusLabelMap[v] ?? v ?? "—"}
         </Tag>
       ),
     },

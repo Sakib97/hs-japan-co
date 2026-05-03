@@ -7,6 +7,8 @@ import {
   STUDENT_STATUS_OPTIONS,
 } from "../../../../config/statusAndRoleConfig";
 import styles from "../../styles/StudentManagementPage.module.css";
+import { useAuth } from "../../../../context/AuthProvider";
+
 
 const statusLabelMap = Object.fromEntries(
   STUDENT_STATUS_OPTIONS.map(({ value, label }) => [value, label]),
@@ -22,6 +24,7 @@ const formatDate = (iso) => {
 };
 
 const StudentEnrollmentStatusComp = ({ email }) => {
+  const { studentStatus } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: [QK_STUDENT_PERSONAL, email, "enrollment"],
     queryFn: async () => {
@@ -44,8 +47,8 @@ const StudentEnrollmentStatusComp = ({ email }) => {
     );
   }
 
-  const statusColor = STUDENT_STATUS_COLOR[data?.status] ?? "default";
-  const statusLabel = statusLabelMap[data?.status] ?? data?.status ?? "—";
+  const statusColor = STUDENT_STATUS_COLOR[studentStatus ?? data?.status] ?? "default";
+  const statusLabel = statusLabelMap[studentStatus ?? data?.status] ?? studentStatus ?? data?.status ?? "—";
 
   return (
     <div className={styles.enrollCard}>
