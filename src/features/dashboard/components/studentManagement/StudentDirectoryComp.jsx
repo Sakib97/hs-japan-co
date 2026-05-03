@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { Table, Tag, Avatar, Button, Space, Tooltip, Dropdown } from "antd";
+import {
+  Table,
+  Tag,
+  Avatar,
+  Button,
+  Space,
+  Tooltip,
+  Dropdown,
+  Modal,
+  Select,
+} from "antd";
 import {
   FilterOutlined,
   DownloadOutlined,
@@ -8,14 +18,19 @@ import {
 } from "@ant-design/icons";
 import styles from "../../styles/StudentManagementPage.module.css";
 import { supabase } from "../../../../config/supabaseClient";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   STUDENT_STATUS_COLOR,
   STUDENT_STATUS_OPTIONS,
 } from "../../../../config/statusAndRoleConfig";
-import { QK_STUDENTS } from "../../../../config/queryKeyConfig";
+import {
+  QK_STUDENTS,
+  QK_STUDENT_PERSONAL,
+  QK_STUDENT_PROFILE,
+} from "../../../../config/queryKeyConfig";
 import { getFormattedTime } from "../../../../utils/dateUtil";
 import StudentProfileModal from "./StudentProfileModal";
+import { showToast } from "../../../../components/layout/CustomToast";
 
 const PAGE_SIZE = 10;
 
@@ -23,7 +38,7 @@ const statusLabelMap = Object.fromEntries(
   STUDENT_STATUS_OPTIONS.map(({ value, label }) => [value, label]),
 );
 
-const getColumns = (onViewProfile) => [
+const getColumns = (onViewProfile, onChangeStatus) => [
   {
     title: "NAME",
     key: "name",
@@ -87,7 +102,10 @@ const getColumns = (onViewProfile) => [
           ></i>
         </Tooltip>
         <Tooltip title="Change Status">
-          <i className={`${styles.actionIcon} fi fi-rr-career-growth`}></i>
+          <i
+            className={`${styles.actionIcon} fi fi-rr-career-growth`}
+            onClick={() => onChangeStatus(record)}
+          ></i>
         </Tooltip>
       </Space>
     ),
@@ -95,17 +113,50 @@ const getColumns = (onViewProfile) => [
 ];
 
 const StudentDirectoryComp = ({ searchQuery }) => {
+  const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [profileEmail, setProfileEmail] = useState(null);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [statusRecord, setStatusRecord] = useState(null);
+  const [newStatus, setNewStatus] = useState(null);
+
+  const openChangeStatus = (record) => {
+    setStatusRecord(record);
+    setNewStatus(record.status);
+  };
+
+  const closeChangeStatus = () => {
+    setStatusRecord(null);
+    setNewStatus(null);
+  };
+
+  const { mutate: updateStatus, isPending: statusUpdating } = useMutation({
+    mutationFn: async ({ email, status }) => {
+      const { error } = await supabase
+        .from("student")
+        .update({ status })
+        .eq("email", email);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: (_, { email }) => {
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENTS] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_PERSONAL, email] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_PROFILE, email] });
+      showToast("Student status updated.", "success");
+      closeChangeStatus();
+    },
+    onError: (err) => {
+      showToast(err.message || "Failed to update status.", "error");
+    },
+  });
 
   const openProfile = (email) => {
     setProfileEmail(email);
     setProfileModalOpen(true);
   };
 
-  const columns = getColumns(openProfile);
+  const columns = getColumns(openProfile, openChangeStatus);
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [QK_STUDENTS, currentPage, searchQuery, selectedStatus],
@@ -231,6 +282,43 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         open={profileModalOpen}
         onClose={() => setProfileModalOpen(false)}
       />
+
+      <Modal
+        open={!!statusRecord}
+        title="Change Student Status"
+        onCancel={closeChangeStatus}
+        footer={[
+          <Button
+            key="save"
+            type="primary"
+            loading={statusUpdating}
+            disabled={!newStatus || newStatus === statusRecord?.status}
+            onClick={() =>
+              updateStatus({ email: statusRecord.email, status: newStatus })
+            }
+          >
+            Save
+          </Button>,
+          <Button key="cancel" onClick={closeChangeStatus}>
+            Cancel
+          </Button>,
+        ]}
+      >
+        {statusRecord && (
+          <div style={{ padding: "8px 0" }}>
+            <p style={{ marginBottom: 12, fontSize: "0.85rem", color: "#555" }}>
+              Student:{" "}
+              <strong>{statusRecord.name ?? statusRecord.email}</strong>
+            </p>
+            <Select
+              style={{ width: "100%" }}
+              options={STUDENT_STATUS_OPTIONS}
+              value={newStatus}
+              onChange={setNewStatus}
+            />
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

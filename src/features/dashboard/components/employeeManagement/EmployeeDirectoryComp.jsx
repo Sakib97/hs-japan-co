@@ -71,12 +71,15 @@ const columns = [
     key: "actions",
     render: () => (
       <Space size="middle">
-        <Tooltip title="Settings">
-          <SettingOutlined className={styles.actionIcon} />
+        <Tooltip title="Change Status">
+          <i className={`fi fi-rr-career-growth ${styles.actionIcon}`}></i>
         </Tooltip>
-        <Tooltip title="Link">
+        <Tooltip title="Change Department/Designation">
+          <i className={`fi fi-rr-pc-chair ${styles.actionIcon}`}></i>
+        </Tooltip>
+        {/* <Tooltip title="Link">
           <LinkOutlined className={styles.actionIcon} />
-        </Tooltip>
+        </Tooltip> */}
       </Space>
     ),
   },
@@ -120,10 +123,10 @@ const EmployeeDirectoryComp = () => {
             Manage personnel records and access permissions
           </p>
         </div>
-        <div className={styles.directoryActions}>
+        {/* <div className={styles.directoryActions}>
           <Button icon={<FilterOutlined />}>Filter</Button>
           <Button icon={<DownloadOutlined />}>Export CSV</Button>
-        </div>
+        </div> */}
       </div>
 
       <Table
