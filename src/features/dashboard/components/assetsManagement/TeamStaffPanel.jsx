@@ -1,5 +1,5 @@
 ﻿import React, { useState, useContext, useMemo, useEffect } from "react";
-import { Form, Input, Popconfirm, Table, Tooltip, Pagination } from "antd";
+import { Form, Input, Popconfirm, Table, Tooltip } from "antd";
 import {
   HolderOutlined,
   EditOutlined,
@@ -26,7 +26,8 @@ import styles from "../../styles/TeamStaffPanel.module.css";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { QK_TEAM_PAGE_MEMBERS } from "../../../../config/queryKeyConfig";
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 10;
+const MAX_MEMBERS = 10; // Maximum members allowed on the team page as per requirements
 const MAX_FILE_SIZE = IMAGE_SIZES.TEAM_STAFF.maxBytes;
 
 const RowContext = React.createContext({});
@@ -229,8 +230,8 @@ const TeamStaffPanel = () => {
   };
 
   const handleAdd = () => {
-    if (savedMembers.length >= PAGE_SIZE) {
-      showToast(`Maximum ${PAGE_SIZE} staff members allowed.`, "error");
+    if (savedMembers.length >= MAX_MEMBERS) {
+      showToast(`Maximum ${MAX_MEMBERS} staff members allowed.`, "error");
       return;
     }
     const newKey = `new-${Date.now()}`;
@@ -382,7 +383,8 @@ const TeamStaffPanel = () => {
     {
       title: "Actions",
       dataIndex: "operation",
-      width: 150,
+      width: 110,
+      // fixed: "right",
       render: (_, record) => {
         if (isEditing(record)) {
           return (
@@ -450,8 +452,9 @@ const TeamStaffPanel = () => {
     {
       title: "Order",
       key: "sort",
-      width: 90,
-      align: "center",
+      width: 80,
+      // align: "center",
+      fixed: "right",
       render: (_, record, index) => {
         if (record.isNew) return null;
         const orderNum = (currentPage - 1) * PAGE_SIZE + index + 1;
@@ -482,7 +485,7 @@ const TeamStaffPanel = () => {
             formats: JPG, PNG, JPEG.
             <br />
             Recommended dimensions: 400x400 pixels for best display. Atmost{" "}
-            {PAGE_SIZE} members can be added.
+            {MAX_MEMBERS} members can be added.
           </p>
         </div>
       </div>
@@ -499,12 +502,20 @@ const TeamStaffPanel = () => {
               rowKey="key"
               dataSource={visibleRows}
               columns={columns}
-              pagination={false}
+              pagination={{
+                current: currentPage,
+                pageSize: PAGE_SIZE,
+                total: savedMembers.length,
+                onChange: (page) => setCurrentPage(page),
+                showSizeChanger: false,
+                showTotal: (t) => `${t} members`,
+              }}
               loading={isLoading || reordering}
               bordered
               rowClassName={(record) =>
                 isEditing(record) ? styles.tableRowEditing : ""
               }
+              scroll={{ x: "max-content" }}
             />
           </SortableContext>
         </DndContext>
@@ -517,17 +528,10 @@ const TeamStaffPanel = () => {
           {savedMembers.length} registered staff members
         </span>
         <div className={styles.footerRight}>
-          <Pagination
-            current={currentPage}
-            pageSize={PAGE_SIZE}
-            total={savedMembers.length}
-            onChange={(page) => setCurrentPage(page)}
-            showSizeChanger={false}
-          />
           <button
             className={styles.addBtn}
             onClick={handleAdd}
-            disabled={!!editingKey || savedMembers.length >= PAGE_SIZE}
+            disabled={!!editingKey || savedMembers.length >= MAX_MEMBERS}
           >
             <PlusOutlined /> Add New Staff Member
           </button>

@@ -69,18 +69,35 @@ const columns = [
   {
     title: "ACTIONS",
     key: "actions",
+    fixed: "right",
     render: () => (
-      <Space size="middle">
+      // <Space size="middle">
+      //   <Tooltip title="Change Status">
+      //     <i className={`fi fi-rr-career-growth ${styles.actionIcon}`}></i>
+      //   </Tooltip>
+      //   <Tooltip title="Change Department/Designation">
+      //     <i className={`fi fi-rr-pc-chair ${styles.actionIcon}`}></i>
+      //   </Tooltip>
+
+      // </Space>
+
+      <div style={{ display: "flex", gap: 8 }}>
         <Tooltip title="Change Status">
-          <i className={`fi fi-rr-career-growth ${styles.actionIcon}`}></i>
+          <Button
+            size="small"
+            icon={
+              <i className={`fi fi-rr-career-growth ${styles.actionIcon}`}></i>
+            }
+            onClick={() => setViewRecord(record)}
+          />
         </Tooltip>
         <Tooltip title="Change Department/Designation">
-          <i className={`fi fi-rr-pc-chair ${styles.actionIcon}`}></i>
+          <Button
+            size="small"
+            icon={<i className={`fi fi-rr-pc-chair ${styles.actionIcon}`}></i>}
+          />
         </Tooltip>
-        {/* <Tooltip title="Link">
-          <LinkOutlined className={styles.actionIcon} />
-        </Tooltip> */}
-      </Space>
+      </div>
     ),
   },
 ];
@@ -134,6 +151,8 @@ const EmployeeDirectoryComp = () => {
         dataSource={data?.rows ?? []}
         rowKey="email"
         loading={isLoading}
+        size="small"
+        scroll={{ x: "max-content" }}
         pagination={{
           current: currentPage,
           pageSize: PAGE_SIZE,
@@ -143,7 +162,6 @@ const EmployeeDirectoryComp = () => {
           onChange: (page) => setCurrentPage(page),
         }}
         className={styles.employeeTable}
-        scroll={{ x: 800 }}
       />
     </div>
   );

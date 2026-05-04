@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Table, Pagination } from "antd";
+import { Table } from "antd";
 import styles from "../../styles/CourseInventoryTable.module.css";
 import { supabase } from "../../../../config/supabaseClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -7,7 +7,7 @@ import { showToast } from "../../../../components/layout/CustomToast";
 
 import { QK_COURSES, QK_HOME_COURSES } from "../../../../config/queryKeyConfig";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 const LEVEL_COLORS = {
   N1: { bg: "#dcfce7", color: "#15803d" },
@@ -155,6 +155,7 @@ const CourseInventoryTable = ({ onEdit }) => {
     {
       title: "Actions",
       key: "actions",
+      fixed: "right",
       render: (_, record) => (
         <div className={styles.actionsCell}>
           <button
@@ -203,11 +204,19 @@ const CourseInventoryTable = ({ onEdit }) => {
         dataSource={data?.rows ?? []}
         rowKey="id"
         loading={isLoading}
-        pagination={false}
         className={styles.antTable}
+        scroll={{ x: "max-content" }}
+        pagination={{
+          current: currentPage,
+          pageSize: PAGE_SIZE,
+          total: data?.total ?? 0,
+          onChange: (page) => setCurrentPage(page),
+          showTotal: (t) => `${t} records`,
+          showSizeChanger: false,
+        }}
       />
 
-      <div className={styles.paginationRow}>
+      {/* <div className={styles.paginationRow}>
         <Pagination
           current={currentPage}
           pageSize={PAGE_SIZE}
@@ -216,7 +225,7 @@ const CourseInventoryTable = ({ onEdit }) => {
           showSizeChanger={false}
           showTotal={(total) => `${total} course${total !== 1 ? "s" : ""}`}
         />
-      </div>
+      </div> */}
     </section>
   );
 };

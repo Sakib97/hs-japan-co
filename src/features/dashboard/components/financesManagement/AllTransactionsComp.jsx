@@ -530,6 +530,10 @@ const AllTransactionsComp = () => {
         open={!!viewRecord}
         onCancel={() => setViewRecord(null)}
         title="Transaction Details"
+        style={{ top: 65 }}
+        styles={{
+          body: { maxHeight: "65vh", overflowY: "auto", paddingRight: 4 },
+        }}
         footer={[
           <Button
             key="download"
@@ -545,10 +549,11 @@ const AllTransactionsComp = () => {
           </Button>,
         ]}
         width={700}
+        className={styles.transactionDetailsModal}
       >
         {viewRecord && (
           <Descriptions
-            column={2}
+            column={{ xs: 1, sm: 2, md: 2, lg: 2, xl: 2 }}
             size="small"
             bordered
             style={{ marginTop: 12 }}

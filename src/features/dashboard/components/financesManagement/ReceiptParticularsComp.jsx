@@ -218,7 +218,7 @@ const ReceiptParticularsComp = ({
             placeholder="Additional info about the fee (optional)"
             value={additionalInfo}
             onChange={(e) => setAdditionalInfo(e.target.value)}
-            autoFocus
+            // autoFocus
           />
         </div>
       </div>

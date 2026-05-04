@@ -87,3 +87,10 @@
     width: 100%;
   }
 }
+
+@media (max-width: 600px) {
+  :global(.ant-modal) {
+    max-width: calc(100vw - 32px) !important;
+    margin: 0 16px !important;
+  }
+}
