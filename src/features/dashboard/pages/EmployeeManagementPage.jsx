@@ -4,6 +4,7 @@ import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import EmployeeStatsComp from "../components/employeeManagement/EmployeeStatsComp";
 import EmployeeDirectoryComp from "../components/employeeManagement/EmployeeDirectoryComp";
 import CreateEmployeeModal from "../components/employeeManagement/CreateEmployeeModal";
+import DeptDesignationComp from "../components/employeeManagement/DeptDesignationComp";
 import styles from "../styles/EmployeeManagementPage.module.css";
 
 const EmployeeManagementPage = () => {
@@ -13,12 +14,12 @@ const EmployeeManagementPage = () => {
       {/* Top Bar */}
       <div className={styles.topBar}>
         <h1 className={styles.pageTitle}>Employee Management</h1>
-        <Input
+        {/* <Input
           placeholder="Search employees, roles, or IDs..."
           prefix={<SearchOutlined />}
           className={styles.searchInput}
           allowClear
-        />
+        /> */}
         <Button
           type="primary"
           icon={<PlusOutlined />}
@@ -40,6 +41,9 @@ const EmployeeManagementPage = () => {
 
       {/* Employee Directory Table */}
       <EmployeeDirectoryComp />
+
+      {/* Department & Designation Directories */}
+      <DeptDesignationComp />
     </div>
   );
 };

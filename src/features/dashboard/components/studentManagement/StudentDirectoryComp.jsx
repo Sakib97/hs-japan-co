@@ -89,6 +89,8 @@ const getColumns = (onViewProfile, onChangeStatus) => [
   {
     title: "ACTIONS",
     key: "actions",
+    fixed: "right",
+    width: 100,
     render: (_, record) => (
       <Space size="middle">
         <Tooltip title="Resend Invite Email">

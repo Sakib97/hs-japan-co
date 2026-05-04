@@ -49,9 +49,25 @@ export const STUDENT_STATUS_COLOR = {
 
 // ─── Employee / User Account Status ─────────────────────────────────────────────
 // Used in: employees.activity_status, users_meta.is_active
-export const ACCOUNT_STATUS = {
-  ACTIVE: true,
-  INACTIVE: false,
+export const EMP_ACCOUNT_STATUS = {
+  FULLTIME: "full_time",
+  PARTTIME: "part_time",
+  INACTIVE: "inactive",
+  RETIRED: "retired",
+};
+
+export const EMP_ACCOUNT_STATUS_OPTIONS = [
+  { value: EMP_ACCOUNT_STATUS.FULLTIME, label: "Full Time" },
+  { value: EMP_ACCOUNT_STATUS.PARTTIME, label: "Part Time" },
+  { value: EMP_ACCOUNT_STATUS.INACTIVE, label: "Inactive" },
+  { value: EMP_ACCOUNT_STATUS.RETIRED, label: "Retired" },
+];
+
+export const EMP_ACCOUNT_STATUS_COLOR = {
+  [EMP_ACCOUNT_STATUS.FULLTIME]: "green",
+  [EMP_ACCOUNT_STATUS.PARTTIME]: "blue",
+  [EMP_ACCOUNT_STATUS.INACTIVE]: "red",
+  [EMP_ACCOUNT_STATUS.RETIRED]: "gray",
 };
 
 // ─── Course Status ───────────────────────────────────────────────────────────────

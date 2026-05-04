@@ -1,0 +1,177 @@
+/* ===== Wrapper ===== */
+.wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 20px;
+}
+
+/* ===== Table Section Card ===== */
+.tableSection {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  width: 100%;
+  border: 1px solid #f0f0f0;
+}
+
+/* ===== Header ===== */
+.tableHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tableTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 4px 0;
+}
+
+.tableSubtitle {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+/* ===== Cell text ===== */
+.cellText {
+  font-size: 13px;
+  color: #444;
+}
+
+/* ===== Add button (table footer) ===== */
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: #b91c1c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.addBtn:hover:not(:disabled) {
+  background: #991b1b;
+}
+
+.addBtn:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ===== Ant Table Overrides ===== */
+.dirTable :global(.ant-table) {
+  border-radius: 8px;
+}
+
+.dirTable :global(.ant-table-thead > tr > th) {
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dirTable :global(.ant-table-tbody > tr > td) {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.dirTable :global(.ant-table-tbody > tr:hover > td) {
+  background: #fefefe;
+}
+
+.dirTable :global(.ant-pagination) {
+  margin-top: 16px;
+}
+
+.dirTable :global(.ant-table-footer) {
+  background: #fafafa;
+  border-top: 1px solid #f0f0f0;
+  padding: 12px 16px;
+}
+
+/* ===== Toggle switch ===== */
+.toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggleOn {
+  background: #b91c1c;
+}
+
+.toggleOff {
+  background: #d1d5db;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggleOn .toggleThumb {
+  left: calc(100% - 18px);
+}
+
+.toggleOff .toggleThumb {
+  left: 2px;
+}
+
+.toggleLoading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.toggleSpinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgb(0, 0, 0);
+  border-top-color: #ffffff01;
+  animation: toggleSpin 0.6s linear infinite;
+}
+
+@keyframes toggleSpin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .wrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+}

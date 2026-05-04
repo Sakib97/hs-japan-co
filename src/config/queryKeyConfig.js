@@ -27,6 +27,7 @@ export const QK_VERIFY_RECEIPT = "verify-receipt";
 export const QK_EMPLOYEES = "employees";
 export const QK_DEPARTMENTS = "departments";
 export const QK_DESIGNATIONS = "designations";
+export const QK_DEPT_AND_DESIG = "dept-and-desig";
 
 // ─── Courses ──────────────────────────────────────────────────────────────────
 // Used in: CourseInventoryTable, CourseCreateForm, CourseComp, CourseDetailsPage

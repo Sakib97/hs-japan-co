@@ -1,35 +1,49 @@
-import { useState } from "react";
-import { Table, Tag, Avatar, Button, Tooltip, Dropdown } from "antd";
+import { useState, useRef } from "react";
+import {
+  Table,
+  Tag,
+  Avatar,
+  Button,
+  Tooltip,
+  Dropdown,
+  Modal,
+  Select,
+  Input,
+} from "antd";
 import {
   FilterOutlined,
   DownloadOutlined,
   SettingOutlined,
   LinkOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
 import styles from "../../styles/EmployeeManagementPage.module.css";
 import { supabase } from "../../../../config/supabaseClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   QK_EMPLOYEES,
-  QK_DEPARTMENTS,
-  QK_DESIGNATIONS,
+  QK_DEPT_AND_DESIG,
 } from "../../../../config/queryKeyConfig";
+import {
+  EMP_ACCOUNT_STATUS_OPTIONS,
+  EMP_ACCOUNT_STATUS_COLOR,
+} from "../../../../config/statusAndRoleConfig";
 
 const PAGE_SIZE = 10;
 
-const ACTIVITY_STATUS_OPTIONS = [
-  { value: true, label: "Active" },
-  { value: false, label: "Inactive" },
-];
-
-const columns = [
+const getColumns = (onChangeStatus, onChangeDeptDesig) => [
   {
     title: "NAME",
     key: "name",
     render: (_, record) => (
       <div className={styles.nameCell}>
-        <Avatar size={36} className={styles.employeeAvatar}>
-          {record.users_meta?.name?.charAt(0) ?? record.email.charAt(0)}
+        <Avatar
+          size={36}
+          className={styles.employeeAvatar}
+          src={record.users_meta?.avatar_url ?? undefined}
+        >
+          {!record.users_meta?.avatar_url &&
+            (record.users_meta?.name?.charAt(0) ?? record.email.charAt(0))}
         </Avatar>
         <div>
           <div className={styles.employeeName}>
@@ -40,47 +54,49 @@ const columns = [
       </div>
     ),
   },
-  {
-    title: "DESIGNATION",
-    key: "designation",
-    render: (_, record) => (
-      <span className={styles.cellText}>
-        {record.designations?.designation_name ?? "—"}
-      </span>
-    ),
-  },
+
   {
     title: "DEPARTMENT",
     key: "department",
     render: (_, record) => (
-      <span className={styles.cellText}>
-        {record.departments?.department_name ?? "—"}
-      </span>
+      <span className={styles.cellText}>{record?.department_name ?? "—"}</span>
+    ),
+  },
+
+  {
+    title: "DESIGNATION",
+    key: "designation",
+    render: (_, record) => (
+      <span className={styles.cellText}>{record?.designation_name ?? "—"}</span>
     ),
   },
   {
     title: "STATUS",
     key: "status",
     render: (_, record) => {
-      const active = record.activity_status !== false;
-      return (
-        <Tag color={active ? "green" : "red"}>
-          {active ? "Active" : "Inactive"}
-        </Tag>
-      );
+      const status = record.activity_status;
+      const opt = EMP_ACCOUNT_STATUS_OPTIONS.find((o) => o.value === status);
+      const color = EMP_ACCOUNT_STATUS_COLOR[status] ?? "default";
+      return <Tag color={color}>{opt?.label ?? status ?? "—"}</Tag>;
     },
   },
   {
     title: "ACTIONS",
     key: "actions",
     fixed: "right",
-    render: () => (
+    render: (_, record) => (
       <div style={{ display: "flex", gap: 18 }}>
         <Tooltip title="Change Status">
-          <i className={`fi fi-rr-career-growth ${styles.actionIcon}`}></i>
+          <i
+            className={`fi fi-rr-career-growth ${styles.actionIcon}`}
+            onClick={() => onChangeStatus(record)}
+          ></i>
         </Tooltip>
         <Tooltip title="Change Department/Designation">
-          <i className={`fi fi-rr-pc-chair ${styles.actionIcon}`}></i>
+          <i
+            className={`fi fi-rr-pc-chair ${styles.actionIcon}`}
+            onClick={() => onChangeDeptDesig(record)}
+          ></i>
         </Tooltip>
       </div>
     ),
@@ -92,33 +108,153 @@ const EmployeeDirectoryComp = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [selectedDesignation, setSelectedDesignation] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const debounceRef = useRef(null);
   const queryClient = useQueryClient();
 
-  const { data: departmentsData = [] } = useQuery({
-    queryKey: [QK_DEPARTMENTS],
+  const handleSearchChange = (e) => {
+    const val = e.target.value;
+    setSearchInput(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setSearchQuery(val.trim());
+      setCurrentPage(1);
+    }, 400);
+  };
+
+  // ── Change Status Modal ──────────────────────────────────────────
+  const [statusModal, setStatusModal] = useState({
+    open: false,
+    email: null,
+    newStatus: null,
+  });
+  const [statusUpdating, setStatusUpdating] = useState(false);
+
+  const openStatusModal = (record) => {
+    setStatusModal({
+      open: true,
+      email: record.email,
+      newStatus: record.activity_status ?? null,
+    });
+  };
+
+  const handleStatusUpdate = async () => {
+    if (!statusModal.email || statusModal.newStatus === null) return;
+    setStatusUpdating(true);
+    try {
+      const { error } = await supabase
+        .from("employees")
+        .update({ activity_status: statusModal.newStatus })
+        .eq("email", statusModal.email);
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      setStatusModal({ open: false, email: null, newStatus: null });
+    } finally {
+      setStatusUpdating(false);
+    }
+  };
+  // ────────────────────────────────────────────────────────────────
+
+  // ── Change Dept/Desig Modal ──────────────────────────────────────
+  const [deptDesigModal, setDeptDesigModal] = useState({
+    open: false,
+    email: null,
+    newDept: null,
+    newDesig: null,
+  });
+  const [savingDept, setSavingDept] = useState(false);
+  const [savingDesig, setSavingDesig] = useState(false);
+  const [savingBoth, setSavingBoth] = useState(false);
+
+  const openDeptDesigModal = (record) => {
+    setDeptDesigModal({
+      open: true,
+      email: record.email,
+      newDept: record.department_name ?? null,
+      newDesig: record.designation_name ?? null,
+    });
+  };
+
+  const closeDeptDesigModal = () =>
+    setDeptDesigModal({
+      open: false,
+      email: null,
+      newDept: null,
+      newDesig: null,
+    });
+
+  const handleSaveDept = async () => {
+    if (!deptDesigModal.email || !deptDesigModal.newDept) return;
+    setSavingDept(true);
+    try {
+      const { error } = await supabase
+        .from("employees")
+        .update({ department_name: deptDesigModal.newDept })
+        .eq("email", deptDesigModal.email);
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      closeDeptDesigModal();
+    } finally {
+      setSavingDept(false);
+    }
+  };
+
+  const handleSaveDesig = async () => {
+    if (!deptDesigModal.email || !deptDesigModal.newDesig) return;
+    setSavingDesig(true);
+    try {
+      const { error } = await supabase
+        .from("employees")
+        .update({ designation_name: deptDesigModal.newDesig })
+        .eq("email", deptDesigModal.email);
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      closeDeptDesigModal();
+    } finally {
+      setSavingDesig(false);
+    }
+  };
+
+  const handleSaveBoth = async () => {
+    if (
+      !deptDesigModal.email ||
+      !deptDesigModal.newDept ||
+      !deptDesigModal.newDesig
+    )
+      return;
+    setSavingBoth(true);
+    try {
+      const { error } = await supabase
+        .from("employees")
+        .update({
+          department_name: deptDesigModal.newDept,
+          designation_name: deptDesigModal.newDesig,
+        })
+        .eq("email", deptDesigModal.email);
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      closeDeptDesigModal();
+    } finally {
+      setSavingBoth(false);
+    }
+  };
+  // ────────────────────────────────────────────────────────────────
+
+  const { data: deptDesigData } = useQuery({
+    queryKey: [QK_DEPT_AND_DESIG],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("departments")
-        .select("department_name")
-        .order("department_name", { ascending: true });
+      const { data, error } = await supabase.rpc(
+        "get_departments_and_designations",
+      );
       if (error) throw error;
       return data;
     },
     staleTime: 1000 * 60 * 10,
   });
 
-  const { data: designationsData = [] } = useQuery({
-    queryKey: [QK_DESIGNATIONS],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("designations")
-        .select("designation_name")
-        .order("designation_name", { ascending: true });
-      if (error) throw error;
-      return data;
-    },
-    staleTime: 1000 * 60 * 10,
-  });
+  const departmentsData = deptDesigData?.departments ?? [];
+  const designationsData = deptDesigData?.designations ?? [];
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: [
@@ -127,10 +263,21 @@ const EmployeeDirectoryComp = () => {
       selectedStatus,
       selectedDepartment,
       selectedDesignation,
+      searchQuery,
     ],
     queryFn: async () => {
       const from = (currentPage - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
+
+      // Two-step search: find emails matching name in users_meta, then OR with email ilike
+      let nameMatchEmails = [];
+      if (searchQuery) {
+        const { data: metaMatches } = await supabase
+          .from("users_meta")
+          .select("email")
+          .ilike("name", `%${searchQuery}%`);
+        nameMatchEmails = (metaMatches ?? []).map((m) => m.email);
+      }
 
       let query = supabase
         .from("employees")
@@ -138,22 +285,31 @@ const EmployeeDirectoryComp = () => {
           `
           email,
           activity_status,
-          departments(department_name),
-          designations(designation_name),
+          department_name,
+          designation_name,
           users_meta(name, avatar_url)
           `,
-          // { count: "exact" },
+          { count: "exact" },
         )
+        .order("created_at", { ascending: true })
         .range(from, to);
+
+      if (searchQuery) {
+        const orParts = [`email.ilike.%${searchQuery}%`];
+        if (nameMatchEmails.length > 0) {
+          orParts.push(`email.in.(${nameMatchEmails.join(",")})`);
+        }
+        query = query.or(orParts.join(","));
+      }
 
       if (selectedStatus !== null) {
         query = query.eq("activity_status", selectedStatus);
       }
       if (selectedDepartment) {
-        query = query.eq("departments.department_name", selectedDepartment);
+        query = query.eq("department_name", selectedDepartment);
       }
       if (selectedDesignation) {
-        query = query.eq("designations.designation_name", selectedDesignation);
+        query = query.eq("designation_name", selectedDesignation);
       }
 
       const { data, error, count } = await query;
@@ -195,8 +351,8 @@ const EmployeeDirectoryComp = () => {
                   setCurrentPage(1);
                 },
               },
-              ...ACTIVITY_STATUS_OPTIONS.map((opt) => ({
-                key: String(opt.value),
+              ...EMP_ACCOUNT_STATUS_OPTIONS.map((opt) => ({
+                key: opt.value,
                 label: <span>{opt.label}</span>,
                 onClick: () => {
                   setSelectedStatus(opt.value);
@@ -212,7 +368,7 @@ const EmployeeDirectoryComp = () => {
             icon={<i className="fi fi-rr-filter"></i>}
             size={"medium"}
           >
-            {ACTIVITY_STATUS_OPTIONS.find((o) => o.value === selectedStatus)
+            {EMP_ACCOUNT_STATUS_OPTIONS.find((o) => o.value === selectedStatus)
               ?.label ?? "Status"}
           </Button>
         </Dropdown>
@@ -280,10 +436,19 @@ const EmployeeDirectoryComp = () => {
             {selectedDesignation ?? "Designation"}
           </Button>
         </Dropdown>
+
+        <Input
+          placeholder="Search emp name or email..."
+          prefix={<SearchOutlined />}
+          className={styles.searchInput}
+          allowClear
+          value={searchInput}
+          onChange={handleSearchChange}
+        />
       </div>
 
       <Table
-        columns={columns}
+        columns={getColumns(openStatusModal, openDeptDesigModal)}
         dataSource={data?.rows ?? []}
         rowKey="email"
         loading={isLoading || isFetching}
@@ -299,6 +464,110 @@ const EmployeeDirectoryComp = () => {
         }}
         className={styles.employeeTable}
       />
+
+      <Modal
+        title="Change Employee Status"
+        open={statusModal.open}
+        onOk={handleStatusUpdate}
+        onCancel={() =>
+          setStatusModal({ open: false, email: null, newStatus: null })
+        }
+        okText="Update"
+        cancelText="Cancel"
+        confirmLoading={statusUpdating}
+        okButtonProps={{ danger: false }}
+      >
+        <p style={{ marginBottom: 8, color: "#555" }}>
+          Employee: <strong>{statusModal.email}</strong>
+        </p>
+        <Select
+          style={{ width: "100%" }}
+          value={statusModal.newStatus}
+          onChange={(val) =>
+            setStatusModal((prev) => ({ ...prev, newStatus: val }))
+          }
+          options={EMP_ACCOUNT_STATUS_OPTIONS}
+          placeholder="Select status"
+        />
+      </Modal>
+
+      <Modal
+        title="Change Department / Designation"
+        open={deptDesigModal.open}
+        onCancel={closeDeptDesigModal}
+        footer={
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 8,
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button onClick={closeDeptDesigModal}>Cancel</Button>
+            <Button
+              type="primary"
+              loading={savingDept}
+              disabled={!deptDesigModal.newDept}
+              onClick={handleSaveDept}
+            >
+              Save Department
+            </Button>
+            <Button
+              type="primary"
+              loading={savingDesig}
+              disabled={!deptDesigModal.newDesig}
+              onClick={handleSaveDesig}
+            >
+              Save Designation
+            </Button>
+            <Button
+              type="primary"
+              loading={savingBoth}
+              disabled={!deptDesigModal.newDept || !deptDesigModal.newDesig}
+              onClick={handleSaveBoth}
+            >
+              Save Both
+            </Button>
+          </div>
+        }
+      >
+        <p style={{ marginBottom: 12, color: "#555" }}>
+          Employee: <strong>{deptDesigModal.email}</strong>
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <b>Department:</b>
+          <Select
+            style={{ flex: 1 }}
+            value={deptDesigModal.newDept}
+            onChange={(val) =>
+              setDeptDesigModal((prev) => ({ ...prev, newDept: val }))
+            }
+            options={departmentsData
+              .filter((d) => d.is_active === true)
+              .map((d) => ({
+                value: d.department_name,
+                label: d.department_name,
+              }))}
+            placeholder="Select department"
+          />
+          <b>Designation:</b>
+          <Select
+            style={{ flex: 1 }}
+            value={deptDesigModal.newDesig}
+            onChange={(val) =>
+              setDeptDesigModal((prev) => ({ ...prev, newDesig: val }))
+            }
+            options={designationsData
+              .filter((d) => d.is_active === true)
+              .map((d) => ({
+                value: d.designation_name,
+                label: d.designation_name,
+              }))}
+            placeholder="Select designation"
+          />
+        </div>
+      </Modal>
     </div>
   );
 };

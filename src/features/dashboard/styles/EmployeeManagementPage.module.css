@@ -108,7 +108,8 @@
 .directoryHeader {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  width: 100%;
   margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 12px;
@@ -263,7 +264,11 @@
   }
 
   .directoryHeader {
+    display: flex;
     flex-direction: column;
+    width: 100%;
+    gap: 5px;
+    align-items: stretch;
   }
 
   .directorySection {
