@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { Table } from "antd";
+import { Table, Input, Button, Dropdown, Tooltip } from "antd";
 import styles from "../../styles/CourseInventoryTable.module.css";
 import { supabase } from "../../../../config/supabaseClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { showToast } from "../../../../components/layout/CustomToast";
 
+import {
+  SearchOutlined,
+  EyeOutlined,
+  EditOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
 import { QK_COURSES, QK_HOME_COURSES } from "../../../../config/queryKeyConfig";
 
 const PAGE_SIZE = 10;
@@ -28,22 +34,35 @@ const initials = (name) =>
 const CourseInventoryTable = ({ onEdit }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [togglingId, setTogglingId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: [QK_COURSES, currentPage],
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: [QK_COURSES, currentPage, searchQuery, selectedStatus],
     queryFn: async () => {
       const from = (currentPage - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
 
-      const { data, error, count } = await supabase
+      let query = supabase
         .from("course")
         .select(
           "id, course_name, course_level, course_duration, instructor_name, instructor_description, course_description, cover_image_url, cover_image_size, created_at, is_active",
           { count: "exact" },
         )
-        .order("created_at", { ascending: false })
-        .range(from, to);
+        .order("created_at", { ascending: false });
+
+      if (searchQuery.trim()) {
+        query = query.or(
+          `course_name.ilike.%${searchQuery.trim()}%,instructor_name.ilike.%${searchQuery.trim()}%,course_level.ilike.%${searchQuery.trim()}%`,
+        );
+      }
+
+      if (selectedStatus !== null) {
+        query = query.eq("is_active", selectedStatus);
+      }
+
+      const { data, error, count } = await query.range(from, to);
 
       if (error) throw new Error(error.message);
       return { rows: data ?? [], total: count ?? 0 };
@@ -158,14 +177,13 @@ const CourseInventoryTable = ({ onEdit }) => {
       fixed: "right",
       render: (_, record) => (
         <div className={styles.actionsCell}>
-          <button
-            type="button"
-            className={styles.editBtn}
-            title="Edit"
-            onClick={() => onEdit?.(record)}
-          >
-            &#9998;
-          </button>
+          <Tooltip title="Edit">
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => onEdit?.(record)}
+            />
+          </Tooltip>
           <button
             type="button"
             className={`${styles.toggle} ${record.is_active !== false ? styles.toggleOn : styles.toggleOff} ${togglingId === record.id ? styles.toggleLoading : ""}`}
@@ -189,21 +207,80 @@ const CourseInventoryTable = ({ onEdit }) => {
     <section className={styles.section}>
       <div className={styles.header}>
         <h2 className={styles.title}>Course Inventory</h2>
-        <div className={styles.actions}>
-          <button type="button" className={styles.outlineBtn}>
-            &#9776;&nbsp; Filter
-          </button>
-          <button type="button" className={styles.outlineBtn}>
-            &#8593;&nbsp; Export
-          </button>
-        </div>
+        <Button
+          type=""
+          value="Refresh"
+          icon={<i className="fi fi-rr-refresh"></i>}
+          size={"medium"}
+          onClick={() => {
+            setCurrentPage(1);
+            queryClient.invalidateQueries({ queryKey: [QK_COURSES] });
+          }}
+        >
+          Refresh
+        </Button>
+
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: "__all__",
+                label: <span>All Statuses</span>,
+                onClick: () => {
+                  setSelectedStatus(null);
+                  setCurrentPage(1);
+                },
+              },
+              {
+                key: "active",
+                label: <span>Active</span>,
+                onClick: () => {
+                  setSelectedStatus(true);
+                  setCurrentPage(1);
+                },
+              },
+              {
+                key: "inactive",
+                label: <span>Deactivated</span>,
+                onClick: () => {
+                  setSelectedStatus(false);
+                  setCurrentPage(1);
+                },
+              },
+            ],
+          }}
+          placement="bottomLeft"
+        >
+          <Button
+            type={selectedStatus !== null ? "primary" : ""}
+            icon={<i className="fi fi-rr-filter"></i>}
+          >
+            {selectedStatus === true
+              ? "Active"
+              : selectedStatus === false
+                ? "Deactivated"
+                : "Status"}
+          </Button>
+        </Dropdown>
+        <Input
+          placeholder="Search by course, instructor, or level..."
+          prefix={<SearchOutlined />}
+          // style={{ width: "400px" }}
+          className={styles.searchInput}
+          allowClear
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
+          value={searchQuery}
+        />
       </div>
 
       <Table
         columns={columns}
         dataSource={data?.rows ?? []}
         rowKey="id"
-        loading={isLoading}
+        loading={isLoading || isFetching}
         className={styles.antTable}
         scroll={{ x: "max-content" }}
         pagination={{

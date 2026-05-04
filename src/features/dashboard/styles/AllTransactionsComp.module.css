@@ -75,15 +75,24 @@
 .searchInput {
   width: 400px;
 }
+.searchMonthPicker {
+  width: 200px;
+}
 
 /*  Responsive styles */
 @media (max-width: 768px) {
   .cardHeader {
     flex-direction: column;
-    align-items: flex-start;
+    /* align-items: flex-start; */
+    align-items: stretch;
+
     gap: 10px;
+    
   }
   .searchInput {
+    width: 100%;
+  }
+  .searchMonthPicker {
     width: 100%;
   }
 }

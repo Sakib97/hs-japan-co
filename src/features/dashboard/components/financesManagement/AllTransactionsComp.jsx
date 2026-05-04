@@ -488,7 +488,7 @@ const AllTransactionsComp = () => {
 
         <DatePicker
           placeholder="Filter By Payment Month"
-          style={{ width: "200px" }}
+          className={styles.searchMonthPicker}
           onChange={onPaymentMonthChange}
           picker="month"
           value={selectedPaymentMonth}

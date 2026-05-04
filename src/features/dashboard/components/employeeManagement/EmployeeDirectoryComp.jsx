@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Table, Tag, Avatar, Button, Space, Tooltip } from "antd";
+import { Table, Tag, Avatar, Button, Tooltip, Dropdown } from "antd";
 import {
   FilterOutlined,
   DownloadOutlined,
@@ -8,15 +8,19 @@ import {
 } from "@ant-design/icons";
 import styles from "../../styles/EmployeeManagementPage.module.css";
 import { supabase } from "../../../../config/supabaseClient";
-import { useQuery } from "@tanstack/react-query";
-import { QK_EMPLOYEES } from "../../../../config/queryKeyConfig";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  QK_EMPLOYEES,
+  QK_DEPARTMENTS,
+  QK_DESIGNATIONS,
+} from "../../../../config/queryKeyConfig";
 
 const PAGE_SIZE = 10;
 
-const statusColorMap = {
-  true: "green",
-  false: "red",
-};
+const ACTIVITY_STATUS_OPTIONS = [
+  { value: true, label: "Active" },
+  { value: false, label: "Inactive" },
+];
 
 const columns = [
   {
@@ -71,31 +75,12 @@ const columns = [
     key: "actions",
     fixed: "right",
     render: () => (
-      // <Space size="middle">
-      //   <Tooltip title="Change Status">
-      //     <i className={`fi fi-rr-career-growth ${styles.actionIcon}`}></i>
-      //   </Tooltip>
-      //   <Tooltip title="Change Department/Designation">
-      //     <i className={`fi fi-rr-pc-chair ${styles.actionIcon}`}></i>
-      //   </Tooltip>
-
-      // </Space>
-
-      <div style={{ display: "flex", gap: 8 }}>
+      <div style={{ display: "flex", gap: 18 }}>
         <Tooltip title="Change Status">
-          <Button
-            size="small"
-            icon={
-              <i className={`fi fi-rr-career-growth ${styles.actionIcon}`}></i>
-            }
-            onClick={() => setViewRecord(record)}
-          />
+          <i className={`fi fi-rr-career-growth ${styles.actionIcon}`}></i>
         </Tooltip>
         <Tooltip title="Change Department/Designation">
-          <Button
-            size="small"
-            icon={<i className={`fi fi-rr-pc-chair ${styles.actionIcon}`}></i>}
-          />
+          <i className={`fi fi-rr-pc-chair ${styles.actionIcon}`}></i>
         </Tooltip>
       </div>
     ),
@@ -104,14 +89,50 @@ const columns = [
 
 const EmployeeDirectoryComp = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [selectedDesignation, setSelectedDesignation] = useState(null);
+  const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: [QK_EMPLOYEES, currentPage],
+  const { data: departmentsData = [] } = useQuery({
+    queryKey: [QK_DEPARTMENTS],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("departments")
+        .select("department_name")
+        .order("department_name", { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const { data: designationsData = [] } = useQuery({
+    queryKey: [QK_DESIGNATIONS],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("designations")
+        .select("designation_name")
+        .order("designation_name", { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: [
+      QK_EMPLOYEES,
+      currentPage,
+      selectedStatus,
+      selectedDepartment,
+      selectedDesignation,
+    ],
     queryFn: async () => {
       const from = (currentPage - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
 
-      const { data, error, count } = await supabase
+      let query = supabase
         .from("employees")
         .select(
           `
@@ -121,14 +142,25 @@ const EmployeeDirectoryComp = () => {
           designations(designation_name),
           users_meta(name, avatar_url)
           `,
-          { count: "exact" },
+          // { count: "exact" },
         )
         .range(from, to);
 
+      if (selectedStatus !== null) {
+        query = query.eq("activity_status", selectedStatus);
+      }
+      if (selectedDepartment) {
+        query = query.eq("departments.department_name", selectedDepartment);
+      }
+      if (selectedDesignation) {
+        query = query.eq("designations.designation_name", selectedDesignation);
+      }
+
+      const { data, error, count } = await query;
       if (error) throw new Error(error.message);
       return { rows: data, total: count };
     },
-    keepPreviousData: true, // keeps old data visible while next page loads
+    keepPreviousData: true,
   });
 
   return (
@@ -140,17 +172,121 @@ const EmployeeDirectoryComp = () => {
             Manage personnel records and access permissions
           </p>
         </div>
-        {/* <div className={styles.directoryActions}>
-          <Button icon={<FilterOutlined />}>Filter</Button>
-          <Button icon={<DownloadOutlined />}>Export CSV</Button>
-        </div> */}
+        <Button
+          icon={<i className="fi fi-rr-refresh"></i>}
+          size={"medium"}
+          // loading={isFetching}
+          onClick={() => {
+            setCurrentPage(1);
+            queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+          }}
+        >
+          Refresh
+        </Button>
+
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: "__all__",
+                label: <span>All Statuses</span>,
+                onClick: () => {
+                  setSelectedStatus(null);
+                  setCurrentPage(1);
+                },
+              },
+              ...ACTIVITY_STATUS_OPTIONS.map((opt) => ({
+                key: String(opt.value),
+                label: <span>{opt.label}</span>,
+                onClick: () => {
+                  setSelectedStatus(opt.value);
+                  setCurrentPage(1);
+                },
+              })),
+            ],
+          }}
+          placement="bottomLeft"
+        >
+          <Button
+            type={selectedStatus !== null ? "primary" : ""}
+            icon={<i className="fi fi-rr-filter"></i>}
+            size={"medium"}
+          >
+            {ACTIVITY_STATUS_OPTIONS.find((o) => o.value === selectedStatus)
+              ?.label ?? "Status"}
+          </Button>
+        </Dropdown>
+
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: "__all__",
+                label: <span>All Departments</span>,
+                onClick: () => {
+                  setSelectedDepartment(null);
+                  setCurrentPage(1);
+                },
+              },
+              ...departmentsData.map((d) => ({
+                key: d.department_name,
+                label: <span>{d.department_name}</span>,
+                onClick: () => {
+                  setSelectedDepartment(d.department_name);
+                  setCurrentPage(1);
+                },
+              })),
+            ],
+          }}
+          placement="bottomLeft"
+        >
+          <Button
+            type={selectedDepartment ? "primary" : ""}
+            icon={<i className="fi fi-rr-filter"></i>}
+            size={"medium"}
+          >
+            {selectedDepartment ?? "Department"}
+          </Button>
+        </Dropdown>
+
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: "__all__",
+                label: <span>All Designations</span>,
+                onClick: () => {
+                  setSelectedDesignation(null);
+                  setCurrentPage(1);
+                },
+              },
+              ...designationsData.map((d) => ({
+                key: d.designation_name,
+                label: <span>{d.designation_name}</span>,
+                onClick: () => {
+                  setSelectedDesignation(d.designation_name);
+                  setCurrentPage(1);
+                },
+              })),
+            ],
+          }}
+          placement="bottomLeft"
+        >
+          <Button
+            type={selectedDesignation ? "primary" : ""}
+            icon={<i className="fi fi-rr-filter"></i>}
+            size={"medium"}
+          >
+            {selectedDesignation ?? "Designation"}
+          </Button>
+        </Dropdown>
       </div>
 
       <Table
         columns={columns}
         dataSource={data?.rows ?? []}
         rowKey="email"
-        loading={isLoading}
+        loading={isLoading || isFetching}
         size="small"
         scroll={{ x: "max-content" }}
         pagination={{
