@@ -10,10 +10,12 @@ export const AuthProvider = ({ children }) => {
   const [userMeta, setUserMeta] = useState(null);
   const [userMetaLoading, setUserMetaLoading] = useState(true);
   const [studentStatus, setStudentStatus] = useState(null);
+  const [employeeStatus, setEmployeeStatus] = useState(null);
   const fetchedUid = useRef(null);
 
   // NEW: store realtime channel
   const studentChannelRef = useRef(null);
+  const employeeChannelRef = useRef(null);
 
   const fetchStudentStatus = async (email) => {
     const { data } = await supabase
@@ -22,6 +24,15 @@ export const AuthProvider = ({ children }) => {
       .eq("email", email)
       .single();
     setStudentStatus(data?.status ?? null);
+  };
+
+  const fetchEmployeeStatus = async (email) => {
+    const { data } = await supabase
+      .from("employees")
+      .select("activity_status")
+      .eq("email", email)
+      .single();
+    setEmployeeStatus(data?.activity_status ?? null);
   };
 
   // NEW: subscribe to realtime updates
@@ -50,6 +61,31 @@ export const AuthProvider = ({ children }) => {
       .subscribe();
 
     studentChannelRef.current = channel;
+  };
+
+  const subscribeToEmployeeStatus = (email) => {
+    if (employeeChannelRef.current) {
+      supabase.removeChannel(employeeChannelRef.current);
+      employeeChannelRef.current = null;
+    }
+
+    const channel = supabase
+      .channel(`employee-status-${email}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "employees",
+          filter: `email=eq.${email}`,
+        },
+        (payload) => {
+          setEmployeeStatus(payload.new.activity_status);
+        },
+      )
+      .subscribe();
+
+    employeeChannelRef.current = channel;
   };
 
   // Supabase automatically stores the session token in localStorage.
@@ -86,6 +122,7 @@ export const AuthProvider = ({ children }) => {
           setUser(null);
           setUserMeta(null);
           setStudentStatus(null);
+          setEmployeeStatus(null);
           fetchedUid.current = null;
         } else {
           setUserMeta(userMetaData);
@@ -94,6 +131,10 @@ export const AuthProvider = ({ children }) => {
 
             // Subscribe to realtime updates for this student's status
             subscribeToStudentStatus(session.user.email);
+          }
+          if (userMetaData?.role === USER_ROLES.EMPLOYEE) {
+            await fetchEmployeeStatus(session.user.email);
+            subscribeToEmployeeStatus(session.user.email);
           }
         }
       }
@@ -141,11 +182,16 @@ export const AuthProvider = ({ children }) => {
                 setUser(null);
                 setUserMeta(null);
                 setStudentStatus(null);
+                setEmployeeStatus(null);
                 fetchedUid.current = null;
                 //  CLEANUP realtime
                 if (studentChannelRef.current) {
                   supabase.removeChannel(studentChannelRef.current);
                   studentChannelRef.current = null;
+                }
+                if (employeeChannelRef.current) {
+                  supabase.removeChannel(employeeChannelRef.current);
+                  employeeChannelRef.current = null;
                 }
               });
             } else {
@@ -155,18 +201,27 @@ export const AuthProvider = ({ children }) => {
                 // Subscribe to realtime updates for this student's status
                 subscribeToStudentStatus(session.user.email);
               }
+              if (data?.role === USER_ROLES.EMPLOYEE) {
+                await fetchEmployeeStatus(session.user.email);
+                subscribeToEmployeeStatus(session.user.email);
+              }
             }
             setUserMetaLoading(false);
           });
       } else {
         setUserMeta(null);
         setStudentStatus(null);
+        setEmployeeStatus(null);
         setUserMetaLoading(false);
         fetchedUid.current = null;
         //  CLEANUP realtime on logout
         if (studentChannelRef.current) {
           supabase.removeChannel(studentChannelRef.current);
           studentChannelRef.current = null;
+        }
+        if (employeeChannelRef.current) {
+          supabase.removeChannel(employeeChannelRef.current);
+          employeeChannelRef.current = null;
         }
       }
     });
@@ -175,6 +230,10 @@ export const AuthProvider = ({ children }) => {
       if (studentChannelRef.current) {
         supabase.removeChannel(studentChannelRef.current);
         studentChannelRef.current = null;
+      }
+      if (employeeChannelRef.current) {
+        supabase.removeChannel(employeeChannelRef.current);
+        employeeChannelRef.current = null;
       }
       subscription.unsubscribe();
     };
@@ -191,6 +250,8 @@ export const AuthProvider = ({ children }) => {
         userMetaLoading,
         studentStatus,
         setStudentStatus,
+        employeeStatus,
+        setEmployeeStatus,
       }}
     >
       {children}

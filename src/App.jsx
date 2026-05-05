@@ -39,7 +39,7 @@ import MyCoursesPage from "./features/dashboard/pages/MyCoursesPage.jsx";
 import MyFinancesPage from "./features/dashboard/pages/MyFinancesPage.jsx";
 import PaymentVerifyPage from "./features/verify/pages/paymentVerifyPage.jsx";
 import RoleBasedRoute from "./components/common/RoleBasedRoute.jsx";
-
+import EventsActivitiesManagementPage from "./features/dashboard/pages/EventsActivitiesManagementPage.jsx";
 
 const SPLASH_KEY = "hs_japan_splash_shown";
 
@@ -69,7 +69,10 @@ function App() {
         <Route path="/team" element={<TeamPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/courses/:id" element={<CourseDetailsPage />} />
-        <Route path="/payment/verify/:receiptId" element={<PaymentVerifyPage />} />
+        <Route
+          path="/payment/verify/:receiptId"
+          element={<PaymentVerifyPage />}
+        />
         <Route
           path="/auth/signin"
           element={
@@ -100,17 +103,25 @@ function App() {
           <Route
             path="student-management"
             element={
-              <RoleBasedRoute allowedRoles={["admin", "employee"]}>
+              <RoleBasedRoute
+                allowedRoles={["admin", "employee"]}
+                allowedEmployeeStatuses={["full_time"]}
+              >
                 <StudentManagementPage />
               </RoleBasedRoute>
             }
           />
-          <Route path="course-management" element={
-            <RoleBasedRoute allowedRoles={["admin", "employee"]}>
-              <CourseManagementPage />
-            </RoleBasedRoute>
+          <Route
+            path="course-management"
+            element={
+              <RoleBasedRoute
+                allowedRoles={["admin", "employee"]}
+                allowedEmployeeStatuses={["full_time"]}
+              >
+                <CourseManagementPage />
+              </RoleBasedRoute>
             }
-            />
+          />
           <Route
             path="employee-management"
             element={
@@ -122,7 +133,10 @@ function App() {
           <Route
             path="finances"
             element={
-              <RoleBasedRoute allowedRoles={["admin", "employee"]}>
+              <RoleBasedRoute
+                allowedRoles={["admin", "employee"]}
+                allowedEmployeeStatuses={["full_time"]}
+              >
                 <FinancesPage />
               </RoleBasedRoute>
             }
@@ -132,6 +146,18 @@ function App() {
             element={
               <RoleBasedRoute allowedRoles={["admin"]}>
                 <AssetsManagementPage />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="events-activities"
+            element={
+              <RoleBasedRoute
+                allowedRoles={["admin", "employee"]}
+                allowedEmployeeStatuses={["full_time", "part_time"]}
+              >
+                <EventsActivitiesManagementPage />
               </RoleBasedRoute>
             }
           />

@@ -72,6 +72,7 @@ const mainMenuItems = [
       {
         role: "employee",
         isActive: true,
+        employeeStatus: ["full_time"],
       },
     ],
   },
@@ -88,6 +89,7 @@ const mainMenuItems = [
       {
         role: "employee",
         isActive: true,
+        employeeStatus: ["full_time"],
       },
     ],
   },
@@ -104,6 +106,7 @@ const mainMenuItems = [
       {
         role: "employee",
         isActive: true,
+        employeeStatus: ["full_time"],
       },
     ],
   },
@@ -119,6 +122,25 @@ const mainMenuItems = [
       },
     ],
   },
+
+  {
+    key: "/dashboard/events-activities",
+    icon: <i className="fi fi-rr-calendar-star"></i>,
+    label: "Events & Activities",
+    // adminOnly: true,
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+      {
+        role: "employee",
+        isActive: true,
+        employeeStatus: ["full_time", "part_time"],
+      },
+    ],
+  },
+
 
   {
     key: "/dashboard/my-courses",
@@ -167,7 +189,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRef = useRef(null);
-  const { user, userMeta, loading, userMetaLoading, studentStatus } = useAuth();
+  const { user, userMeta, loading, userMetaLoading, studentStatus, employeeStatus } = useAuth();
 
   const handleMenuClick = (path) => {
     navigate(path);
@@ -178,12 +200,13 @@ const DashboardPage = () => {
 
   const isAdmin = userMeta?.role === "admin";
   const isStudent = userMeta?.role === "student";
-
+  const isEmployee = userMeta?.role === "employee";
   const visibleMenuItems = mainMenuItems.filter((item) => {
     if (!item.visibleForRoles) return true;
     const match = item.visibleForRoles.find((r) => r.role === userMeta?.role);
     if (!match || !match.isActive) return false;
     if (match.studentStatus) return match.studentStatus.includes(studentStatus);
+    if (match.employeeStatus) return match.employeeStatus.includes(employeeStatus);
     return true;
   });
 

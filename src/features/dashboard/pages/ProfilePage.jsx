@@ -14,6 +14,7 @@ import StudentPersonalDetailsComp from "../components/studentManagement/StudentP
 import StudentContactComp from "../components/studentManagement/StudentContactComp";
 import StudentEducationComp from "../components/studentManagement/StudentEducationComp";
 import StudentEnrollmentStatusComp from "../components/studentManagement/StudentEnrollmentStatusComp";
+import EmployeeStatusComp from "../components/employeeManagement/EmployeeStatusComp";
 
 const MAX_FILE_SIZE = IMAGE_SIZES.PROFILE_AVATAR.maxBytes;
 
@@ -333,6 +334,9 @@ const ProfilePage = () => {
           <StudentContactComp email={user?.email} />
           <StudentEducationComp email={user?.email} />
         </>
+      )}
+      {role === USER_ROLES.EMPLOYEE && (
+        <EmployeeStatusComp email={user?.email} />
       )}
     </div>
   );

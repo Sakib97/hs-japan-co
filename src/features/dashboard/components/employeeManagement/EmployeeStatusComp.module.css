@@ -1,0 +1,72 @@
+.card {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sectionLabel {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.key {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag {
+  font-size: 12.5px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.value {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #222;
+}
+
+.divider {
+  width: 1px;
+  height: 32px;
+  background: #e8e8e8;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .divider {
+    display: none;
+  }
+
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+}
