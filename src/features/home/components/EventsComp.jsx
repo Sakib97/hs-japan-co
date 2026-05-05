@@ -1,29 +1,49 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "../../../config/supabaseClient";
+import { QK_EVENTS } from "../../../config/queryKeyConfig";
 import styles from "../styles/EventsComp.module.css";
 
-const events = [
-  {
-    id: 1,
-    day: 15,
-    month: "Mar",
-    year: 2023,
-    title: "Certified Institute Meetup",
-    time: "8:00 AM – 5:00 PM",
-    location: "Online",
-    speakers: 20,
-  },
-  {
-    id: 2,
-    day: 26,
-    month: "Jan",
-    year: 2023,
-    title: "Fast Track Course Opening",
-    time: "7:00 PM – 12:00 AM",
-    location: "Online",
-    speakers: 10,
-  },
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
+const parseDate = (dateStr) => {
+  if (!dateStr) return { day: "—", month: "", year: "" };
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return { day: dateStr, month: "", year: "" };
+  return {
+    day: d.getDate(),
+    month: MONTHS[d.getMonth()],
+    year: d.getFullYear(),
+  };
+};
+
 const EventsComp = () => {
+  const { data: events = [] } = useQuery({
+    queryKey: [QK_EVENTS],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("events_page")
+        .select(
+          "id, event_title, cover_url, event_date, event_time, event_place, event_speaker",
+        )
+        .order("event_date", { ascending: true });
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+
   return (
     <section className={styles.section}>
       {/* Decorative crescent on right */}
@@ -45,33 +65,52 @@ const EventsComp = () => {
             <h2 className={styles.title}>Upcoming Events</h2>
 
             <div className={styles.eventsList}>
-              {events.map((event) => (
-                <div key={event.id} className={styles.eventCard}>
-                  <div className={styles.dateBadge}>
-                    <span className={styles.dateDay}>{event.day}</span>
-                    <span className={styles.dateMonth}>
-                      {event.month}, {event.year}
-                    </span>
-                  </div>
-                  <div className={styles.eventInfo}>
-                    <h3 className={styles.eventTitle}>{event.title}</h3>
-                    <div className={styles.eventMeta}>
-                      <span className={styles.metaItem}>
-                        <i className="fa-regular fa-clock" />
-                        {event.time}
-                      </span>
-                      <span className={styles.metaItem}>
-                        <i className="fa-solid fa-building-columns" />
-                        {event.location}
-                      </span>
-                      <span className={styles.metaItem}>
-                        <i className="fa-regular fa-user" />
-                        {event.speakers} Speaker
+              {events.map((event) => {
+                const { day, month, year } = parseDate(event.event_date);
+                return (
+                  <div key={event.id} className={styles.eventCard}>
+                    <div className={styles.dateBadge}>
+                      <span className={styles.dateDay}>{day}</span>
+                      <span className={styles.dateMonth}>
+                        {month}
+                        {year ? `, ${year}` : ""}
                       </span>
                     </div>
+                    <div className={styles.eventInfo}>
+                      <h3 className={styles.eventTitle}>
+                        {event.event_title ?? "—"}
+                      </h3>
+                      <div className={styles.eventMeta}>
+                        {event.event_time && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-regular fa-clock" />
+                            {event.event_time}
+                          </span>
+                        )}
+                        {event.event_place && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-solid fa-building-columns" />
+                            {event.event_place}
+                          </span>
+                        )}
+                        {event.event_speaker && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-regular fa-user" />
+                            {event.event_speaker}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {event.cover_url && (
+                      <img
+                        src={event.cover_url}
+                        alt={event.event_title ?? ""}
+                        className={styles.coverThumb}
+                      />
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Decorative dot */}

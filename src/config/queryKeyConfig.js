@@ -50,3 +50,9 @@ export const QK_TEAM_PAGE_MEMBERS = "team_page_members";
 
 // Used in: CarouselComp, HomepagePanel
 export const QK_HOMEPAGE_CAROUSEL = "homepage_carousel_slides";
+
+// ─── Events & Activities ──────────────────────────────────────────────────────
+// Used in: EventsTableComp
+export const QK_EVENTS = "events_page";
+// Used in: ActivitiesTableComp
+export const QK_ACTIVITIES = "activities_page";

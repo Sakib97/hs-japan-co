@@ -43,4 +43,16 @@ export const IMAGE_SIZES = {
     maxBytes: 3 * 1024 * 1024, // 3 MB
     label: "3 MB",
   },
+
+  // Events page cover images
+  EVENTS_COVER: {
+    maxBytes: 300 * 1024, // 300 KB
+    label: "300 KB",
+  },
+
+  // Activities page cover images
+  ACTIVITIES_COVER: {
+    maxBytes: 300 * 1024, // 300 KB
+    label: "300 KB",
+  },
 };

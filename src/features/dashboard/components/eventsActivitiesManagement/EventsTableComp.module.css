@@ -1,0 +1,203 @@
+.section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  border: 1px solid #f0f0f0;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 4px 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.cellText {
+  font-size: 13px;
+  color: #444;
+}
+
+.noImage {
+  width: 48px;
+  height: 48px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.actionIcon {
+  font-size: 15px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.actionIcon:hover {
+  color: #b91c1c;
+}
+
+.deleteIcon:hover {
+  color: #dc2626;
+}
+
+/* Table overrides */
+.table :global(.ant-table-thead > tr > th) {
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.table :global(.ant-table-tbody > tr > td) {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.table :global(.ant-table-tbody > tr:hover > td) {
+  background: #fefefe;
+}
+
+.table :global(.ant-pagination) {
+  margin-top: 16px;
+}
+
+/* Add button */
+.addBtn {
+  margin-top: 16px;
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.addBtn:hover {
+  background: #991b1b !important;
+  border-color: #991b1b !important;
+}
+
+/* Modal cover upload */
+.coverUploadArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.coverPreview {
+  width: 100px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  display: block;
+}
+
+.coverWrapper {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.coverRemoveBtn {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.coverRemoveBtn:hover {
+  background: #b91c1c;
+}
+
+.coverPlaceholder {
+  width: 100px;
+  height: 90px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #bbb;
+  border: 1px dashed #d0d0d0;
+}
+
+.sizeHint {
+  font-size: 11px;
+  color: #999;
+}
+
+.formRow {
+  display: flex;
+  gap: 12px;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.galleryTileAdd {
+  width: 100px;
+  height: 90px;
+  border-radius: 10px;
+  border: 2px dashed #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #9ca3af;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.galleryTileAdd:hover {
+  border-color: #b91c1c;
+  color: #b91c1c;
+}

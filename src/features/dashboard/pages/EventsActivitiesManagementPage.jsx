@@ -1,9 +1,14 @@
 import styles from "./EventsActivitiesManagementPage.module.css";
+import EventsTableComp from "../components/eventsActivitiesManagement/EventsTableComp";
+import ActivitiesTableComp from "../components/eventsActivitiesManagement/ActivitiesTableComp";
+
 const EventsActivitiesManagementPage = () => {
-    return ( <div className={styles.container}>
-        <h1>Events & Activities Management</h1>
-        <p>This is where admins and employees can manage events and activities related to the school.</p>
-    </div> );
-}
- 
+  return (
+    <div className={styles.pageWrapper}>
+      <EventsTableComp />
+      <ActivitiesTableComp />
+    </div>
+  );
+};
+
 export default EventsActivitiesManagementPage;
