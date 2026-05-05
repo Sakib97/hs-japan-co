@@ -39,7 +39,7 @@ const EnquiryFormComp = () => {
               ]}
             >
               <Input
-                placeholder="Enter Your Full Name"
+                placeholder="Enter Your Full Name *"
                 className={styles.formInput}
               />
             </Form.Item>
@@ -54,7 +54,7 @@ const EnquiryFormComp = () => {
                 },
               ]}
             >
-              <Input placeholder="Email Address" className={styles.formInput} />
+              <Input placeholder="Email Address *" className={styles.formInput} />
             </Form.Item>
 
             <Form.Item
@@ -62,7 +62,7 @@ const EnquiryFormComp = () => {
               rules={[{ required: true, message: "Please enter your address" }]}
             >
               <Input
-                placeholder="Current Address"
+                placeholder="Current Address *"
                 className={styles.formInput}
               />
             </Form.Item>
@@ -75,7 +75,7 @@ const EnquiryFormComp = () => {
             >
               <Input
                 type="tel"
-                placeholder="Phone No"
+                placeholder="Phone No *"
                 className={styles.formInput}
               />
             </Form.Item>
