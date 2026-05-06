@@ -15,7 +15,7 @@ import {
   DownloadOutlined,
   SettingOutlined,
   LinkOutlined,
-  SearchOutlined
+  SearchOutlined,
 } from "@ant-design/icons";
 import styles from "../../styles/EmployeeManagementPage.module.css";
 import { supabase } from "../../../../config/supabaseClient";
@@ -23,10 +23,12 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   QK_EMPLOYEES,
   QK_DEPT_AND_DESIG,
+  QK_NOTIFICATIONS,
 } from "../../../../config/queryKeyConfig";
 import {
   EMP_ACCOUNT_STATUS_OPTIONS,
   EMP_ACCOUNT_STATUS_COLOR,
+  NOTIFICATION_TYPE,
 } from "../../../../config/statusAndRoleConfig";
 
 const PAGE_SIZE = 10;
@@ -148,7 +150,24 @@ const EmployeeDirectoryComp = () => {
         .update({ activity_status: statusModal.newStatus })
         .eq("email", statusModal.email);
       if (error) throw error;
+
+      const statusLabel =
+        EMP_ACCOUNT_STATUS_OPTIONS.find(
+          (o) => o.value === statusModal.newStatus,
+        )?.label ?? statusModal.newStatus;
+      await supabase.from("notifications").insert({
+        recipient_email: statusModal.email,
+        title: "Employment Status Updated",
+        message: `Your activity status has been changed to "${statusLabel}".`,
+        type: NOTIFICATION_TYPE.STATUS_CHANGE,
+        redirection_link: "/dashboard",
+        recipient_user_type: "employee",
+      });
+
       queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      queryClient.invalidateQueries({
+        queryKey: [QK_NOTIFICATIONS, statusModal.email],
+      });
       setStatusModal({ open: false, email: null, newStatus: null });
     } finally {
       setStatusUpdating(false);

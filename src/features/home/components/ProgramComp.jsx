@@ -81,7 +81,7 @@ const ProgramComp = () => {
                     <Form.Group controlId="formFullName">
                       <Form.Control
                         type="text"
-                        placeholder="Enter Your Full Name"
+                        placeholder="Enter Your Full Name *"
                         className={styles.formControl}
                       />
                     </Form.Group>
@@ -89,7 +89,7 @@ const ProgramComp = () => {
                     <Form.Group controlId="formEmail">
                       <Form.Control
                         type="email"
-                        placeholder="Email Address"
+                        placeholder="Email Address *"
                         className={styles.formControl}
                       />
                     </Form.Group>
@@ -97,7 +97,7 @@ const ProgramComp = () => {
                     <Form.Group controlId="formAddress">
                       <Form.Control
                         type="text"
-                        placeholder="Current Address"
+                        placeholder="Current Address *"
                         className={styles.formControl}
                       />
                     </Form.Group>
@@ -105,7 +105,7 @@ const ProgramComp = () => {
                     <Form.Group controlId="formPhone">
                       <Form.Control
                         type="tel"
-                        placeholder="Phone No"
+                        placeholder="Phone No *"
                         className={styles.formControl}
                       />
                     </Form.Group>

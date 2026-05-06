@@ -38,6 +38,7 @@ const StudentStatsComp = () => {
       label: "EXPRESSING INTEREST",
       value: data?.interested?.toLocaleString() ?? "—",
       badge: { text: "Interested", color: "orange" },
+      highlight: true,
     },
     {
       icon: "fi fi-rr-email-pending",
@@ -52,7 +53,10 @@ const StudentStatsComp = () => {
   return (
     <div className={styles.statsGrid}>
       {statsData.map((stat) => (
-        <div key={stat.label} className={styles.statCard}>
+        <div
+          key={stat.label}
+          className={`${styles.statCard} ${stat.highlight ? styles.statCardHighlight : ""}`}
+        >
           <div className={styles.statTop}>
             <div
               className={styles.statIconWrap}

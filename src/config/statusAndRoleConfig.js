@@ -135,3 +135,41 @@ export const PAYMENT_STATUS_COLOR = {
   [PAYMENT_STATUS.FAILED]: "red",
   [PAYMENT_STATUS.REFUNDED]: "blue",
 };
+
+
+// For Notifications (type, options, color and icon)
+export const NOTIFICATION_TYPE = {
+  STATUS_CHANGE: "status_change",
+  INFO: "info",
+  PAYMENT: "payment",
+  SUCCESS: "success",
+  WARNING: "warning",
+  ERROR: "error",
+};
+
+export const NOTIFICATION_TYPE_OPTIONS = [
+  { value: NOTIFICATION_TYPE.STATUS_CHANGE, label: "Status Change" },
+  { value: NOTIFICATION_TYPE.INFO, label: "Info" },
+  { value: NOTIFICATION_TYPE.PAYMENT, label: "Payment" },
+  { value: NOTIFICATION_TYPE.SUCCESS, label: "Success" },
+  { value: NOTIFICATION_TYPE.WARNING, label: "Warning" },
+  { value: NOTIFICATION_TYPE.ERROR, label: "Error" },
+];
+
+export const NOTIFICATION_TYPE_COLOR = {
+  [NOTIFICATION_TYPE.STATUS_CHANGE]: "purple",
+  [NOTIFICATION_TYPE.INFO]: "blue",
+  [NOTIFICATION_TYPE.PAYMENT]: "yellow",
+  [NOTIFICATION_TYPE.SUCCESS]: "green",
+  [NOTIFICATION_TYPE.WARNING]: "orange",
+  [NOTIFICATION_TYPE.ERROR]: "red",
+};
+
+export const NOTIFICATION_TYPE_ICON = {
+  [NOTIFICATION_TYPE.STATUS_CHANGE]: "fi fi-br-replace",
+  [NOTIFICATION_TYPE.INFO]: "fi fi-br-info",
+  [NOTIFICATION_TYPE.PAYMENT]: "fi fi-br-usd-circle",
+  [NOTIFICATION_TYPE.SUCCESS]: "fi fi-br-check-circle",
+  [NOTIFICATION_TYPE.WARNING]: "fi fi-rs-octagon-exclamation",
+  [NOTIFICATION_TYPE.ERROR]: "fi fi-br-octagon-xmark",
+};

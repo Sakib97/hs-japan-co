@@ -23,6 +23,9 @@ import styles from "../styles/DashboardPage.module.css";
 import ScrollToTop from "../../../components/common/ScrollToTop";
 import LogoutButton from "../../auth/components/LogoutButton";
 import { useAuth } from "../../../context/AuthProvider";
+import NotificationPanel from "../components/notifications/NotificationPanel";
+import useNotification from "../../../hooks/useNotification";
+import useNotificationRealTime from "../../../hooks/useNotificationRealTIme";
 
 const { Content } = Layout;
 
@@ -188,8 +191,12 @@ const DashboardPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const contentRef = useRef(null);
+  const bellRef = useRef(null);
   const { user, userMeta, loading, userMetaLoading, studentStatus, employeeStatus } = useAuth();
+  const { unreadCount } = useNotification(user?.email , { limit: 6 });
+  useNotificationRealTime(user?.email);
 
   const handleMenuClick = (path) => {
     navigate(path);
@@ -290,13 +297,27 @@ const DashboardPage = () => {
 
           <div className={styles.headerRight}>
             <div className={styles.headerIcons}>
-              <Badge dot>
-                <BellOutlined className={styles.headerIcon} />
-              </Badge>
-              <Badge count={3} size="small">
-                <MessageOutlined className={styles.headerIcon} />
-              </Badge>
-              <QuestionCircleOutlined className={styles.headerIcon} />
+              <div
+                className={`${styles.bellWrap} ${notifOpen ? styles.bellWrapActive : ""}`}
+                ref={bellRef}
+                onClick={() => setNotifOpen((o) => !o)}
+              >
+                <Badge count={unreadCount} size="small">
+                  <BellOutlined className={`${styles.headerIcon} ${notifOpen ? styles.headerIconActive : ""}`} />
+                </Badge>
+                {notifOpen && (
+                  <NotificationPanel
+                    email={user?.email}
+                    onClose={() => setNotifOpen(false)}
+                    triggerRef={bellRef}
+                  />
+                )}
+              </div>
+              
+              <Link to="/dashboard">
+                <UserOutlined className={styles.headerIcon} />
+              </Link>
+            
             </div>
           </div>
         </header>

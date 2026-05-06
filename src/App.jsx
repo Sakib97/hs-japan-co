@@ -40,6 +40,8 @@ import MyFinancesPage from "./features/dashboard/pages/MyFinancesPage.jsx";
 import PaymentVerifyPage from "./features/verify/pages/paymentVerifyPage.jsx";
 import RoleBasedRoute from "./components/common/RoleBasedRoute.jsx";
 import EventsActivitiesManagementPage from "./features/dashboard/pages/EventsActivitiesManagementPage.jsx";
+import AllNotificationPage from "./features/dashboard/pages/AllNotificationPage.jsx";
+
 
 const SPLASH_KEY = "hs_japan_splash_shown";
 
@@ -100,6 +102,7 @@ function App() {
           }
         >
           <Route index element={<ProfilePage />} />
+          <Route path="all-notifications" element={<AllNotificationPage />} />
           <Route
             path="student-management"
             element={

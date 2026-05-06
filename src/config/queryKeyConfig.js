@@ -56,3 +56,7 @@ export const QK_HOMEPAGE_CAROUSEL = "homepage_carousel_slides";
 export const QK_EVENTS = "events_page";
 // Used in: ActivitiesTableComp
 export const QK_ACTIVITIES = "activities_page";
+
+// ─── Notifications ───────────────────────────────────────────────────────────
+// Used in: useNotification
+export const QK_NOTIFICATIONS = "notifications";
