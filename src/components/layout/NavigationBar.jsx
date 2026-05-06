@@ -11,9 +11,12 @@ import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import useScrollDirection from "../../hooks/useScrollDirection";
 import { useAuth } from "../../context/AuthProvider";
-
+import { BellOutlined } from "@ant-design/icons";
+import { Badge } from "antd";
+import useNotification from "../../hooks/useNotification";
 const NavigationBar = () => {
   const { user, userMeta } = useAuth();
+  const { unreadCount } = useNotification(user?.email);
 
   // Offcanvas state
   const [show, setShow] = useState(false);
@@ -219,6 +222,18 @@ const NavigationBar = () => {
                 </Nav.Link>
 
                 {user ? (
+                  <Nav.Link
+                    onClick={handleClose}
+                    as={Link}
+                    to="/dashboard/all-notifications"
+                  >
+                    <Badge count={unreadCount} size="small" color="#b91c1c">
+                      <BellOutlined style={{ fontSize: 18, color: "#fff" }} />
+                    </Badge>
+                  </Nav.Link>
+                ) : null}
+
+                {user ? (
                   <Button
                     as={Link}
                     to="/dashboard"
@@ -226,9 +241,9 @@ const NavigationBar = () => {
                     onClick={handleClose}
                   >
                     {/* <div className={styles.loginIcon}>
-                      <i className="fa-solid fa-user"></i>
-                    </div> */}
-                    {/* <span
+                      <BellOutlined />
+                    </div>
+                    <span
                       style={{
                         borderLeft: "1px solid rgba(255,255,255,0.5)",
                         height: "20px",
@@ -420,6 +435,24 @@ const NavigationBar = () => {
                     <i className="fa-solid fa-chevron-right"></i> Contact Us
                   </Link>
                 </div>
+
+                {user ? (
+                  <div className={styles.mobileMenuItem}>
+                    <Link
+                      to="/dashboard/all-notifications"
+                      className={styles.mobileNavLink}
+                      onClick={handleClose}
+                    >
+                      <i className="fa-solid fa-chevron-right"></i>{" "}
+                      Notifications
+                      {unreadCount > 0 && (
+                        <span className={styles.mobileBadge}>
+                          {unreadCount}
+                        </span>
+                      )}
+                    </Link>
+                  </div>
+                ) : null}
 
                 {user ? (
                   <div className="mt-4">

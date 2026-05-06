@@ -27,10 +27,7 @@ const AllNotificationPage = () => {
       <div className={styles.headerRow}>
         <div>
           <h2 className={styles.title}>Notifications</h2>
-          <p className={styles.subtitle}>
-            Stay updated with the latest activity regarding visa processing,
-            applicant statuses, and academy announcements.
-          </p>
+          
         </div>
         {unreadCount > 0 && (
           <button className={styles.markAll} onClick={markAllAsRead}>
