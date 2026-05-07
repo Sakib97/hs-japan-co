@@ -530,10 +530,7 @@ const AllTransactionsComp = () => {
         open={!!viewRecord}
         onCancel={() => setViewRecord(null)}
         title="Transaction Details"
-        style={{ top: 65 }}
-        styles={{
-          body: { maxHeight: "65vh", overflowY: "auto", paddingRight: 4 },
-        }}
+        bodyStyle={{ maxHeight: "65vh", overflowY: "auto", paddingRight: 4 }}
         footer={[
           <Button
             key="download"

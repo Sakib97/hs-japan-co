@@ -87,13 +87,22 @@
     align-items: stretch;
 
     gap: 10px;
-    
   }
   .searchInput {
     width: 100%;
   }
   .searchMonthPicker {
     width: 100%;
+  }
+}
+
+.transactionDetailsModal {
+  top: 115px;
+}
+
+@media (max-width: 768px) {
+  .transactionDetailsModal {
+    top: 70px;
   }
 }
 
