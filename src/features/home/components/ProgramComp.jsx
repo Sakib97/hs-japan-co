@@ -1,6 +1,7 @@
 import React from "react";
-import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import styles from "../styles/ProgramComp.module.css";
+import EnquiryFormComp from "../../onlineAdmission/components/EnquiryFormComp";
 
 const ProgramComp = () => {
   return (
@@ -68,59 +69,8 @@ const ProgramComp = () => {
             md={12}
             className="position-relative d-flex align-items-center justify-content-center"
           >
-            <div className={styles.formContainer}>
-              <div className={styles.yellowCircle}></div>
-              <Card className={styles.contactCard}>
-                <Card.Body className="p-1 p-md-4 p-lg-5">
-                  <Card.Title className={`mb-3 mb-md-4 ${styles.cardTitle}`}>
-                    Join over{" "}
-                    <span className={styles.highlightText}>1500 students</span>{" "}
-                    who've now registered for their courses. Don't miss out.
-                  </Card.Title>
-                  <Form>
-                    <Form.Group controlId="formFullName">
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter Your Full Name *"
-                        className={styles.formControl}
-                      />
-                    </Form.Group>
-
-                    <Form.Group controlId="formEmail">
-                      <Form.Control
-                        type="email"
-                        placeholder="Email Address *"
-                        className={styles.formControl}
-                      />
-                    </Form.Group>
-
-                    <Form.Group controlId="formAddress">
-                      <Form.Control
-                        type="text"
-                        placeholder="Current Address *"
-                        className={styles.formControl}
-                      />
-                    </Form.Group>
-
-                    <Form.Group controlId="formPhone">
-                      <Form.Control
-                        type="tel"
-                        placeholder="Phone No *"
-                        className={styles.formControl}
-                      />
-                    </Form.Group>
-
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      className={`w-100 ${styles.submitButton}`}
-                    >
-                      Apply Today
-                    </Button>
-                  </Form>
-                </Card.Body>
-              </Card>
-            </div>
+            
+            <EnquiryFormComp />
           </Col>
         </Row>
       </Container>

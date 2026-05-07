@@ -14,9 +14,12 @@ import { useAuth } from "../../context/AuthProvider";
 import { BellOutlined } from "@ant-design/icons";
 import { Badge } from "antd";
 import useNotification from "../../hooks/useNotification";
+import useNotificationRealTime from "../../hooks/useNotificationRealTIme";
+
 const NavigationBar = () => {
   const { user, userMeta } = useAuth();
   const { unreadCount } = useNotification(user?.email);
+  // useNotificationRealTime(user?.email);
 
   // Offcanvas state
   const [show, setShow] = useState(false);

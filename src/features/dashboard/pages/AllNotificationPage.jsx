@@ -4,6 +4,8 @@ import { useAuth } from "../../../context/AuthProvider";
 import useNotification from "../../../hooks/useNotification";
 import NotificationItem from "../components/notifications/NotificationItem";
 import styles from "./AllNotificationPage.module.css";
+import { RiCheckDoubleFill } from "react-icons/ri";
+import { BsCheckAll } from "react-icons/bs";
 
 const PAGE_SIZE = 5;
 
@@ -31,7 +33,8 @@ const AllNotificationPage = () => {
         </div>
         {unreadCount > 0 && (
           <button className={styles.markAll} onClick={markAllAsRead}>
-            <i className="fi fi-br-check" />
+            {/* <i className="fi fi-br-check" /> */}
+            <BsCheckAll style={{fontSize: "21px"}}/>
             Mark all as read
           </button>
         )}

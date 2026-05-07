@@ -9,6 +9,7 @@ import {
   Dropdown,
   Modal,
   Select,
+  Input,
 } from "antd";
 import {
   FilterOutlined,
@@ -22,15 +23,20 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   STUDENT_STATUS_COLOR,
   STUDENT_STATUS_OPTIONS,
+  STUDENT_STATUS,
 } from "../../../../config/statusAndRoleConfig";
 import {
   QK_STUDENTS,
   QK_STUDENT_PERSONAL,
   QK_STUDENT_PROFILE,
+  QK_STUDENT_STATS,
 } from "../../../../config/queryKeyConfig";
 import { getFormattedTime } from "../../../../utils/dateUtil";
 import StudentProfileModal from "./StudentProfileModal";
 import { showToast } from "../../../../components/layout/CustomToast";
+import { generateToken } from "../../../../utils/generateToken";
+import { sendInviteEmail } from "../../../../utils/sendInviteEmail";
+import { useAuth } from "../../../../context/AuthProvider";
 
 const PAGE_SIZE = 10;
 
@@ -38,7 +44,15 @@ const statusLabelMap = Object.fromEntries(
   STUDENT_STATUS_OPTIONS.map(({ value, label }) => [value, label]),
 );
 
-const getColumns = (onViewProfile, onChangeStatus) => [
+const getMailActionLabel = (status) => {
+  if (status === STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST)
+    return "Send Invite Mail";
+  if (status === STUDENT_STATUS.ACCOUNT_CREATION_MAIL_SENT)
+    return "Resend Invite Mail";
+  return "Send Password Reset Mail";
+};
+
+const getColumns = (onViewProfile, onChangeStatus, onSendMail) => [
   {
     title: "NAME",
     key: "name",
@@ -93,8 +107,11 @@ const getColumns = (onViewProfile, onChangeStatus) => [
     width: 100,
     render: (_, record) => (
       <Space size="middle">
-        <Tooltip title="Resend Invite Email">
-          <i className={`${styles.actionIcon} fi fi-rr-paper-plane-launch`}></i>
+        <Tooltip title={getMailActionLabel(record.status)}>
+          <i
+            className={`${styles.actionIcon} fi fi-rr-paper-plane-launch`}
+            onClick={() => onSendMail(record)}
+          ></i>
         </Tooltip>
 
         <Tooltip title="View Details">
@@ -115,6 +132,8 @@ const getColumns = (onViewProfile, onChangeStatus) => [
 ];
 
 const StudentDirectoryComp = ({ searchQuery }) => {
+  const { user } = useAuth();
+  const currentUserEmail = user?.email || "";
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -122,6 +141,81 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [statusRecord, setStatusRecord] = useState(null);
   const [newStatus, setNewStatus] = useState(null);
+  const [inviteRecord, setInviteRecord] = useState(null);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteEmailError, setInviteEmailError] = useState("");
+  const [inviteLoading, setInviteLoading] = useState(false);
+
+  const openInvite = (record) => {
+    if (record.status !== STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST) return;
+    setInviteRecord(record);
+    setInviteEmail(record.email);
+    setInviteEmailError("");
+  };
+
+  const closeInvite = () => {
+    setInviteRecord(null);
+    setInviteEmail("");
+    setInviteEmailError("");
+  };
+
+  const handleSendInvite = async () => {
+    if (!inviteEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inviteEmail)) {
+      setInviteEmailError("Please enter a valid email address");
+      return;
+    }
+    setInviteLoading(true);
+    try {
+      const { error } = await supabase.rpc(
+        "send_invite_to_interested_student",
+        {
+          p_email: inviteEmail,
+          p_name: inviteRecord.name,
+          p_created_by: currentUserEmail,
+        },
+      );
+      if (error) {
+        if (error.message.includes("users_meta_email_key")) {
+          showToast("An account with this email already exists.", "error");
+        } else {
+          showToast("Failed to send invite: " + error.message, "error");
+        }
+        return;
+      }
+
+      const token = generateToken();
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      const { error: tokenError } = await supabase
+        .from("user_invite_tokens")
+        .insert([{ email: inviteEmail, token, expires_at, role: "student" }]);
+      if (tokenError) {
+        showToast(
+          "Failed to generate invite token: " + tokenError.message,
+          "error",
+        );
+        return;
+      }
+
+      try {
+        await sendInviteEmail(inviteEmail, token, inviteRecord.name);
+        showToast("Invite email sent successfully!", "success");
+      } catch (emailError) {
+        showToast(
+          "Invite created but failed to send email: " +
+            (emailError.text || emailError.message || emailError),
+          "error",
+        );
+      }
+
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENTS] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_STATS] });
+      closeInvite();
+    } catch (err) {
+      showToast("Unexpected error: " + err.message, "error");
+    } finally {
+      setInviteLoading(false);
+    }
+  };
 
   const openChangeStatus = (record) => {
     setStatusRecord(record);
@@ -158,7 +252,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
     setProfileModalOpen(true);
   };
 
-  const columns = getColumns(openProfile, openChangeStatus);
+  const columns = getColumns(openProfile, openChangeStatus, openInvite);
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [QK_STUDENTS, currentPage, searchQuery, selectedStatus],
@@ -181,6 +275,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
           `,
           { count: "exact" },
         )
+        .order("created_at", { ascending: false })
         .range(from, to);
 
       if (searchQuery) {
@@ -284,6 +379,65 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         open={profileModalOpen}
         onClose={() => setProfileModalOpen(false)}
       />
+
+      {/* Send Invite Mail modal — for STUDENT_EXPRESSED_INTEREST */}
+      <Modal
+        open={!!inviteRecord}
+        title="Send Invite Mail"
+        onCancel={closeInvite}
+        footer={[
+          <Button
+            key="send"
+            type="primary"
+            loading={inviteLoading}
+            onClick={handleSendInvite}
+          >
+            Send Invite
+          </Button>,
+          <Button key="cancel" onClick={closeInvite}>
+            Cancel
+          </Button>,
+        ]}
+      >
+        {inviteRecord && (
+          <div style={{ padding: "8px 0" }}>
+            <p style={{ marginBottom: 4, fontSize: "0.85rem", color: "#555" }}>
+              Student: <strong>{inviteRecord.name ?? "—"}</strong>
+            </p>
+            <p style={{ marginBottom: 16, fontSize: "0.85rem", color: "#555" }}>
+              Phone: <strong>{inviteRecord.phone}</strong>
+            </p>
+            <p>
+              Email: <strong>{inviteRecord.email}</strong>
+            </p>
+            <Input
+              type="email"
+              placeholder="Enter student email address *"
+              value={inviteEmail}
+              onChange={(e) => {
+                setInviteEmail(e.target.value);
+                setInviteEmailError("");
+              }}
+              status={inviteEmailError ? "error" : ""}
+            />
+            {inviteEmailError && (
+              <p
+                style={{
+                  margin: "4px 0 0 2px",
+                  fontSize: "12px",
+                  color: "#dc2626",
+                }}
+              >
+                {inviteEmailError}
+              </p>
+            )}
+            <p style={{ marginTop: 12, fontSize: "0.8rem", color: "#888" }}>
+              An invite email with account setup instructions will be sent to
+              this address.
+            </p>
+          </div>
+        )}
+      </Modal>
 
       <Modal
         open={!!statusRecord}
