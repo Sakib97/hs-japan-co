@@ -212,7 +212,18 @@ const EmployeeDirectoryComp = () => {
         .update({ department_name: deptDesigModal.newDept })
         .eq("email", deptDesigModal.email);
       if (error) throw error;
+      await supabase.from("notifications").insert({
+        recipient_email: deptDesigModal.email,
+        title: "Department Updated",
+        message: `Your department has been changed to "${deptDesigModal.newDept}". Refresh your Profile to see the update.`,
+        type: NOTIFICATION_TYPE.STATUS_CHANGE,
+        redirection_link: "/dashboard",
+        recipient_user_type: "employee",
+      });
       queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      queryClient.invalidateQueries({
+        queryKey: [QK_NOTIFICATIONS, deptDesigModal.email],
+      });
       closeDeptDesigModal();
     } finally {
       setSavingDept(false);
@@ -228,7 +239,18 @@ const EmployeeDirectoryComp = () => {
         .update({ designation_name: deptDesigModal.newDesig })
         .eq("email", deptDesigModal.email);
       if (error) throw error;
+      await supabase.from("notifications").insert({
+        recipient_email: deptDesigModal.email,
+        title: "Designation Updated",
+        message: `Your designation has been changed to "${deptDesigModal.newDesig}". Refresh your Profile to see the update.`,
+        type: NOTIFICATION_TYPE.STATUS_CHANGE,
+        redirection_link: "/dashboard",
+        recipient_user_type: "employee",
+      });
       queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      queryClient.invalidateQueries({
+        queryKey: [QK_NOTIFICATIONS, deptDesigModal.email],
+      });
       closeDeptDesigModal();
     } finally {
       setSavingDesig(false);
@@ -252,7 +274,18 @@ const EmployeeDirectoryComp = () => {
         })
         .eq("email", deptDesigModal.email);
       if (error) throw error;
+      await supabase.from("notifications").insert({
+        recipient_email: deptDesigModal.email,
+        title: "Department & Designation Updated",
+        message: `Your department has been changed to "${deptDesigModal.newDept}" and your designation to "${deptDesigModal.newDesig}". Refresh your Profile to see the update.`,
+        type: NOTIFICATION_TYPE.STATUS_CHANGE,
+        redirection_link: "/dashboard",
+        recipient_user_type: "employee",
+      });
       queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      queryClient.invalidateQueries({
+        queryKey: [QK_NOTIFICATIONS, deptDesigModal.email],
+      });
       closeDeptDesigModal();
     } finally {
       setSavingBoth(false);

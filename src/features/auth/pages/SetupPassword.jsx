@@ -111,7 +111,7 @@ const SetupPassword = () => {
   if (!valid)
     return (
       <div className={styles.centerScreen}>
-        <p className={styles.invalidMsg}>Invalid or expired invitation link.</p>
+        <p className={styles.invalidMsg}>Invalid or expired invitation link !</p>
       </div>
     );
 
