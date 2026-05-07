@@ -24,12 +24,14 @@ import {
   STUDENT_STATUS_COLOR,
   STUDENT_STATUS_OPTIONS,
   STUDENT_STATUS,
+  NOTIFICATION_TYPE,
 } from "../../../../config/statusAndRoleConfig";
 import {
   QK_STUDENTS,
   QK_STUDENT_PERSONAL,
   QK_STUDENT_PROFILE,
   QK_STUDENT_STATS,
+  QK_NOTIFICATIONS,
 } from "../../../../config/queryKeyConfig";
 import { getFormattedTime } from "../../../../utils/dateUtil";
 import StudentProfileModal from "./StudentProfileModal";
@@ -235,10 +237,20 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         .eq("email", email);
       if (error) throw new Error(error.message);
     },
-    onSuccess: (_, { email }) => {
+    onSuccess: async (_, { email, status }) => {
+      const statusLabel = statusLabelMap[status] ?? status;
+      await supabase.from("notifications").insert({
+        recipient_email: email,
+        title: "Student Status Updated",
+        message: `Your enrollment status has been changed to "${statusLabel}".`,
+        type: NOTIFICATION_TYPE.STATUS_CHANGE,
+        redirection_link: "/dashboard",
+        recipient_user_type: "student",
+      });
       queryClient.invalidateQueries({ queryKey: [QK_STUDENTS] });
       queryClient.invalidateQueries({ queryKey: [QK_STUDENT_PERSONAL, email] });
       queryClient.invalidateQueries({ queryKey: [QK_STUDENT_PROFILE, email] });
+      queryClient.invalidateQueries({ queryKey: [QK_NOTIFICATIONS, email] });
       showToast("Student status updated.", "success");
       closeChangeStatus();
     },
