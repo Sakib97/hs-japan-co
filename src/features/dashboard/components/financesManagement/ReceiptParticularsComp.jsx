@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { Select, DatePicker, Button, Modal } from "antd";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_FEE_TYPES } from "../../../../config/queryKeyConfig";
-import { PAYMENT_STATUS } from "../../../../config/statusAndRoleConfig";
+import {
+  QK_FEE_TYPES,
+  QK_NOTIFICATIONS,
+} from "../../../../config/queryKeyConfig";
+import {
+  PAYMENT_STATUS,
+  NOTIFICATION_TYPE,
+} from "../../../../config/statusAndRoleConfig";
 import styles from "../../styles/ReceiptParticularsComp.module.css";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { generateReceiptId } from "../../../../utils/generateToken";
@@ -26,13 +32,15 @@ const ReceiptParticularsComp = ({
   const [receiptId, setReceiptId] = useState(() => generateReceiptId());
 
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const { data: feeTypesData = [] } = useQuery({
-    queryKey: [QK_FEE_TYPES],
+    queryKey: [QK_FEE_TYPES, "active"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("fee_type")
         .select("fee_type_title, view_order")
+        .eq("is_active", true)
         .order("view_order", { ascending: true });
       if (error) throw error;
       return data;
@@ -80,6 +88,18 @@ const ReceiptParticularsComp = ({
       });
 
       if (error) throw error;
+
+      await supabase.from("notifications").insert({
+        recipient_email: studentEmail,
+        title: "New Payment Due",
+        message: `A payment receipt of BDT ${Number(amount).toLocaleString()} for "${feeTitle}" has been issued. Due date: ${dueDateStr ?? "—"}. Refresh Finances page to view details !`,
+        type: NOTIFICATION_TYPE.PAYMENT,
+        redirection_link: "/dashboard/my-finances",
+        recipient_user_type: "student",
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QK_NOTIFICATIONS, studentEmail],
+      });
 
       showToast("Receipt sent successfully!", "success");
       // Reset form and generate a fresh receipt ID for the next receipt

@@ -1,9 +1,11 @@
 import { useState, useRef } from "react";
 import { flushSync } from "react-dom";
 import { Table, Tag, Button, Tooltip } from "antd";
+import { useQueryClient } from "@tanstack/react-query";
 import { pdf } from "@react-pdf/renderer";
 import { ReactQRCode } from "@lglab/react-qr-code";
 import styles from "../../styles/MyPaymentHistoryComp.module.css";
+import { QK_MY_PAYMENTS } from "../../../../config/queryKeyConfig";
 import {
   PAYMENT_STATUS,
   PAYMENT_STATUS_COLOR,
@@ -61,6 +63,7 @@ const svgContainerToDataUrl = (container) =>
 const MyPaymentHistoryComp = ({
   payments,
   loading,
+  fetching,
   studentName,
   studentPhone,
 }) => {
@@ -68,6 +71,7 @@ const MyPaymentHistoryComp = ({
   const [payNowRecord, setPayNowRecord] = useState(null);
   const [qrDownloadUrl, setQrDownloadUrl] = useState(null);
   const qrRef = useRef(null);
+  const queryClient = useQueryClient();
 
   const handleDownload = async (record) => {
     setDownloadingId(record.receipt_id);
@@ -263,6 +267,19 @@ const MyPaymentHistoryComp = ({
               All receipts issued to your account
             </p>
           </div>
+          <Button
+            type=""
+            value="Refresh"
+            icon={<i className="fi fi-rr-refresh"></i>}
+            size={"medium"}
+            onClick={() => {
+              queryClient.invalidateQueries({
+                queryKey: [QK_MY_PAYMENTS],
+              });
+            }}
+          >
+            Refresh
+          </Button>
           <span className={styles.countBadge}>{payments.length} records</span>
         </div>
         <Table
@@ -270,7 +287,7 @@ const MyPaymentHistoryComp = ({
           dataSource={payments}
           columns={columns}
           rowKey="receipt_id"
-          loading={loading}
+          loading={loading || fetching}
           pagination={{ pageSize: 10, size: "small", showSizeChanger: false }}
           scroll={{ x: "max-content" }}
           size="small"

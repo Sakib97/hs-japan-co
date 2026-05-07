@@ -7,6 +7,7 @@ import ReceiptParticularsComp from "../components/financesManagement/ReceiptPart
 import AllTransactionsComp from "../components/financesManagement/AllTransactionsComp";
 import FinancialOverviewComp from "../components/financesManagement/FinancialOverviewComp";
 import RecentRecordsComp from "../components/financesManagement/RecentRecordsComp";
+import FeeTypeComp from "../components/financesManagement/FeeTypeComp";
 import { USER_ROLES } from "../../../config/statusAndRoleConfig";
 import { useAuth } from "../../../context/AuthProvider";
 
@@ -56,6 +57,7 @@ const FinancesPage = () => {
         {/* ── Right column ── */}
         <div className={styles.rightCol}>
           {isAdmin && <FinancialOverviewComp />}
+          {isAdmin && <FeeTypeComp />}
           {/* <RecentRecordsComp /> */}
         </div>
       </div>

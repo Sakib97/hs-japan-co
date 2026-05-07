@@ -13,7 +13,7 @@ const MyFinancesPage = () => {
   const { user } = useAuth();
   const email = user?.email;
 
-  const { data: payments = [], isLoading: paymentsLoading } = useQuery({
+  const { data: payments = [], isLoading: paymentsLoading, isFetching: paymentsFetching } = useQuery({
     queryKey: [QK_MY_PAYMENTS, email],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -57,8 +57,10 @@ const MyFinancesPage = () => {
       <MyPaymentHistoryComp
         payments={payments}
         loading={paymentsLoading}
+        fetching={paymentsFetching}
         studentName={studentInfo?.name}
         studentPhone={studentInfo?.phone}
+
       />
     </div>
   );
