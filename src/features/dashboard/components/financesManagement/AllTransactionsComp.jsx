@@ -27,10 +27,12 @@ import {
   PAYMENT_STATUS,
   PAYMENT_STATUS_OPTIONS,
   PAYMENT_STATUS_COLOR,
+  NOTIFICATION_TYPE,
 } from "../../../../config/statusAndRoleConfig";
 import {
   QK_ALL_TRANSACTIONS,
   QK_FEE_TYPES,
+  QK_NOTIFICATIONS,
 } from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { useAuth } from "../../../../context/AuthProvider";
@@ -243,8 +245,26 @@ const AllTransactionsComp = () => {
         .eq("receipt_id", receipt_id);
       if (error) throw new Error(error.message);
     },
-    onSuccess: () => {
+    onSuccess: async (_, variables) => {
       queryClient.invalidateQueries({ queryKey: [QK_ALL_TRANSACTIONS] });
+      const { receipt_id, payment_status, student_email } = variables;
+      const statusLabel =
+        paymentStatusLabelMap[payment_status] ?? payment_status;
+      try {
+        await supabase.from("notifications").insert({
+          recipient_email: student_email,
+          title: "Payment Status Updated",
+          message: `Your payment status for receipt ${receipt_id} has been updated to "${statusLabel}". Visit My Finances for details.`,
+          type: NOTIFICATION_TYPE.PAYMENT,
+          redirection_link: "/dashboard/my-finances",
+          recipient_user_type: "student",
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QK_NOTIFICATIONS, student_email],
+        });
+      } catch (_err) {
+        // silent — notification is non-critical
+      }
       showToast("Payment status updated.", "success");
       setStatusRecord(null);
       setSelectedStatus(null);
@@ -638,6 +658,7 @@ const AllTransactionsComp = () => {
                 receipt_id: statusRecord.receipt_id,
                 payment_status: selectedStatus,
                 verified_by_email: user?.email ?? null,
+                student_email: statusRecord.student_email,
               })
             }
           >

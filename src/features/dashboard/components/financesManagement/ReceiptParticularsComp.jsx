@@ -5,6 +5,8 @@ import { supabase } from "../../../../config/supabaseClient";
 import {
   QK_FEE_TYPES,
   QK_NOTIFICATIONS,
+  QK_ALL_TRANSACTIONS,
+  QK_MY_PAYMENTS
 } from "../../../../config/queryKeyConfig";
 import {
   PAYMENT_STATUS,
@@ -99,6 +101,12 @@ const ReceiptParticularsComp = ({
       });
       queryClient.invalidateQueries({
         queryKey: [QK_NOTIFICATIONS, studentEmail],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QK_ALL_TRANSACTIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QK_MY_PAYMENTS, studentEmail],
       });
 
       showToast("Receipt sent successfully!", "success");

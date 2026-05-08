@@ -5,6 +5,7 @@ import {
 } from "../../../../config/statusAndRoleConfig";
 import styles from "./NotificationItem.module.css";
 import { useNavigate } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
 
 const BG_COLOR = {
   purple: "#f5f3ff",
@@ -38,12 +39,19 @@ const NotificationItem = ({ notification, onMarkAsRead }) => {
     : "";
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const handleClick = () => {
     if (!is_read) onMarkAsRead(id);
-    if (redirection_link) navigate(redirection_link);
-    
-
+    if (redirection_link) {
+      navigate(redirection_link);
+      //   queryClient.invalidateQueries() with no arguments
+      // marks all cached queries as stale,
+      // so the moment the destination page becomes active,
+      // every useQuery on it will refetch automatically —
+      // no changes needed in any individual page.
+      queryClient.invalidateQueries();
+    }
   };
 
   return (
