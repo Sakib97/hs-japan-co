@@ -343,6 +343,7 @@ const ContactInfoComp = ({ isEditMode }) => {
                   <Button
                     size="small"
                     type="primary"
+                   
                     icon={<PlusOutlined />}
                     loading={adding}
                     disabled={!newOffice.office_name.trim()}
@@ -364,6 +365,7 @@ const ContactInfoComp = ({ isEditMode }) => {
           <div className={styles.addOfficeRow}>
             <Button
               icon={<PlusOutlined />}
+               className={styles.editBtn}
               onClick={() => setNewOffice({ ...EMPTY_OFFICE })}
             >
               Add Office
