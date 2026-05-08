@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { Table, Input, Button, Dropdown, Tooltip } from "antd";
+import { Table, Input, Button, Dropdown, Tooltip, Popconfirm } from "antd";
 import styles from "../../styles/CourseInventoryTable.module.css";
 import { supabase } from "../../../../config/supabaseClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { showToast } from "../../../../components/layout/CustomToast";
+import { useAuth } from "../../../../context/AuthProvider";
 
 import {
   SearchOutlined,
   EyeOutlined,
   EditOutlined,
   DownloadOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { QK_COURSES, QK_HOME_COURSES } from "../../../../config/queryKeyConfig";
 
@@ -32,8 +34,11 @@ const initials = (name) =>
     .toUpperCase();
 
 const CourseInventoryTable = ({ onEdit }) => {
+  const { userMeta } = useAuth();
+  const isAdmin = userMeta?.role === "admin";
   const [currentPage, setCurrentPage] = useState(1);
   const [togglingId, setTogglingId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState(null);
   const queryClient = useQueryClient();
@@ -89,6 +94,22 @@ const CourseInventoryTable = ({ onEdit }) => {
       );
     }
     setTogglingId(null);
+  };
+
+  const handleDelete = async (record) => {
+    setDeletingId(record.id);
+    const { error } = await supabase
+      .from("course")
+      .delete()
+      .eq("id", record.id);
+    if (error) {
+      showToast("Failed to delete course.", "error");
+    } else {
+      await queryClient.invalidateQueries({ queryKey: [QK_COURSES] });
+      await queryClient.invalidateQueries({ queryKey: [QK_HOME_COURSES] });
+      showToast("Course deleted successfully.", "success");
+    }
+    setDeletingId(null);
   };
 
   const columns = [
@@ -198,6 +219,25 @@ const CourseInventoryTable = ({ onEdit }) => {
               <span className={styles.toggleThumb} />
             )}
           </button>
+          {isAdmin && (
+            <Tooltip title="Delete">
+              <Popconfirm
+                title={`Delete "${record.course_name}"?`}
+                description="This action cannot be undone."
+                okText="Delete"
+                okType="danger"
+                cancelText="Cancel"
+                onConfirm={() => handleDelete(record)}
+              >
+                <Button
+                  size="small"
+                  danger
+                  icon={<DeleteOutlined />}
+                  loading={deletingId === record.id}
+                />
+              </Popconfirm>
+            </Tooltip>
+          )}
         </div>
       ),
     },

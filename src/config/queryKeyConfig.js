@@ -33,6 +33,7 @@ export const QK_DEPT_AND_DESIG = "dept-and-desig";
 // Used in: CourseInventoryTable, CourseCreateForm, CourseComp, CourseDetailsPage
 export const QK_COURSES = "courses";
 export const QK_HOME_COURSES = "home-courses";
+export const QK_ALL_COURSES = "all-courses";
 export const QK_COURSE_DETAIL = "course-detail";
 
 // ─── Pages ────────────────────────────────────────────────────────────────────

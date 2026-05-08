@@ -41,7 +41,7 @@ import PaymentVerifyPage from "./features/verify/pages/paymentVerifyPage.jsx";
 import RoleBasedRoute from "./components/common/RoleBasedRoute.jsx";
 import EventsActivitiesManagementPage from "./features/dashboard/pages/EventsActivitiesManagementPage.jsx";
 import AllNotificationPage from "./features/dashboard/pages/AllNotificationPage.jsx";
-
+import AllCoursesPage from "./features/CourseDetails/pages/AllCoursesPage.jsx";
 
 const SPLASH_KEY = "hs_japan_splash_shown";
 
@@ -71,6 +71,7 @@ function App() {
         <Route path="/team" element={<TeamPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/courses/:id" element={<CourseDetailsPage />} />
+        <Route path="/courses" element={<AllCoursesPage />} />
         <Route
           path="/payment/verify/:receiptId"
           element={<PaymentVerifyPage />}

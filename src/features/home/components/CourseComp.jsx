@@ -3,6 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { QK_HOME_COURSES } from "../../../config/queryKeyConfig";
 import { Link } from "react-router-dom";
 import styles from "../styles/CourseComp.module.css";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { encodeCourseID } from "../../../utils/generateToken";
+
 
 const CourseComp = () => {
   const { data: courses = [], isLoading } = useQuery({
@@ -56,7 +59,7 @@ const CourseComp = () => {
           {courses.map((course) => (
             <Link
               key={course.id}
-              to={`/courses/${course.id}`}
+              to={`/courses/${encodeCourseID(course.id)}`}
               className={styles.cardLink}
             >
               <div className={styles.imageWrapper}>
@@ -85,6 +88,9 @@ const CourseComp = () => {
               </div>
             </Link>
           ))}
+          <Link to="/courses" className={styles.viewAllLink}>
+            View All Courses <FaArrowRightLong />
+          </Link>
         </div>
       </div>
     </section>

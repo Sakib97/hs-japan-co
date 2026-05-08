@@ -199,3 +199,33 @@
     max-width: 100%;
   }
 }
+
+/* ── View All link ── */
+.viewAllLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: center;
+  margin-top: 8px;
+  padding: 13px 32px;
+  background: #b91c1c;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 50px;
+  text-decoration: none;
+  transition:
+    background 0.25s,
+    transform 0.2s,
+    box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(185, 28, 28, 0.35);
+  white-space: nowrap;
+}
+
+.viewAllLink:hover {
+  background: #991b1b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(185, 28, 28, 0.45);
+  color: #fff;
+}

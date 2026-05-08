@@ -4,25 +4,32 @@ import { QK_COURSE_DETAIL } from "../../../config/queryKeyConfig";
 import { supabase } from "../../../config/supabaseClient";
 import { useAuth } from "../../../context/AuthProvider";
 import styles from "../styles/CourseDetailsPage.module.css";
+import { decodeCourseID } from "../../../utils/generateToken";
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  const decodedId = decodeCourseID(id);
+  if (!decodedId) {
+    navigate(-1);
+    return null;
+  }
+
   const {
     data: course,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: [QK_COURSE_DETAIL, id],
+    queryKey: [QK_COURSE_DETAIL, decodedId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("course")
         .select(
           "id, course_name, course_level, course_duration, instructor_name, instructor_description, course_description, cover_image_url",
         )
-        .eq("id", id)
+        .eq("id", decodedId)
         .single();
       if (error) throw new Error(error.message);
       return data;
@@ -118,12 +125,12 @@ const CourseDetailsPage = () => {
               </div>
               <div className={styles.metaRow}>
                 <span className={styles.metaKey}>Language</span>
-                <span className={styles.metaValueRed}>English / Japanese</span>
+                <span className={styles.metaValueRed}>Bengali / English / Japanese</span>
               </div>
-              <div className={styles.metaRow}>
+              {/* <div className={styles.metaRow}>
                 <span className={styles.metaKey}>Access</span>
                 <span className={styles.metaValueRed}>Lifetime</span>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -134,7 +141,7 @@ const CourseDetailsPage = () => {
             </div>
             <div className={styles.instructorInfo}>
               <p className={styles.instructorName}>{course.instructor_name}</p>
-              <p className={styles.instructorRole}>SENIOR LINGUIST</p>
+              {/* <p className={styles.instructorRole}>SENIOR LINGUIST</p> */}
               {course.instructor_description && (
                 <p className={styles.instructorBio}>
                   {course.instructor_description}
