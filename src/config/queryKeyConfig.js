@@ -57,6 +57,10 @@ export const QK_EVENTS = "events_page";
 // Used in: ActivitiesTableComp
 export const QK_ACTIVITIES = "activities_page";
 
+// ─── Contact ─────────────────────────────────────────────────────────────────
+// Used in: ContactInfoComp
+export const QK_CONTACT_US = "contact_us";
+
 // ─── Notifications ───────────────────────────────────────────────────────────
 // Used in: useNotification
 export const QK_NOTIFICATIONS = "notifications";
