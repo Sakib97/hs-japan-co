@@ -156,40 +156,40 @@ const FeeTypeComp = () => {
         return <span className={styles.cellText}>{val ?? "—"}</span>;
       },
     },
-    {
-      title: "ORDER",
-      dataIndex: "view_order",
-      key: "view_order",
-      width: 90,
-      render: (val, record) => {
-        if (record.__isNew) {
-          return (
-            <InputNumber
-              size="small"
-              min={1}
-              placeholder="Order"
-              value={addingRow?.order ?? null}
-              onChange={(v) => setAddingRow((p) => ({ ...p, order: v }))}
-              style={{ width: 72 }}
-            />
-          );
-        }
-        if (editId === record.id) {
-          return (
-            <InputNumber
-              size="small"
-              min={1}
-              value={editOrder}
-              onChange={(v) => setEditOrder(v)}
-              style={{ width: 72 }}
-            />
-          );
-        }
-        return (
-          <span className={styles.cellText}>{val != null ? val : "—"}</span>
-        );
-      },
-    },
+    // {
+    //   title: "ORDER",
+    //   dataIndex: "view_order",
+    //   key: "view_order",
+    //   width: 90,
+    //   render: (val, record) => {
+    //     if (record.__isNew) {
+    //       return (
+    //         <InputNumber
+    //           size="small"
+    //           min={1}
+    //           placeholder="Order"
+    //           value={addingRow?.order ?? null}
+    //           onChange={(v) => setAddingRow((p) => ({ ...p, order: v }))}
+    //           style={{ width: 72 }}
+    //         />
+    //       );
+    //     }
+    //     if (editId === record.id) {
+    //       return (
+    //         <InputNumber
+    //           size="small"
+    //           min={1}
+    //           value={editOrder}
+    //           onChange={(v) => setEditOrder(v)}
+    //           style={{ width: 72 }}
+    //         />
+    //       );
+    //     }
+    //     return (
+    //       <span className={styles.cellText}>{val != null ? val : "—"}</span>
+    //     );
+    //   },
+    // },
     {
       title: "STATUS",
       dataIndex: "is_active",
