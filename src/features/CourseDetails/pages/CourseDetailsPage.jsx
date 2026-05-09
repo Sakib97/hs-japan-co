@@ -27,7 +27,7 @@ const CourseDetailsPage = () => {
       const { data, error } = await supabase
         .from("course")
         .select(
-          "id, course_name, course_level, course_duration, instructor_name, instructor_description, course_description, cover_image_url",
+          "id, course_code, course_name, course_level, course_duration, instructor_name, instructor_description, course_description, cover_image_url",
         )
         .eq("id", decodedId)
         .single();
@@ -90,6 +90,11 @@ const CourseDetailsPage = () => {
             {course.course_level && (
               <span className={styles.heroBadge}>
                 {course.course_level} LEVEL CERTIFICATE
+              </span>
+            )}
+            {course.course_code && (
+              <span className={styles.heroBadge}>
+                {course.course_code}
               </span>
             )}
             <p className={styles.heroSubtitle}>{course.course_name}</p>

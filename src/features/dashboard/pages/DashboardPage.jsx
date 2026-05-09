@@ -96,6 +96,22 @@ const mainMenuItems = [
       },
     ],
   },
+  // {
+  //   key: "/dashboard/course-assignment",
+  //   icon: <SettingOutlined />,
+  //   label: "Course Assignment",
+  //   visibleForRoles: [
+  //     {
+  //       role: "admin",
+  //       isActive: true,
+  //     },
+  //     {
+  //       role: "employee",
+  //       isActive: true,
+  //       employeeStatus: ["full_time"],
+  //     },
+  //   ],
+  // },
   {
     key: "/dashboard/finances",
     icon: <DollarOutlined />,
