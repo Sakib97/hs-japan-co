@@ -222,6 +222,19 @@ const StudentDirectoryComp = ({ searchQuery }) => {
       return;
     }
     queryClient.invalidateQueries({ queryKey: [QK_STUDENTS] });
+    try {
+      await supabase.from("notifications").insert({
+        recipient_email: sessionRecord.email,
+        title: "Session Updated",
+        message: `Your academic session has been set to "${selectedSession}". Refresh your dashboard to see the update.`,
+        type: NOTIFICATION_TYPE.STATUS_CHANGE,
+        redirection_link: "/dashboard",
+        recipient_user_type: "student",
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QK_NOTIFICATIONS, sessionRecord.email],
+      });
+    } catch (_) {}
     showToast("Session assigned successfully.", "success");
     closeAssignSession();
   };

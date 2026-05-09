@@ -30,7 +30,7 @@ const StudentEnrollmentStatusComp = ({ email }) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("student")
-        .select("status, created_at")
+        .select("status, session, created_at")
         .eq("email", email)
         .single();
       if (error) throw new Error(error.message);
@@ -60,6 +60,13 @@ const StudentEnrollmentStatusComp = ({ email }) => {
             {statusLabel}
           </Tag>
         </div>
+        <div className={styles.enrollItem}>
+          <span className={styles.enrollKey}>Assigned Session</span>
+          <span className={styles.enrollValue}>
+            {data?.session ?? "—"}
+          </span>
+        </div>
+
         <div className={styles.enrollDivider} />
         <div className={styles.enrollItem}>
           <span className={styles.enrollKey}>Registered On</span>

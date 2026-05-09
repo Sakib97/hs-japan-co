@@ -6,8 +6,11 @@ import StudentDirectoryComp from "../components/studentManagement/StudentDirecto
 import CreateStudentModal from "../components/studentManagement/CreateStudentModal";
 import SessionDirectoryComp from "../components/studentManagement/SessionDirectoryComp";
 import styles from "../styles/StudentManagementPage.module.css";
+import { useAuth } from "../../../context/AuthProvider";
 
 const StudentManagementPage = () => {
+  const { userMeta } = useAuth();
+  const isAdmin = userMeta?.role === "admin";
   const [modalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -46,8 +49,8 @@ const StudentManagementPage = () => {
       {/* Student Directory Table */}
       <StudentDirectoryComp searchQuery={searchQuery} />
 
-      {/* Session Directory */}
-      <SessionDirectoryComp />
+      {/* Session Directory — admin only */}
+      {isAdmin && <SessionDirectoryComp />}
     </div>
   );
 };
