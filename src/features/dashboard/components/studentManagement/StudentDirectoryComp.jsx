@@ -17,6 +17,7 @@ import {
   SettingOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
+import { MdAssignmentAdd } from "react-icons/md";
 import styles from "../../styles/StudentManagementPage.module.css";
 import { supabase } from "../../../../config/supabaseClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -32,6 +33,7 @@ import {
   QK_STUDENT_PROFILE,
   QK_STUDENT_STATS,
   QK_NOTIFICATIONS,
+  QK_SESSIONS,
 } from "../../../../config/queryKeyConfig";
 import { getFormattedTime } from "../../../../utils/dateUtil";
 import StudentProfileModal from "./StudentProfileModal";
@@ -54,10 +56,16 @@ const getMailActionLabel = (status) => {
   return "Send Password Reset Mail";
 };
 
-const getColumns = (onViewProfile, onChangeStatus, onSendMail) => [
+const getColumns = (
+  onViewProfile,
+  onChangeStatus,
+  onSendMail,
+  onAssignSession,
+) => [
   {
     title: "NAME",
     key: "name",
+    width: 200,
     render: (_, record) => (
       <div className={styles.nameCell}>
         <Avatar
@@ -77,13 +85,31 @@ const getColumns = (onViewProfile, onChangeStatus, onSendMail) => [
   {
     title: "PHONE",
     key: "phone",
+    width: 150,
     render: (_, record) => (
       <span className={styles.cellText}>{record.phone ?? "—"}</span>
     ),
   },
   {
+    title: "Passport",
+    key: "passport",
+    width: 150,
+    render: (_, record) => (
+      <span className={styles.cellText}>{record.passport ?? "—"}</span>
+    ),
+  },
+  {
+    title: "Session",
+    key: "session",
+    width: 150,
+    render: (_, record) => (
+      <span className={styles.cellText}>{record.session ?? "—"}</span>
+    ),
+  },
+  {
     title: "STATUS",
     key: "status",
+    width: 200,
     render: (_, record) => (
       <Tag color={STUDENT_STATUS_COLOR[record.status] ?? "default"}>
         {statusLabelMap[record.status] ?? record.status ?? "—"}
@@ -93,6 +119,7 @@ const getColumns = (onViewProfile, onChangeStatus, onSendMail) => [
   {
     title: "REGISTERED AT",
     key: "created_at",
+    width: 200,
     render: (_, record) =>
       record.created_at ? (
         <span className={styles.cellText}>
@@ -106,7 +133,7 @@ const getColumns = (onViewProfile, onChangeStatus, onSendMail) => [
     title: "ACTIONS",
     key: "actions",
     fixed: "right",
-    width: 100,
+    width: 150,
     render: (_, record) => (
       <Space size="middle">
         <Tooltip title={getMailActionLabel(record.status)}>
@@ -120,6 +147,12 @@ const getColumns = (onViewProfile, onChangeStatus, onSendMail) => [
           <i
             className={`${styles.actionIcon} fi fi-rr-overview`}
             onClick={() => onViewProfile(record.email)}
+          ></i>
+        </Tooltip>
+        <Tooltip title="Assign Session">
+          <i
+            className={`${styles.actionIcon} fi fi-rr-lesson`}
+            onClick={() => onAssignSession(record)}
           ></i>
         </Tooltip>
         <Tooltip title="Change Status">
@@ -147,6 +180,51 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteEmailError, setInviteEmailError] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
+
+  // ── Assign session state ──
+  const [sessionRecord, setSessionRecord] = useState(null);
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [assigningSession, setAssigningSession] = useState(false);
+
+  const { data: sessionsData } = useQuery({
+    queryKey: [QK_SESSIONS],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("session")
+        .select("id, session_name, order")
+        .eq("is_active", true)
+        .order("order", { ascending: true, nullsFirst: false });
+      if (error) throw new Error(error.message);
+      return data ?? [];
+    },
+  });
+
+  const openAssignSession = (record) => {
+    setSessionRecord(record);
+    setSelectedSession(record.session ?? null);
+  };
+
+  const closeAssignSession = () => {
+    setSessionRecord(null);
+    setSelectedSession(null);
+  };
+
+  const handleAssignSession = async () => {
+    if (!selectedSession) return;
+    setAssigningSession(true);
+    const { error } = await supabase
+      .from("student")
+      .update({ session: selectedSession })
+      .eq("id", sessionRecord.id);
+    setAssigningSession(false);
+    if (error) {
+      showToast(error.message || "Failed to assign session.", "error");
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: [QK_STUDENTS] });
+    showToast("Session assigned successfully.", "success");
+    closeAssignSession();
+  };
 
   const openInvite = (record) => {
     if (record.status !== STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST) return;
@@ -264,7 +342,12 @@ const StudentDirectoryComp = ({ searchQuery }) => {
     setProfileModalOpen(true);
   };
 
-  const columns = getColumns(openProfile, openChangeStatus, openInvite);
+  const columns = getColumns(
+    openProfile,
+    openChangeStatus,
+    openInvite,
+    openAssignSession,
+  );
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [QK_STUDENTS, currentPage, searchQuery, selectedStatus],
@@ -279,6 +362,8 @@ const StudentDirectoryComp = ({ searchQuery }) => {
           id,
           name,
           email,
+          passport_no,
+          session,
           phone,
           status,
           created_at,
@@ -452,7 +537,54 @@ const StudentDirectoryComp = ({ searchQuery }) => {
       </Modal>
 
       <Modal
-        open={!!statusRecord}
+        open={!!sessionRecord}
+        title="Assign Session"
+        onCancel={closeAssignSession}
+        footer={[
+          <Button
+            key="save"
+            type="primary"
+            loading={assigningSession}
+            disabled={
+              !selectedSession || selectedSession === sessionRecord?.session
+            }
+            onClick={handleAssignSession}
+          >
+            Assign
+          </Button>,
+          <Button key="cancel" onClick={closeAssignSession}>
+            Cancel
+          </Button>,
+        ]}
+      >
+        {sessionRecord && (
+          <div style={{ padding: "8px 0" }}>
+            <p style={{ marginBottom: 12, fontSize: "0.85rem", color: "#555" }}>
+              Student:{" "}
+              <strong>{sessionRecord.name ?? sessionRecord.email}</strong>
+            </p>
+            {sessionRecord.session && (
+              <p
+                style={{ marginBottom: 12, fontSize: "0.85rem", color: "#555" }}
+              >
+                Current session: <strong>{sessionRecord.session}</strong>
+              </p>
+            )}
+            <Select
+              style={{ width: "100%" }}
+              placeholder="Select a session"
+              value={selectedSession}
+              onChange={setSelectedSession}
+              options={(sessionsData ?? []).map((s) => ({
+                value: s.session_name,
+                label: s.session_name,
+              }))}
+            />
+          </div>
+        )}
+      </Modal>
+
+      <Modal
         title="Change Student Status"
         onCancel={closeChangeStatus}
         footer={[

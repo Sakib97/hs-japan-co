@@ -1,0 +1,240 @@
+.section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  margin-top: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 2px;
+}
+
+.subtitle {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* .addBtn {
+  margin-top: 12px;
+  color: #6b7280 !important;
+  border-color: #e5e7eb !important;
+  background: #f9fafb !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+}
+
+.addBtn:hover {
+  color: #374151 !important;
+  border-color: #d1d5db !important;
+  background: #f3f4f6 !important;
+} */
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: #b91c1c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.addBtn:hover:not(:disabled) {
+  background: #991b1b;
+}
+
+.addBtn:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ── Inline add row ── */
+.inlineAddRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 0 2px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.inlineInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.inlineOrderInput {
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.inlineSaveBtn {
+  background: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+  flex-shrink: 0;
+}
+
+.inlineSaveBtn:hover {
+  background: #4338ca !important;
+  border-color: #4338ca !important;
+}
+
+/* ── Table overrides ── */
+.antTable :global(.ant-table-thead > tr > th) {
+  background: #f9fafb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.antTable :global(.ant-table-tbody > tr > td) {
+  vertical-align: middle;
+}
+
+/* ── Cell styles ── */
+.sessionName {
+  font-weight: 600;
+  color: #111;
+}
+
+.muted {
+  color: #9ca3af;
+  font-size: 0.88rem;
+}
+
+/* ── Status badge ── */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusActive {
+  color: #15803d;
+}
+
+.statusActive .statusDot {
+  background: #15803d;
+}
+
+.statusInactive {
+  color: #b91c1c;
+}
+
+.statusInactive .statusDot {
+  background: #b91c1c;
+}
+
+/* ── Actions cell ── */
+.actionsCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Toggle switch ── */
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.toggleOn {
+  background: #b91c1c;
+}
+
+.toggleOff {
+  background: #d1d5db;
+}
+
+.toggleThumb {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: left 0.25s;
+}
+
+.toggleOn .toggleThumb {
+  left: 20px;
+}
+
+.toggleOff .toggleThumb {
+  left: 4px;
+}
+
+.toggleLoading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.toggleSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin: auto;
+}
+
+.orderBadge{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

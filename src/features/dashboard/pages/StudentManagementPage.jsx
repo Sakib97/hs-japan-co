@@ -4,6 +4,7 @@ import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import StudentStatsComp from "../components/studentManagement/StudentStatsComp";
 import StudentDirectoryComp from "../components/studentManagement/StudentDirectoryComp";
 import CreateStudentModal from "../components/studentManagement/CreateStudentModal";
+import SessionDirectoryComp from "../components/studentManagement/SessionDirectoryComp";
 import styles from "../styles/StudentManagementPage.module.css";
 
 const StudentManagementPage = () => {
@@ -44,6 +45,9 @@ const StudentManagementPage = () => {
 
       {/* Student Directory Table */}
       <StudentDirectoryComp searchQuery={searchQuery} />
+
+      {/* Session Directory */}
+      <SessionDirectoryComp />
     </div>
   );
 };
