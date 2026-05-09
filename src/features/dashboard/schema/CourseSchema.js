@@ -2,6 +2,7 @@ import * as Yup from "yup";
 import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 
 export const CourseSchema = Yup.object({
+  courseCode: Yup.string().trim().required("Course code is required"),
   courseName: Yup.string().trim().required("Course name is required"),
   level: Yup.string().trim().required("Course level is required"),
   duration: Yup.string().trim().required("Course duration is required"),
@@ -41,6 +42,7 @@ export const CourseSchema = Yup.object({
 });
 
 export const CourseEditSchema = Yup.object({
+  courseCode: Yup.string().trim().required("Course code is required"),
   courseName: Yup.string().trim().required("Course name is required"),
   level: Yup.string().trim().required("Course level is required"),
   duration: Yup.string().trim().required("Course duration is required"),

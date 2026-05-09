@@ -140,6 +140,15 @@
   font-size: 18px;
 }
 
+.courseCode {
+  font-size: 10px;
+  font-weight: 500;
+  color: #9ca3af;
+  letter-spacing: 0.05em;
+  margin: 0 0 2px;
+  text-transform: uppercase;
+}
+
 .courseName {
   font-weight: 600;
   color: #111;
@@ -355,7 +364,6 @@
 .antTable :global(.ant-table-wrapper) {
   border: none;
 }
-
 
 /* mobile responsive */
 @media (max-width: 768px) {

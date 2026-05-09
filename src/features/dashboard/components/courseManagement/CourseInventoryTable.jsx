@@ -52,14 +52,14 @@ const CourseInventoryTable = ({ onEdit }) => {
       let query = supabase
         .from("course")
         .select(
-          "id, course_name, course_level, course_duration, instructor_name, instructor_description, course_description, cover_image_url, cover_image_size, created_at, is_active",
+          "id, course_code, course_name, course_level, course_duration, instructor_name, instructor_description, course_description, cover_image_url, cover_image_size, created_at, is_active",
           { count: "exact" },
         )
         .order("created_at", { ascending: false });
 
       if (searchQuery.trim()) {
         query = query.or(
-          `course_name.ilike.%${searchQuery.trim()}%,instructor_name.ilike.%${searchQuery.trim()}%,course_level.ilike.%${searchQuery.trim()}%`,
+          `course_code.ilike.%${searchQuery.trim()}%,course_name.ilike.%${searchQuery.trim()}%,instructor_name.ilike.%${searchQuery.trim()}%,course_level.ilike.%${searchQuery.trim()}%`,
         );
       }
 
@@ -131,6 +131,9 @@ const CourseInventoryTable = ({ onEdit }) => {
             )}
           </div>
           <div>
+            {record.course_code && (
+              <p className={styles.courseCode}>{record.course_code}</p>
+            )}
             <p className={styles.courseName}>{name}</p>
             <p className={styles.courseUpdated}>
               {record.created_at
@@ -303,7 +306,7 @@ const CourseInventoryTable = ({ onEdit }) => {
           </Button>
         </Dropdown>
         <Input
-          placeholder="Search by course, instructor, or level..."
+          placeholder="Search by course code, course name, instructor, or level..."
           prefix={<SearchOutlined />}
           // style={{ width: "400px" }}
           className={styles.searchInput}

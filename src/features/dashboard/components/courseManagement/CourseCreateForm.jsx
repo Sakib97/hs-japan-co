@@ -21,6 +21,7 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
 
   const formik = useFormik({
     initialValues: {
+      courseCode: "",
       courseName: "",
       level: "",
       duration: "",
@@ -45,6 +46,7 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
           const { error } = await supabase
             .from("course")
             .update({
+              course_code: values.courseCode.trim(),
               course_name: values.courseName.trim(),
               course_level: values.level.trim(),
               course_duration: values.duration.trim(),
@@ -60,6 +62,7 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
           onEditComplete?.();
         } else {
           const { error } = await supabase.from("course").insert({
+            course_code: values.courseCode.trim(),
             course_name: values.courseName.trim(),
             course_level: values.level.trim(),
             course_duration: values.duration.trim(),
@@ -80,10 +83,11 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
         setResetKey((k) => k + 1);
       } catch (err) {
         console.error("Course submission failed:", err);
-        showToast(
-          err.message || "Failed to save course. Please try again.",
-          "error",
-        );
+        const message =
+          err.code === "23505"
+            ? "Course code already exists. Please use a unique course code."
+            : err.message || "Failed to save course. Please try again.";
+        showToast(message, "error");
       } finally {
         setSubmitting(false);
       }
@@ -93,6 +97,7 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
   useEffect(() => {
     if (editingCourse) {
       formik.setValues({
+        courseCode: editingCourse.course_code ?? "",
         courseName: editingCourse.course_name ?? "",
         level: editingCourse.course_level ?? "",
         duration: editingCourse.course_duration ?? "",
@@ -145,6 +150,19 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
       <form onSubmit={formik.handleSubmit} className={styles.formGrid}>
         {/* Left column */}
         <div className={styles.leftCol}>
+          <div className={styles.field}>
+            <label className={styles.label}>Course Code *</label>
+            <input
+              className={`${styles.input}${formik.touched.courseCode && formik.errors.courseCode ? " " + styles.inputError : ""}`}
+              type="text"
+              name="courseCode"
+              value={formik.values.courseCode}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="e.g., JPN-N3-001"
+            />
+            {err("courseCode")}
+          </div>
           <div className={styles.field}>
             <label className={styles.label}>Course Name *</label>
             <input
