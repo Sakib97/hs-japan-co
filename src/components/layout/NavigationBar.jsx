@@ -106,9 +106,11 @@ const NavigationBar = () => {
               alt=""
               // src="/logo3.png"
               src="/logo_1.png"
+              // width={isMobile ? "200" : "500"}
+              // height={isMobile ? "50" : "150"}
               width={isMobile ? "200" : "300"}
               height={isMobile ? "50" : "80"}
-              // className={styles.logo}
+              className={styles.logo}
               // className="d-inline-block align-top"
             />
             &nbsp;
@@ -142,7 +144,7 @@ const NavigationBar = () => {
               {/* Desktop Menu */}
               <Nav
                 style={{ fontSize: "1.1rem" }}
-                className="
+                className={`
                                     d-none d-lg-flex
                                     ms-auto        /* push to right on large screens */
                                     flex-lg-row    /* horizontal on large screens */
@@ -150,7 +152,8 @@ const NavigationBar = () => {
                                     align-items-lg-center
                                     align-items-center  /* center align on small */
                                     gap-3
-                                "
+                                    ${styles.desktopNav}
+                                `}
               >
                 <Nav.Link onClick={handleClose} as={Link} to="/">
                   Home
