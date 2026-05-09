@@ -81,16 +81,20 @@
 
 .levelBadge {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  background-color: #f5c518;
-  color: #000;
+  top: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  background-color: rgba(30, 27, 75, 0.82);
+  border: 2px solid rgba(255, 255, 255, 0.603);
+  color: #fff;
   font-weight: 700;
-  font-size: 0.9rem;
-  padding: 8px 14px;
-  border-radius: 50%;
-  min-width: 40px;
-  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  padding: 4px 11px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
 }
 
 .cardContent {
