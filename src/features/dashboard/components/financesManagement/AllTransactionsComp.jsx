@@ -33,6 +33,7 @@ import {
   QK_ALL_TRANSACTIONS,
   QK_FEE_TYPES,
   QK_NOTIFICATIONS,
+  QK_SESSIONS,
 } from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { useAuth } from "../../../../context/AuthProvider";
@@ -102,6 +103,21 @@ const AllTransactionsComp = () => {
   const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(null);
   const [selectedFeeType, setSelectedFeeType] = useState(null);
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(null);
+  const [selectedSession, setSelectedSession] = useState(null);
+
+  const { data: sessionsData = [] } = useQuery({
+    queryKey: [QK_SESSIONS],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("session")
+        .select("session_name")
+        .eq("is_active", true)
+        .order("order", { ascending: true, nullsFirst: false });
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 1000 * 60 * 10,
+  });
 
   const { data: feeTypesData = [] } = useQuery({
     queryKey: [QK_FEE_TYPES],
@@ -152,6 +168,7 @@ const AllTransactionsComp = () => {
       selectedPaymentMonth,
       selectedFeeType,
       selectedPaymentStatus,
+      selectedSession,
     ],
     queryFn: async () => {
       const from = (currentPage - 1) * PAGE_SIZE;
@@ -183,11 +200,15 @@ const AllTransactionsComp = () => {
           .startOf("month")
           .format("YYYY-MM-DD");
         const end = selectedPaymentMonth.endOf("month").format("YYYY-MM-DD");
-        query = query.gte("payment_date", start).lte("payment_date", end);
+        query = query.gte("created_at", start).lte("created_at", end);
       }
 
       if (selectedPaymentStatus) {
         query = query.eq("payment_status", selectedPaymentStatus);
+      }
+
+      if (selectedSession) {
+        query = query.eq("session", selectedSession);
       }
 
       if (selectedFeeType) {
@@ -305,6 +326,7 @@ const AllTransactionsComp = () => {
           studentName={record.student_name || record.student_email}
           studentEmail={record.student_email}
           studentPhone={record.student_phone || ""}
+          studentSession={record.session || ""}
           feeType={record.fee_type_title}
           otherText=""
           formattedDueDate={formatDate(record.due_date)}
@@ -374,6 +396,12 @@ const AllTransactionsComp = () => {
           )}
         </div>
       ),
+    },
+    {
+      title: "SESSION",
+      dataIndex: "session",
+      key: "session",
+      render: (v) => <span className={styles.cell}>{v ?? "—"}</span>,
     },
     {
       title: "AMOUNT (BDT)",
@@ -506,6 +534,38 @@ const AllTransactionsComp = () => {
           </Button>
         </Dropdown>
 
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: "__all__",
+                label: <span>All Sessions</span>,
+                onClick: () => {
+                  setSelectedSession(null);
+                  setCurrentPage(1);
+                },
+              },
+              ...sessionsData.map((s) => ({
+                key: s.session_name,
+                label: <span>{s.session_name}</span>,
+                onClick: () => {
+                  setSelectedSession(s.session_name);
+                  setCurrentPage(1);
+                },
+              })),
+            ],
+          }}
+          placement="bottomLeft"
+        >
+          <Button
+            type={selectedSession ? "primary" : ""}
+            icon={<i className="fi fi-rr-filter"></i>}
+            size={"medium"}
+          >
+            {selectedSession ?? "Session"}
+          </Button>
+        </Dropdown>
+
         <DatePicker
           placeholder="Filter By Payment Month"
           className={styles.searchMonthPicker}
@@ -589,6 +649,9 @@ const AllTransactionsComp = () => {
             </Descriptions.Item>
             <Descriptions.Item label="Student Phone">
               {viewRecord.student_phone ?? "—"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Session">
+              {viewRecord.session ?? "—"}
             </Descriptions.Item>
             <Descriptions.Item label="Fee Type">
               {viewRecord.fee_type_title ?? "—"}

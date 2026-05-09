@@ -234,6 +234,7 @@ const SessionDirectoryComp = () => {
       setRows(data?.rows ?? []);
     } else {
       await invalidate();
+      showToast("Order updated successfully.", "success");
     }
   };
 

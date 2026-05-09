@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Select, DatePicker, Button, Modal } from "antd";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
@@ -6,7 +6,8 @@ import {
   QK_FEE_TYPES,
   QK_NOTIFICATIONS,
   QK_ALL_TRANSACTIONS,
-  QK_MY_PAYMENTS
+  QK_MY_PAYMENTS,
+  QK_SESSIONS,
 } from "../../../../config/queryKeyConfig";
 import {
   PAYMENT_STATUS,
@@ -23,6 +24,7 @@ const ReceiptParticularsComp = ({
   studentEmail,
   studentPhone,
   studentAvatar,
+  studentSession,
 }) => {
   const [feeType, setFeeType] = useState(null);
   const [otherText, setOtherText] = useState("");
@@ -32,9 +34,28 @@ const ReceiptParticularsComp = ({
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [receiptId, setReceiptId] = useState(() => generateReceiptId());
+  const [sessionValue, setSessionValue] = useState(studentSession ?? null);
+
+  useEffect(() => {
+    setSessionValue(studentSession ?? null);
+  }, [studentSession]);
 
   const { user } = useAuth();
   const queryClient = useQueryClient();
+
+  const { data: sessionsData = [] } = useQuery({
+    queryKey: [QK_SESSIONS],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("session")
+        .select("session_name")
+        .eq("is_active", true)
+        .order("order", { ascending: true, nullsFirst: false });
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 1000 * 60 * 10,
+  });
 
   const { data: feeTypesData = [] } = useQuery({
     queryKey: [QK_FEE_TYPES, "active"],
@@ -80,6 +101,7 @@ const ReceiptParticularsComp = ({
         receipt_id: receiptId,
         student_email: studentEmail,
         student_phone: studentPhone || null,
+        session: sessionValue,
         receipt_gen_date: new Date().toISOString(),
         fee_type_title: feeTitle,
         fee_type_xtra_info: additionalInfo.trim() || null,
@@ -195,6 +217,11 @@ const ReceiptParticularsComp = ({
               {studentPhone && (
                 <span className={styles.profileMeta}>{studentPhone}</span>
               )}
+              {studentSession && (
+                <span className={styles.profileMeta}>
+                  Session: <strong>{studentSession}</strong>
+                </span>
+              )}
             </div>
           </div>
         </>
@@ -238,15 +265,28 @@ const ReceiptParticularsComp = ({
           />
         </div>
         <div className={styles.field}>
+          <label className={styles.label}>SESSION</label>
+          <Select
+            className={styles.select}
+            placeholder="Select session"
+            allowClear
+            value={sessionValue}
+            onChange={setSessionValue}
+            options={sessionsData.map((s) => ({
+              value: s.session_name,
+              label: s.session_name,
+            }))}
+          />
+        </div>
+
+        <div className={styles.field}>
           <label className={styles.label}>ADDITIONAL INFO (OPTIONAL)</label>
           <input
-            style={{ marginTop: "-2px" }}
             className={`${styles.amountInput} ${styles.otherInput}`}
             type="text"
             placeholder="Additional info about the fee (optional)"
             value={additionalInfo}
             onChange={(e) => setAdditionalInfo(e.target.value)}
-            // autoFocus
           />
         </div>
       </div>
@@ -293,6 +333,7 @@ const ReceiptParticularsComp = ({
         studentName={studentName}
         studentEmail={studentEmail}
         studentPhone={studentPhone}
+        studentSession={sessionValue}
         feeType={feeType}
         dueDate={dueDate}
         amount={amount}

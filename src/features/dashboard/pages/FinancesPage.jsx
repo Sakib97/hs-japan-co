@@ -20,7 +20,7 @@ const FinancesPage = () => {
     const isEmail = query.includes("@");
     const { data, error } = await supabase
       .from("student")
-      .select("name, email, phone, avatar_url")
+      .select("name, email, phone, session, avatar_url")
       .eq(isEmail ? "email" : "phone", query)
       .single();
 
@@ -51,6 +51,7 @@ const FinancesPage = () => {
             studentEmail={foundStudent?.email}
             studentPhone={foundStudent?.phone}
             studentAvatar={foundStudent?.avatar_url}
+            studentSession={foundStudent?.session}
           />
         </div>
 

@@ -128,10 +128,10 @@
 .directoryHeader {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 12px;
+  /* flex-wrap: wrap; */
+  gap: 70px;
 }
 
 .directoryTitle {
@@ -300,6 +300,18 @@
 
   .searchInput {
     max-width: 100%;
+    width: 100%;
+  }
+  .directoryHeader{
+    flex-direction: column;
+    /* align-items: flex-start; */
+    gap: 12px;
+  }
+  .directoryActions{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
     width: 100%;
   }
 }

@@ -337,6 +337,7 @@ const ReceiptPDFDocument = ({
   studentName,
   studentEmail,
   studentPhone,
+  studentSession,
   feeType,
   otherText,
   formattedDueDate,
@@ -388,6 +389,9 @@ const ReceiptPDFDocument = ({
           <InfoRow label="Phone" value={studentPhone} last />
         ) : (
           <InfoRow label="Email" value={studentEmail || "—"} last />
+        )}
+        {studentSession && (
+          <InfoRow label="Session" value={studentSession} last />
         )}
       </View>
 

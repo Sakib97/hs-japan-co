@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { LoginSchema } from "../schema/LoginSchema";
 import styles from "../styles/LoginPage.module.css";
 import { supabase } from "../../../config/supabaseClient";
-import { Spin } from "antd";
+import { Spin, Modal } from "antd";
 import { showToast } from "../../../components/layout/CustomToast";
 
 const LoginPage = () => {
@@ -17,6 +17,7 @@ const LoginPage = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [forgotModalOpen, setForgotModalOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: { email: "", password: "" },
@@ -158,9 +159,13 @@ const LoginPage = () => {
                   <input type="checkbox" className={styles.checkbox} />
                   Remember me
                 </label>
-                <Link to="/auth/forgot-password" className={styles.forgotLink}>
+                <button
+                  type="button"
+                  className={styles.forgotLink}
+                  onClick={() => setForgotModalOpen(true)}
+                >
                   Forgot Password?
-                </Link>
+                </button>
               </div>
 
               <button
@@ -175,9 +180,9 @@ const LoginPage = () => {
               </button>
             </form>
 
-            <div className={styles.divider}>
+            {/* <div className={styles.divider}>
               <span>or continue with</span>
-            </div>
+            </div> */}
 
             {/* <div className={styles.socialRow}>
               <button className={styles.socialBtn}>
@@ -200,6 +205,28 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        open={forgotModalOpen}
+        onCancel={() => setForgotModalOpen(false)}
+        footer={null}
+        title="Reset Password"
+        centered
+      >
+        <div style={{ padding: "8px 0 4px", textAlign: "center" }}>
+          <i
+            className="fa-solid fa-headset"
+            style={{ fontSize: 40, color: "#4f46e5", marginBottom: 16 }}
+          ></i>
+          <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 8 }}>
+            Need help with your password?
+          </p>
+          <p style={{ fontSize: "0.875rem", color: "#555", marginBottom: 0 }}>
+            Please contact the <strong>Admin</strong> or reach out to our{" "}
+            <strong>Help Center</strong> to request a password reset.
+          </p>
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -104,6 +104,7 @@ const MyPaymentHistoryComp = ({
           studentName={studentName || record.student_email}
           studentEmail={record.student_email}
           studentPhone={record.student_phone || studentPhone || ""}
+          studentSession={record.session || ""}
           feeType={record.fee_type_title}
           otherText=""
           formattedDueDate={formatDate(record.due_date)}

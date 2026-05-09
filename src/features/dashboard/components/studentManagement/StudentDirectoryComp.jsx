@@ -182,6 +182,9 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   const [inviteEmailError, setInviteEmailError] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
 
+  // ── Session filter state ──
+  const [selectedSessionFilter, setSelectedSessionFilter] = useState(null);
+
   // ── Assign session state ──
   const [sessionRecord, setSessionRecord] = useState(null);
   const [selectedSession, setSelectedSession] = useState(null);
@@ -364,7 +367,13 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   );
 
   const { data, isLoading, isFetching, refetch } = useQuery({
-    queryKey: [QK_STUDENTS, currentPage, searchQuery, selectedStatus],
+    queryKey: [
+      QK_STUDENTS,
+      currentPage,
+      searchQuery,
+      selectedStatus,
+      selectedSessionFilter,
+    ],
     queryFn: async () => {
       const from = (currentPage - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
@@ -398,6 +407,10 @@ const StudentDirectoryComp = ({ searchQuery }) => {
 
       if (selectedStatus) {
         query = query.eq("status", selectedStatus);
+      }
+
+      if (selectedSessionFilter) {
+        query = query.eq("session", selectedSessionFilter);
       }
 
       const { data, error, count } = await query;
@@ -463,6 +476,39 @@ const StudentDirectoryComp = ({ searchQuery }) => {
             >
               {STUDENT_STATUS_OPTIONS.find((o) => o.value === selectedStatus)
                 ?.label ?? "Status"}
+            </Button>
+          </Dropdown>
+
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: "__all__",
+                  label: <span>All Sessions</span>,
+                  onClick: () => {
+                    setSelectedSessionFilter(null);
+                    setCurrentPage(1);
+                  },
+                },
+                ...(sessionsData ?? []).map((s) => ({
+                  key: s.session_name,
+                  label: <span>{s.session_name}</span>,
+                  onClick: () => {
+                    setSelectedSessionFilter(s.session_name);
+                    setCurrentPage(1);
+                  },
+                })),
+              ],
+            }}
+            placement="bottomLeft"
+          >
+            <Button
+              type={selectedSessionFilter ? "primary" : ""}
+              // icon={<i className="fi fi-rr-graduation-cap"></i>}
+              icon={<i className="fi fi-rr-filter"></i>}
+              size={"medium"}
+            >
+              {selectedSessionFilter ?? "Session"}
             </Button>
           </Dropdown>
         </div>

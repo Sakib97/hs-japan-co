@@ -30,6 +30,7 @@ const ReceiptPreviewModal = ({
   studentName,
   studentEmail,
   studentPhone,
+  studentSession,
   feeType,
   otherText,
   dueDate,
@@ -66,6 +67,7 @@ const ReceiptPreviewModal = ({
           studentName={studentName}
           studentEmail={studentEmail}
           studentPhone={studentPhone}
+          studentSession={studentSession}
           feeType={feeType}
           otherText={otherText}
           formattedDueDate={formattedDueDate}
@@ -174,6 +176,12 @@ const ReceiptPreviewModal = ({
               <div className={styles.infoRow}>
                 <span className={styles.infoKey}>Phone</span>
                 <span className={styles.infoVal}>{studentPhone}</span>
+              </div>
+            )}
+            {studentSession && (
+              <div className={styles.infoRow}>
+                <span className={styles.infoKey}>Session</span>
+                <span className={styles.infoVal}>{studentSession}</span>
               </div>
             )}
           </div>
