@@ -35,7 +35,7 @@ const IntroComp = () => {
           </p>
 
           <div className={styles.actions}>
-            <Link to="/admission" className={styles.primaryBtn}>
+            <Link to="/online-admission" className={styles.primaryBtn}>
               Apply Now
             </Link>
             <Link to="/about" className={styles.ghostBtn}>

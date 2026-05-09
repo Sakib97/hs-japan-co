@@ -160,6 +160,23 @@ const mainMenuItems = [
     ],
   },
 
+  {
+    key: "/dashboard/daily-tasks",
+    icon: <i className="fi fi-rr-to-do-alt"></i>,
+    label: "Daily Tasks",
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+      {
+        role: "employee",
+        isActive: true,
+        employeeStatus: ["full_time"],
+      },
+    ],
+  },
+
 
   {
     key: "/dashboard/my-courses",

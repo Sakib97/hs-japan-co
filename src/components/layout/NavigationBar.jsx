@@ -101,7 +101,7 @@ const NavigationBar = () => {
         style={{ backgroundColor: "#2D2A4A" }}
       >
         <Container style={{ padding: "0px 10px", margin: "0 0 0 10vw" }}>
-          <Navbar.Brand href="/">
+          <Navbar.Brand className={styles.navbarLogo} href="/">
             <img
               alt=""
               // src="/logo3.png"

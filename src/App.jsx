@@ -45,6 +45,8 @@ import AllCoursesPage from "./features/CourseDetails/pages/AllCoursesPage.jsx";
 import AllEventsPage from "./features/events/pages/AllEventsPage.jsx";
 import AllActivitiesPage from "./features/activities/pages/AllActivitiesPage.jsx";
 import CourseAssignmentPage from "./features/dashboard/pages/CourseAssignmentPage.jsx";
+import DailyTaskPage from "./features/dashboard/pages/DailyTaskPage.jsx";
+
 
 const SPLASH_KEY = "hs_japan_splash_shown";
 
@@ -178,6 +180,18 @@ function App() {
                 allowedEmployeeStatuses={["full_time", "part_time"]}
               >
                 <EventsActivitiesManagementPage />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="daily-tasks"
+            element={
+              <RoleBasedRoute
+                allowedRoles={["admin", "employee"]}
+                allowedEmployeeStatuses={["full_time", "part_time"]}
+              >
+                <DailyTaskPage />
               </RoleBasedRoute>
             }
           />

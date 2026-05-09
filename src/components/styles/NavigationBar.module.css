@@ -120,14 +120,24 @@
 }
 
 .logo {
-  transform: scale(1.35);
+  transform: scale(1.6);
   transform-origin: left center;
+}
+
+.navbarLogo {
+  position: relative;
+  left: -100px;
 }
 
 /* for small screens */
 @media (max-width: 1450px) {
   .logo {
     transform: scale(1);
+  }
+
+  .navbarLogo {
+    position: relative;
+    left: 0;
   }
 }
 
