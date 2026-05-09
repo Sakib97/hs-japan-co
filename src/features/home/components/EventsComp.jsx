@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_EVENTS } from "../../../config/queryKeyConfig";
 import styles from "../styles/EventsComp.module.css";
+import { FaArrowRightLong } from "react-icons/fa6";
 
 const MONTHS = [
   "Jan",
@@ -115,6 +117,11 @@ const EventsComp = () => {
 
             {/* Decorative dot */}
             <div className={styles.decorDot} />
+
+            {/* View All Events link */}
+            <Link to="/events" className={styles.viewAllLink}>
+              View All Events <FaArrowRightLong />
+            </Link>
           </div>
         </div>
       </div>

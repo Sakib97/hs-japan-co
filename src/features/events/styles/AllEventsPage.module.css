@@ -1,0 +1,265 @@
+/* ── Page wrapper ── */
+.page {
+  min-height: 100vh;
+  background: #f9f9f9;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ── Hero banner ── */
+.hero {
+  background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 100%);
+  padding: 72px 24px 60px;
+  text-align: center;
+}
+
+.heroInner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.heroEyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 12px;
+}
+
+.heroTitle {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 14px;
+  line-height: 1.2;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.heroSub {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Content container ── */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 240px;
+  max-width: 520px;
+  border-radius: 50px !important;
+}
+
+.searchInput :global(.ant-input-affix-wrapper) {
+  border-radius: 50px !important;
+}
+
+.count {
+  font-size: 0.85rem;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+/* ── Event list ── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ── Event card ── */
+.eventCard {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: #1e1b4b;
+  border-radius: 14px;
+  padding: 22px 28px;
+  transition:
+    background 0.25s,
+    transform 0.2s,
+    box-shadow 0.2s;
+  box-shadow: 0 2px 10px rgba(30, 27, 75, 0.12);
+}
+
+.eventCard:hover {
+  background: #4f46e5;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+}
+
+/* ── Date badge ── */
+.dateBadge {
+  flex-shrink: 0;
+  width: 76px;
+  height: 76px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.eventCard:hover .dateBadge {
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+}
+
+.dateDay {
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dateMonth {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #f5c518;
+  margin-top: 4px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ── Event info ── */
+.eventInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+  line-height: 1.35;
+}
+
+.eventMeta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.84rem;
+  transition: color 0.2s;
+}
+
+.eventCard:hover .metaItem {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.metaItem i {
+  font-size: 0.82rem;
+}
+
+/* ── Cover thumbnail ── */
+.coverThumb {
+  flex-shrink: 0;
+  width: 110px;
+  height: 80px;
+  border-radius: 10px;
+  object-fit: cover;
+  opacity: 0.85;
+  transition: opacity 0.25s;
+}
+
+.eventCard:hover .coverThumb {
+  opacity: 1;
+}
+
+/* ── Loading / Empty ── */
+.loadingWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 280px;
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+.empty i {
+  font-size: 3rem;
+  color: #d1d5db;
+}
+
+/* ── Pagination ── */
+.paginationWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .searchInput {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .eventCard {
+    padding: 16px 18px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .coverThumb {
+    width: 100%;
+    height: 140px;
+    border-radius: 8px;
+    order: 3;
+  }
+
+  .dateBadge {
+    width: 64px;
+    height: 64px;
+  }
+
+  .dateDay {
+    font-size: 1.4rem;
+  }
+
+  .eventMeta {
+    gap: 10px;
+  }
+}

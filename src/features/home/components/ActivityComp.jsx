@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_ACTIVITIES } from "../../../config/queryKeyConfig";
 import styles from "../styles/ActivityComp.module.css";
+import { FaArrowRightLong } from "react-icons/fa6";
 
 const formatDate = (dateStr) => {
   if (!dateStr) return null;
@@ -59,6 +61,11 @@ const ActivityComp = () => {
               </div>
             </div>
           ))}
+        </div>
+        <div className={styles.viewAllWrap}>
+          <Link to="/activities" className={styles.viewAllLink}>
+            View All Activities <FaArrowRightLong />
+          </Link>
         </div>
       </div>
     </section>

@@ -91,9 +91,7 @@ const AllCoursesPage = () => {
         {/* ── Grid ── */}
         {isLoading ? (
           <div className={styles.loadingWrap}>
-            <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-            />
+            <LoadingOutlined style={{ fontSize: 48, color: "#4f46e5" }} spin />
           </div>
         ) : rows.length === 0 ? (
           <div className={styles.empty}>

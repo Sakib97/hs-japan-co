@@ -53,10 +53,14 @@ export const QK_TEAM_PAGE_MEMBERS = "team_page_members";
 export const QK_HOMEPAGE_CAROUSEL = "homepage_carousel_slides";
 
 // ─── Events & Activities ──────────────────────────────────────────────────────
-// Used in: EventsTableComp
+// Used in: EventsTableComp (admin dashboard)
 export const QK_EVENTS = "events_page";
-// Used in: ActivitiesTableComp
+// Used in: AllEventsPage (public paginated listing)
+export const QK_ALL_EVENTS = "all-events";
+// Used in: ActivitiesTableComp (admin dashboard)
 export const QK_ACTIVITIES = "activities_page";
+// Used in: AllActivitiesPage (public paginated listing)
+export const QK_ALL_ACTIVITIES = "all-activities";
 
 // ─── Contact ─────────────────────────────────────────────────────────────────
 // Used in: ContactInfoComp
