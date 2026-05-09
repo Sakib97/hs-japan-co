@@ -155,6 +155,7 @@ const getColumns = (
             onClick={() => onAssignSession(record)}
           ></i>
         </Tooltip>
+
         <Tooltip title="Change Status">
           <i
             className={`${styles.actionIcon} fi fi-rr-career-growth`}
@@ -598,6 +599,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
       </Modal>
 
       <Modal
+        open={!!statusRecord}
         title="Change Student Status"
         onCancel={closeChangeStatus}
         footer={[
