@@ -185,6 +185,9 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   // ── Session filter state ──
   const [selectedSessionFilter, setSelectedSessionFilter] = useState(null);
 
+  // ── Change status "Other" state ──
+  const [otherStatus, setOtherStatus] = useState("");
+
   // ── Assign session state ──
   const [sessionRecord, setSessionRecord] = useState(null);
   const [selectedSession, setSelectedSession] = useState(null);
@@ -317,11 +320,13 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   const openChangeStatus = (record) => {
     setStatusRecord(record);
     setNewStatus(record.status);
+    setOtherStatus("");
   };
 
   const closeChangeStatus = () => {
     setStatusRecord(null);
     setNewStatus(null);
+    setOtherStatus("");
   };
 
   const { mutate: updateStatus, isPending: statusUpdating } = useMutation({
@@ -406,7 +411,16 @@ const StudentDirectoryComp = ({ searchQuery }) => {
       }
 
       if (selectedStatus) {
-        query = query.eq("status", selectedStatus);
+        if (selectedStatus === "__other__") {
+          const knownStatuses = STUDENT_STATUS_OPTIONS.map((o) => o.value);
+          query = query.not(
+            "status",
+            "in",
+            `(${knownStatuses.map((s) => `"${s}"`).join(",")})`,
+          );
+        } else {
+          query = query.eq("status", selectedStatus);
+        }
       }
 
       if (selectedSessionFilter) {
@@ -465,6 +479,14 @@ const StudentDirectoryComp = ({ searchQuery }) => {
                     setCurrentPage(1);
                   },
                 })),
+                {
+                  key: "__other__",
+                  label: <span>Other</span>,
+                  onClick: () => {
+                    setSelectedStatus("__other__");
+                    setCurrentPage(1);
+                  },
+                },
               ],
             }}
             placement="bottomLeft"
@@ -474,8 +496,11 @@ const StudentDirectoryComp = ({ searchQuery }) => {
               icon={<i className="fi fi-rr-filter"></i>}
               size={"medium"}
             >
-              {STUDENT_STATUS_OPTIONS.find((o) => o.value === selectedStatus)
-                ?.label ?? "Status"}
+              {selectedStatus === "__other__"
+                ? "Other"
+                : (STUDENT_STATUS_OPTIONS.find(
+                    (o) => o.value === selectedStatus,
+                  )?.label ?? "Status")}
             </Button>
           </Dropdown>
 
@@ -653,10 +678,17 @@ const StudentDirectoryComp = ({ searchQuery }) => {
             key="save"
             type="primary"
             loading={statusUpdating}
-            disabled={!newStatus || newStatus === statusRecord?.status}
-            onClick={() =>
-              updateStatus({ email: statusRecord.email, status: newStatus })
+            disabled={
+              !newStatus ||
+              (newStatus === "other"
+                ? !otherStatus.trim()
+                : newStatus === statusRecord?.status)
             }
+            onClick={() => {
+              const finalStatus =
+                newStatus === "other" ? otherStatus.trim() : newStatus;
+              updateStatus({ email: statusRecord.email, status: finalStatus });
+            }}
           >
             Save
           </Button>,
@@ -673,10 +705,25 @@ const StudentDirectoryComp = ({ searchQuery }) => {
             </p>
             <Select
               style={{ width: "100%" }}
-              options={STUDENT_STATUS_OPTIONS}
+              options={[
+                ...STUDENT_STATUS_OPTIONS,
+                { value: "other", label: "Other" },
+              ]}
               value={newStatus}
-              onChange={setNewStatus}
+              onChange={(val) => {
+                setNewStatus(val);
+                setOtherStatus("");
+              }}
             />
+            {newStatus === "other" && (
+              <Input
+                style={{ marginTop: 10 }}
+                placeholder="Enter custom status (required)"
+                value={otherStatus}
+                onChange={(e) => setOtherStatus(e.target.value)}
+                autoFocus
+              />
+            )}
           </div>
         )}
       </Modal>

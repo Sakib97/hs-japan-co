@@ -27,7 +27,7 @@ import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { QK_TEAM_PAGE_MEMBERS } from "../../../../config/queryKeyConfig";
 
 const PAGE_SIZE = 10;
-const MAX_MEMBERS = 10; // Maximum members allowed on the team page as per requirements
+const MAX_MEMBERS = 30; // Maximum members allowed on the team page as per requirements
 const MAX_FILE_SIZE = IMAGE_SIZES.TEAM_STAFF.maxBytes;
 
 const RowContext = React.createContext({});
