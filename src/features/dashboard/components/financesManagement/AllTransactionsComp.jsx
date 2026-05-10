@@ -439,7 +439,7 @@ const AllTransactionsComp = () => {
           <Tooltip title="Change Status">
             <Button
               size="small"
-              icon={<EditOutlined />}
+              icon={<i className="fi fi-rr-career-growth"></i>}
               onClick={() => {
                 setStatusRecord(record);
                 setSelectedStatus(record.payment_status);

@@ -9,10 +9,11 @@ import { useAuth } from "../../../../context/AuthProvider";
 import styles from "./TaskReportComp.module.css";
 
 const TaskReportComp = () => {
-  const { user } = useAuth();
+  const { user, userMeta } = useAuth();
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const today = new Date();
   const dateStr = today.toLocaleDateString("en-US", {
@@ -32,7 +33,8 @@ const TaskReportComp = () => {
     try {
       const { error } = await supabase.from("daily_task").insert({
         content: content.trim(),
-        created_by: user?.email ?? null,
+        created_by_email: user?.email ?? null,
+        created_by_name: userMeta?.name ?? null,
         status: "under_review",
       });
 
@@ -40,6 +42,7 @@ const TaskReportComp = () => {
 
       await queryClient.invalidateQueries({ queryKey: [QK_DAILY_TASKS] });
       setContent("");
+      setResetKey((k) => k + 1);
       showToast("Task report submitted successfully.", "success");
     } catch (err) {
       showToast(err.message || "Failed to submit report.", "error");
@@ -75,7 +78,7 @@ const TaskReportComp = () => {
               Document tasks, blockers, and achievements.
             </p>
 
-            <TiptapRTE content={content} onChange={setContent} />
+            <TiptapRTE key={resetKey} value={content} onChange={setContent} />
 
             <Button
               type="primary"
