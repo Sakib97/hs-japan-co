@@ -430,58 +430,63 @@ const TaskDirectoryComp = () => {
         ]}
       >
         {viewRecord && (
-          <Descriptions column={1} size="small" bordered>
-            <Descriptions.Item label="Date">
-              {formatTaskDate(viewRecord.created_at)}
-            </Descriptions.Item>
-
-            <Descriptions.Item label="Status">
-              <Tag
-                color={DAILY_TASK_STATUS_COLOR[viewRecord.status] ?? "default"}
-              >
-                {taskStatusLabelMap[viewRecord.status] ??
-                  viewRecord.status ??
-                  "—"}
-              </Tag>
-            </Descriptions.Item>
-
-            {/* Report By */}
-            {userMeta?.role === "admin" && (
-              <>
-                <Descriptions.Item label="Reported By">
-                  <div className={styles.cell}>
-                    {viewRecord.created_by_name ??
-                      viewRecord.created_by_email ??
-                      "—"}
-                    {viewRecord.created_by_email && (
-                      <div className={styles.email}>
-                        {viewRecord.created_by_email}
-                      </div>
-                    )}
-                  </div>
-                </Descriptions.Item>
-
-                {viewRecord.verified_by && (
-                  <Descriptions.Item label="Reviewed By">
-                    {viewRecord.verified_by}
-                  </Descriptions.Item>
-                )}
-              </>
-            )}
-
-            {viewRecord.verification_comments && (
-              <Descriptions.Item label="Performance Review">
-                {viewRecord.verification_comments}
+          <div className={styles.detailsContainer}>
+            <Descriptions column={1} size="small" bordered>
+              <Descriptions.Item label="Date">
+                {formatTaskDate(viewRecord.created_at)}
               </Descriptions.Item>
-            )}
 
-            <Descriptions.Item label="Task Report" span={1}>
+              <Descriptions.Item label="Status">
+                <Tag
+                  color={
+                    DAILY_TASK_STATUS_COLOR[viewRecord.status] ?? "default"
+                  }
+                >
+                  {taskStatusLabelMap[viewRecord.status] ??
+                    viewRecord.status ??
+                    "—"}
+                </Tag>
+              </Descriptions.Item>
+
+              {/* Report By */}
+              {userMeta?.role === "admin" && (
+                <>
+                  <Descriptions.Item label="Reported By">
+                    <div className={styles.cell}>
+                      {viewRecord.created_by_name ??
+                        viewRecord.created_by_email ??
+                        "—"}
+                      {viewRecord.created_by_email && (
+                        <div className={styles.email}>
+                          {viewRecord.created_by_email}
+                        </div>
+                      )}
+                    </div>
+                  </Descriptions.Item>
+
+                  {viewRecord.verified_by && (
+                    <Descriptions.Item label="Reviewed By">
+                      {viewRecord.verified_by}
+                    </Descriptions.Item>
+                  )}
+                </>
+              )}
+
+              {viewRecord.verification_comments && (
+                <Descriptions.Item label="Performance Review">
+                  {viewRecord.verification_comments}
+                </Descriptions.Item>
+              )}
+            </Descriptions>
+
+            <div className={styles.reportSection}>
+              <div className={styles.reportHeader}>Task Report</div>
               <div
-                className={styles.contentDisplay}
+                className={`${styles.contentDisplay} ${styles.reportContent}`}
                 dangerouslySetInnerHTML={{ __html: viewRecord.content ?? "—" }}
               />
-            </Descriptions.Item>
-          </Descriptions>
+            </div>
+          </div>
         )}
       </Modal>
       {/* Change Status Modal - Admin Only */}

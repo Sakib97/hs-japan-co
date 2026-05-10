@@ -102,6 +102,30 @@
   color: #333;
 }
 
+.detailsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reportSection {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.reportHeader {
+  padding: 12px 16px;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: 600;
+}
+
+.reportContent {
+  padding: 16px;
+  background: #fff;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .toolbar {
