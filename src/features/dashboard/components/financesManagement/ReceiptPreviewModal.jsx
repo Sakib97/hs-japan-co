@@ -127,7 +127,10 @@ const ReceiptPreviewModal = ({
             onClick={handleDownloadPDF}
             loading={downloading}
           >
-            <i className="fi fi-rr-down-to-line" style={{ fontSize: 16, marginRight: 1 }}></i>
+            <i
+              className="fi fi-rr-down-to-line"
+              style={{ fontSize: 16, marginRight: 1 }}
+            ></i>
             Download PDF
           </Button>
           <Button onClick={onClose}>Close</Button>
@@ -279,7 +282,6 @@ const ReceiptPreviewModal = ({
               />
             </div>
           </div>
-
 
           {/* Footer */}
           <div className={styles.footer}>

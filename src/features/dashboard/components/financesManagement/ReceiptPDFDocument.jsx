@@ -52,6 +52,12 @@ const s = StyleSheet.create({
   companyBlock: {
     flex: 1,
   },
+  mainLogo: {
+    height: 34,
+    objectFit: "contain",
+    marginBottom: 4,
+    marginLeft: -230,
+  },
   companyName: {
     fontSize: 14,
     fontFamily: "Helvetica-Bold",
@@ -65,7 +71,7 @@ const s = StyleSheet.create({
     marginBottom: 2,
   },
   companyAddr: {
-    fontSize: 7,
+    fontSize: 8,
     color: GREY_TEXT,
   },
 
@@ -357,8 +363,7 @@ const ReceiptPDFDocument = ({
       <View style={s.header}>
         {logoBase64 ? <Image style={s.logo} src={logoBase64} /> : null}
         <View style={s.companyBlock}>
-          <Text style={s.companyName}>{COMPANY.name}</Text>
-          <Text style={s.companyTagline}>{COMPANY.tagline}</Text>
+          <Image src="/logo__2.png" style={s.mainLogo} />
           <Text style={s.companyAddr}>
             {COMPANY.address} | {COMPANY.email} | {COMPANY.phone}
           </Text>
