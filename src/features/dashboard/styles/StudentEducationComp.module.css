@@ -6,6 +6,7 @@
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
   width: 100%;
   padding: 24px;
+  margin-bottom: 60px;
 }
 
 .loadingWrapper {
@@ -259,6 +260,7 @@
 @media (max-width: 540px) {
   .card {
     padding: 16px;
+    margin-bottom: 100px;
   }
 
   .modalRow {
