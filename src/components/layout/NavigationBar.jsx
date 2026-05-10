@@ -233,7 +233,13 @@ const NavigationBar = () => {
                     as={Link}
                     to="/dashboard/all-notifications"
                   >
-                    <Badge count={unreadCount} size="small" color="#b91c1c">
+                    <Badge
+                      count={unreadCount}
+                      size="small"
+                      color="#b91c1c"
+                      overflowCount={99}
+                      style={{ fontSize: "11px" }}
+                    >
                       <BellOutlined style={{ fontSize: 18, color: "#fff" }} />
                     </Badge>
                   </Nav.Link>
@@ -451,11 +457,15 @@ const NavigationBar = () => {
                     >
                       <i className="fa-solid fa-chevron-right"></i>{" "}
                       Notifications
-                      {unreadCount > 0 && (
+                      {unreadCount > 0 && unreadCount < 100 ? (
                         <span className={styles.mobileBadge}>
                           {unreadCount}
                         </span>
-                      )}
+                      ) : unreadCount >= 100 ? (
+                        <span className={styles.mobileBadge}>
+                          99+
+                        </span>
+                      ) : null}
                     </Link>
                   </div>
                 ) : null}

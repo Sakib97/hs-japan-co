@@ -177,7 +177,6 @@ const mainMenuItems = [
     ],
   },
 
-
   {
     key: "/dashboard/my-courses",
     icon: <ReadOutlined />,
@@ -227,8 +226,15 @@ const DashboardPage = () => {
   const [notifOpen, setNotifOpen] = useState(false);
   const contentRef = useRef(null);
   const bellRef = useRef(null);
-  const { user, userMeta, loading, userMetaLoading, studentStatus, employeeStatus } = useAuth();
-  const { unreadCount } = useNotification(user?.email , { limit: 6 });
+  const {
+    user,
+    userMeta,
+    loading,
+    userMetaLoading,
+    studentStatus,
+    employeeStatus,
+  } = useAuth();
+  const { unreadCount } = useNotification(user?.email, { limit: 6 });
   useNotificationRealTime(user?.email);
 
   const handleMenuClick = (path) => {
@@ -246,7 +252,8 @@ const DashboardPage = () => {
     const match = item.visibleForRoles.find((r) => r.role === userMeta?.role);
     if (!match || !match.isActive) return false;
     if (match.studentStatus) return match.studentStatus.includes(studentStatus);
-    if (match.employeeStatus) return match.employeeStatus.includes(employeeStatus);
+    if (match.employeeStatus)
+      return match.employeeStatus.includes(employeeStatus);
     return true;
   });
 
@@ -335,8 +342,15 @@ const DashboardPage = () => {
                 ref={bellRef}
                 onClick={() => setNotifOpen((o) => !o)}
               >
-                <Badge count={unreadCount} size="small">
-                  <BellOutlined className={`${styles.headerIcon} ${notifOpen ? styles.headerIconActive : ""}`} />
+                <Badge
+                  style={{ fontSize: "11px" }}
+                  count={unreadCount}
+                  overflowCount={99}
+                  size="small"
+                >
+                  <BellOutlined
+                    className={`${styles.headerIcon} ${notifOpen ? styles.headerIconActive : ""}`}
+                  />
                 </Badge>
                 {notifOpen && (
                   <NotificationPanel
@@ -346,11 +360,10 @@ const DashboardPage = () => {
                   />
                 )}
               </div>
-              
+
               <Link to="/dashboard">
                 <UserOutlined className={styles.headerIcon} />
               </Link>
-            
             </div>
           </div>
         </header>

@@ -36,7 +36,7 @@ const SetupPassword = () => {
         return;
       }
 
-      console.log("data:: ", data);
+      // console.log("data:: ", data);
 
       setEmail(data.email);
       setRole(data.role);
