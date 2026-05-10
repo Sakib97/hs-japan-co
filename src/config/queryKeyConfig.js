@@ -70,6 +70,10 @@ export const QK_ALL_ACTIVITIES = "all-activities";
 // Used in: ContactInfoComp
 export const QK_CONTACT_US = "contact_us";
 
+// ─── Daily Tasks ──────────────────────────────────────────────────────────────
+// Used in: TaskDirectoryComp, TaskReportComp
+export const QK_DAILY_TASKS = "daily-tasks";
+
 // ─── Notifications ───────────────────────────────────────────────────────────
 // Used in: useNotification
 export const QK_NOTIFICATIONS = "notifications";

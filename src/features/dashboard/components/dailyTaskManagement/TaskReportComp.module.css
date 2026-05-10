@@ -1,0 +1,107 @@
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 32px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #d97706;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 32px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.dateBox {
+  background: #f8f9fa;
+  border-left: 3px solid #b91c1c;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.dateLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b91c1c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.dateValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  background: #fff;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 4px;
+}
+
+.sectionSubtitle {
+  font-size: 13px;
+  color: #999;
+  margin: 0 0 16px;
+}
+
+.submitBtn {
+  margin-top: 20px;
+  min-width: 180px;
+  height: 44px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background-color: #b91c1c !important;
+}
+
+.submitBtn:hover {
+  background-color: #a01919 !important;
+}
+
+/* Responsive: stack on smaller screens */
+@media (max-width: 768px) {
+  .contentWrapper {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .dateBox {
+    width: 100%;
+  }
+}

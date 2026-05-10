@@ -110,6 +110,32 @@ export const ENQUIRY_STATUS_COLOR = {
   [ENQUIRY_STATUS.CANCELLED]: "default",
 };
 
+
+// Emp daily task status (future)
+export const DAILY_TASK_STATUS = {
+  UNDER_REVIEW: "under_review",
+  EXCELLENT_PERFORMANCE: "excellent_performance",
+  MEETS_EXPECTATIONS: "meets_expectations",
+  BELOW_EXPECTATIONS: "below_expectations",
+  UNSATISFACTORY: "unsatisfactory",
+};
+
+export const DAILY_TASK_STATUS_OPTIONS = [
+  { value: DAILY_TASK_STATUS.UNDER_REVIEW, label: "Under Review" },
+  { value: DAILY_TASK_STATUS.EXCELLENT_PERFORMANCE, label: "Excellent Performance" },
+  { value: DAILY_TASK_STATUS.MEETS_EXPECTATIONS, label: "Meets Expectations" },
+  { value: DAILY_TASK_STATUS.BELOW_EXPECTATIONS, label: "Below Expectations" },
+  { value: DAILY_TASK_STATUS.UNSATISFACTORY, label: "Unsatisfactory" },
+];
+
+export const DAILY_TASK_STATUS_COLOR = {
+  [DAILY_TASK_STATUS.UNDER_REVIEW]: "blue",
+  [DAILY_TASK_STATUS.EXCELLENT_PERFORMANCE]: "green",
+  [DAILY_TASK_STATUS.MEETS_EXPECTATIONS]: "cyan",
+  [DAILY_TASK_STATUS.BELOW_EXPECTATIONS]: "orange",
+  [DAILY_TASK_STATUS.UNSATISFACTORY]: "red",
+};
+
 // ─── Payment / Transaction Status ────────────────────────────────────────────────
 // Used in: finances / transactions / payments table (future)
 export const PAYMENT_STATUS = {
