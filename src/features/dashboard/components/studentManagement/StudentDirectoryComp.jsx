@@ -39,7 +39,11 @@ import { getFormattedTime } from "../../../../utils/dateUtil";
 import StudentProfileModal from "./StudentProfileModal";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { generateToken } from "../../../../utils/generateToken";
-import { sendInviteEmail } from "../../../../utils/sendInviteEmail";
+import {
+  sendInviteEmail,
+  sendTestMail,
+  sendPasswordResetEmail,
+} from "../../../../utils/sendInviteEmail";
 import { useAuth } from "../../../../context/AuthProvider";
 
 const PAGE_SIZE = 10;
@@ -143,6 +147,13 @@ const getColumns = (
           ></i>
         </Tooltip>
 
+        {/* <Tooltip title="test mail sending">
+          <i
+            className={`${styles.actionIcon} fi fi-rr-tools`}
+            onClick={() => sendTestMail()}
+          ></i>
+        </Tooltip> */}
+
         <Tooltip title="View Details">
           <i
             className={`${styles.actionIcon} fi fi-rr-overview`}
@@ -181,6 +192,10 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteEmailError, setInviteEmailError] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
+
+  // ── Password reset confirmation state ──
+  const [resetRecord, setResetRecord] = useState(null);
+  const [resetLoading, setResetLoading] = useState(false);
 
   // ── Session filter state ──
   const [selectedSessionFilter, setSelectedSessionFilter] = useState(null);
@@ -247,10 +262,78 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   };
 
   const openInvite = (record) => {
-    if (record.status !== STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST) return;
     setInviteRecord(record);
     setInviteEmail(record.email);
     setInviteEmailError("");
+  };
+
+  const openPasswordReset = (record) => {
+    setResetRecord(record);
+  };
+
+  const closePasswordReset = () => {
+    setResetRecord(null);
+  };
+
+  const handlePasswordReset = async () => {
+    if (!resetRecord) return;
+    setResetLoading(true);
+    try {
+      const token = generateToken();
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      const { error: rpcError } = await supabase.rpc(
+        "send_password_reset_mail_request",
+        {
+          p_reset_email: resetRecord.email,
+          p_user_role: "student",
+          p_reset_token: token,
+          p_expires_at: expires_at.toISOString(),
+        },
+      );
+
+      if (rpcError) {
+        showToast(
+          "Failed to initiate password reset: " + rpcError.message,
+          "error",
+        );
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(
+          resetRecord.email,
+          token,
+          resetRecord.name,
+        );
+        showToast("Password reset email sent successfully!", "success");
+      } catch (emailErr) {
+        showToast(
+          "Reset initiated but failed to send email: " +
+            (emailErr.message || emailErr),
+          "error",
+        );
+      }
+
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENTS] });
+      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_STATS] });
+      closePasswordReset();
+    } catch (err) {
+      showToast("Unexpected error: " + err.message, "error");
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const onSendMail = (record) => {
+    if (
+      record.status === STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST ||
+      record.status === STUDENT_STATUS.ACCOUNT_CREATION_MAIL_SENT
+    ) {
+      openInvite(record);
+    } else {
+      openPasswordReset(record);
+    }
   };
 
   const closeInvite = () => {
@@ -367,7 +450,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   const columns = getColumns(
     openProfile,
     openChangeStatus,
-    openInvite,
+    onSendMail,
     openAssignSession,
   );
 
@@ -561,6 +644,53 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         open={profileModalOpen}
         onClose={() => setProfileModalOpen(false)}
       />
+
+      {/* Password Reset confirmation modal */}
+      <Modal
+        open={!!resetRecord}
+        title="Send Password Reset Mail"
+        onCancel={closePasswordReset}
+        footer={[
+          <Button
+            key="confirm"
+            type="primary"
+            danger
+            loading={resetLoading}
+            onClick={handlePasswordReset}
+          >
+            Yes, Send Reset Mail
+          </Button>,
+          <Button key="cancel" onClick={closePasswordReset}>
+            Cancel
+          </Button>,
+        ]}
+      >
+        {resetRecord && (
+          <div style={{ padding: "8px 0" }}>
+            <p style={{ marginBottom: 8, fontSize: "0.85rem", color: "#555" }}>
+              Student: <strong>{resetRecord.name ?? "—"}</strong>
+            </p>
+            <p style={{ marginBottom: 16, fontSize: "0.85rem", color: "#555" }}>
+              Email: <strong>{resetRecord.email}</strong>
+            </p>
+            <p style={{ fontSize: "0.88rem", color: "#374151" }}>
+              This will deactivate the student&apos;s account and send a
+              password reset link to their email. The link will expire in{" "}
+              <strong>24 hours</strong>.
+            </p>
+            <p
+              style={{
+                marginTop: 10,
+                fontSize: "0.82rem",
+                color: "#dc2626",
+                fontWeight: 600,
+              }}
+            >
+              Are you sure you want to proceed?
+            </p>
+          </div>
+        )}
+      </Modal>
 
       {/* Send Invite Mail modal — for STUDENT_EXPRESSED_INTEREST */}
       <Modal

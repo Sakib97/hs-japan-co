@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { LoginSchema } from "../schema/LoginSchema";
@@ -13,6 +13,12 @@ const LoginPage = () => {
   const [passwordSet] = useState(() => {
     const flag = sessionStorage.getItem("hs_japan_password_set") === "1";
     if (flag) sessionStorage.removeItem("hs_japan_password_set");
+    return flag;
+  });
+
+  const [passwordResetFlag] = useState(() => {
+    const flag = sessionStorage.getItem("hs_japan_password_reset") === "1";
+    if (flag) sessionStorage.removeItem("hs_japan_password_reset");
     return flag;
   });
 
@@ -87,6 +93,13 @@ const LoginPage = () => {
               <div className={styles.successBanner}>
                 <i className="fa-solid fa-circle-check"></i>
                 Password set successfully! You can now sign in.
+              </div>
+            )}
+
+            {passwordResetFlag && (
+              <div className={styles.successBanner}>
+                <i className="fa-solid fa-circle-check"></i>
+                Password reset successfully! Please sign in with your new password.
               </div>
             )}
 

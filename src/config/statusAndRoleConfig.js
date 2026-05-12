@@ -17,6 +17,7 @@ export const USER_ROLE_OPTIONS = [
 export const STUDENT_STATUS = {
   ACCOUNT_CREATION_MAIL_SENT: "account_creation_mail_sent",
   STUDENT_EXPRESSED_INTEREST: "student_expressed_interest",
+  PASSWORD_RESET_MAIL_SENT: "password_reset_mail_sent",
   ENROLLED: "enrolled",
   SUSPENDED: "suspended",
   GRADUATED: "graduated",
@@ -27,6 +28,10 @@ export const STUDENT_STATUS_OPTIONS = [
   {
     value: STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST,
     label: "Expressed Interest",
+  },
+  { 
+    value: STUDENT_STATUS.PASSWORD_RESET_MAIL_SENT, 
+    label: "Password Reset Mail Sent" 
   },
   { value: STUDENT_STATUS.ENROLLED, label: "Enrolled" },
   { value: STUDENT_STATUS.GRADUATED, label: "Graduated" },
@@ -41,6 +46,7 @@ export const STUDENT_STATUS_OPTIONS = [
 export const STUDENT_STATUS_COLOR = {
   [STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST]: "orange",
   [STUDENT_STATUS.ACCOUNT_CREATION_MAIL_SENT]: "blue",
+  [STUDENT_STATUS.PASSWORD_RESET_MAIL_SENT]: "cyan",
   [STUDENT_STATUS.ENROLLED]: "green",
   [STUDENT_STATUS.SUSPENDED]: "red",
   [STUDENT_STATUS.GRADUATED]: "purple",

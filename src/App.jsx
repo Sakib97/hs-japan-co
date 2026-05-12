@@ -46,6 +46,7 @@ import AllEventsPage from "./features/events/pages/AllEventsPage.jsx";
 import AllActivitiesPage from "./features/activities/pages/AllActivitiesPage.jsx";
 import CourseAssignmentPage from "./features/dashboard/pages/CourseAssignmentPage.jsx";
 import DailyTaskPage from "./features/dashboard/pages/DailyTaskPage.jsx";
+import ResetPassword from "./features/auth/pages/ResetPassword.jsx";
 
 
 const SPLASH_KEY = "hs_japan_splash_shown";
@@ -97,6 +98,14 @@ function App() {
           element={
             <AuthRedirect>
               <SetupPassword />
+            </AuthRedirect>
+          }
+        />
+        <Route
+          path="/auth/reset-password"
+          element={
+            <AuthRedirect>
+              <ResetPassword />
             </AuthRedirect>
           }
         />
