@@ -8,6 +8,12 @@ export const IMAGE_SIZES = {
     label: "150 KB",
   },
 
+  // announcement banner (Announcements management)
+  ANNOUNCEMENT_BANNER: {
+    maxBytes: 3 * 1024 * 1024, // 3 MB
+    label: "3 MB",
+  },
+
   // Team/staff member photos (assets management – Team Staff Panel)
   TEAM_STAFF: {
     maxBytes: 500 * 1024, // 500 KB

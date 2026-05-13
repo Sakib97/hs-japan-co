@@ -77,3 +77,7 @@ export const QK_DAILY_TASKS = "daily-tasks";
 // ─── Notifications ───────────────────────────────────────────────────────────
 // Used in: useNotification
 export const QK_NOTIFICATIONS = "notifications";
+
+// ─── Announcements ───────────────────────────────────────────────────────────
+// Used in: AnnouncementCreateForm, AnnouncementDirectory
+export const QK_ANNOUNCEMENTS = "announcements";

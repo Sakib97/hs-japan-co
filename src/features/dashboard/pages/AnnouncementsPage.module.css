@@ -1,0 +1,35 @@
+.page {
+  /* padding: 24px; */
+  max-width: 1100px;
+  margin: 0 auto;
+  margin-bottom: 100px;
+}
+
+.pageHeader {
+  margin-bottom: 24px;
+}
+
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 4px;
+}
+
+.pageSubtitle {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (max-width: 640px) {
+  /* .page {
+    padding: 16px;
+  } */
+}

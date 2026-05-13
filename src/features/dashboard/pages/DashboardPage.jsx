@@ -143,6 +143,24 @@ const mainMenuItems = [
   },
 
   {
+    key: "/dashboard/announcements",
+    icon: <i className="fi fi-rr-megaphone"></i>,
+    label: "Announcements",
+    // adminOnly: true,
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+      {
+        role: "employee",
+        isActive: true,
+        employeeStatus: ["full_time", "part_time"],
+      },
+    ],
+  },
+
+  {
     key: "/dashboard/events-activities",
     icon: <i className="fi fi-rr-calendar-star"></i>,
     label: "Events & Activities",
@@ -172,7 +190,7 @@ const mainMenuItems = [
       {
         role: "employee",
         isActive: true,
-        employeeStatus: ["full_time"],
+        employeeStatus: ["full_time", "part_time"],
       },
     ],
   },

@@ -47,6 +47,7 @@ import AllActivitiesPage from "./features/activities/pages/AllActivitiesPage.jsx
 import CourseAssignmentPage from "./features/dashboard/pages/CourseAssignmentPage.jsx";
 import DailyTaskPage from "./features/dashboard/pages/DailyTaskPage.jsx";
 import ResetPassword from "./features/auth/pages/ResetPassword.jsx";
+import AnnouncementsPage from "./features/dashboard/pages/AnnouncementsPage.jsx";
 
 
 const SPLASH_KEY = "hs_japan_splash_shown";
@@ -177,6 +178,18 @@ function App() {
             element={
               <RoleBasedRoute allowedRoles={["admin"]}>
                 <AssetsManagementPage />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="announcements"
+            element={
+              <RoleBasedRoute 
+                  allowedRoles={["admin", "employee"]}
+                  allowedEmployeeStatuses={["full_time", "part_time"]}
+              >
+                <AnnouncementsPage />
               </RoleBasedRoute>
             }
           />

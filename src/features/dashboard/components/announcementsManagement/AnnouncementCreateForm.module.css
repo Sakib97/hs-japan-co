@@ -1,0 +1,248 @@
+.card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── header ── */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+
+.cardTitle i {
+  color: #b91c1c;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+/* ── fields ── */
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.input {
+  border-radius: 8px !important;
+  font-size: 13px !important;
+}
+
+.dateInput {
+  width: 100%;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #fff;
+}
+
+.dateInput:focus {
+  border-color: #b91c1c;
+}
+
+/* ── type selector ── */
+.typeRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.typeBtn {
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.typeBtn:hover {
+  border-color: #b91c1c;
+  color: #b91c1c;
+}
+
+.typeBtnActive {
+  background: #fff1f0;
+}
+
+/* ── drop zone ── */
+.dropZone {
+  border: 2px dashed #e0e0e0;
+  border-radius: 10px;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  min-height: 150px;
+  text-align: center;
+}
+
+.dropZone:hover {
+  border-color: #b91c1c;
+  background: #fff8f8;
+}
+
+.dropZoneDragging {
+  border-color: #b91c1c;
+  background: #fff1f0;
+}
+
+.uploadIcon {
+  font-size: 32px;
+  color: #b91c1c;
+  display: flex;
+  align-items: center;
+}
+
+.dropTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.dropSub {
+  font-size: 12px;
+  color: #4f46e5;
+  margin: 0;
+  max-width: 340px;
+  line-height: 1.5;
+}
+
+.bannerPreview {
+  width: 100%;
+  /* max-height: 160px; */
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* ── footer ── */
+.formFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #52c41a;
+  font-weight: 600;
+}
+
+.lastUpdated {
+  font-size: 12px;
+  color: #999;
+}
+
+.publishBtn {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+}
+
+.publishBtn:hover {
+  background: #991b1b !important;
+  border-color: #991b1b !important;
+}
+
+.publishBtnDisabled {
+  background: #d9d9d9 !important;
+  border-color: #d9d9d9 !important;
+  color: rgba(0, 0, 0, 0.25) !important;
+  cursor: not-allowed !important;
+}
+
+.slotInfo {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 2px 10px;
+}
+
+.limitAlert {
+  border-radius: 8px;
+}
+
+/* ── responsive ── */
+@media (max-width: 640px) {
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+
+  .formFooter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .footerRight {
+    justify-content: stretch;
+    flex-direction: column;
+  }
+
+  .footerRight > * {
+    width: 100%;
+  }
+}
