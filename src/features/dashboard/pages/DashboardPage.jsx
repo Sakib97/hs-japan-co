@@ -54,6 +54,7 @@ const mainMenuItems = [
   {
     key: "/dashboard/employee-management",
     icon: <TeamOutlined />,
+    // icon:<i className="fi fi-rr-employees"></i>,
     label: "Employee Management",
     // adminOnly: true,
     visibleForRoles: [
@@ -65,7 +66,8 @@ const mainMenuItems = [
   },
   {
     key: "/dashboard/student-management",
-    icon: <SolutionOutlined />,
+    // icon: <SolutionOutlined />, 
+    icon:<i className="fi fi-rr-graduation-cap"></i>,
     label: "Student Management",
     visibleForRoles: [
       {
@@ -82,7 +84,8 @@ const mainMenuItems = [
 
   {
     key: "/dashboard/course-management",
-    icon: <SettingOutlined />,
+    // icon: <SettingOutlined />,
+    icon: <i className="fi fi-rr-e-learning"></i>,
     label: "Course Management",
     visibleForRoles: [
       {
@@ -131,7 +134,8 @@ const mainMenuItems = [
   },
   {
     key: "/dashboard/assets-management",
-    icon: <FileImageOutlined />,
+    // icon: <FileImageOutlined />,
+    icon: <i className="fi fi-rr-add-image"></i>,
     label: "Assets Management",
     // adminOnly: true,
     visibleForRoles: [
