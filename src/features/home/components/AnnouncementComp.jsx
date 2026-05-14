@@ -46,17 +46,6 @@ const AnnouncementComp = () => {
     return true;
   });
 
-  // Manual per-slide autoplay — avoids passing a changing autoplaySpeed prop to
-  // Carousel (which makes slick reinitialise its timer and causes flicker).
-  //   useEffect(() => {
-  //     if (activeSlides.length <= 1) return;
-  //     const speed = activeSlides[currentIndex]?.autoplay_speed ?? DEFAULT_SPEED;
-  //     timerRef.current = setTimeout(() => {
-  //       carouselRef.current?.next();
-  //     }, speed);
-  //     return () => clearTimeout(timerRef.current);
-  //   }, [currentIndex, activeSlides]);
-
   if (activeSlides.length === 0) return null;
   console.log("autoplay: ", playSpeed);
 
