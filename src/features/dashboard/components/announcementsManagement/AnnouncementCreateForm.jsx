@@ -57,6 +57,7 @@ const AnnouncementCreateForm = ({ editingRecord, onEditComplete }) => {
       const { data, error } = await supabase
         .from("announcements")
         .select("*")
+        .order("order", { ascending: true, nullsFirst: false })
         .order("created_at", { ascending: false });
       if (error) throw new Error(error.message);
       return data ?? [];
@@ -70,7 +71,7 @@ const AnnouncementCreateForm = ({ editingRecord, onEditComplete }) => {
   useEffect(() => {
     if (editingRecord && !editToastShown.current) {
       editToastShown.current = true;
-    //   showToast("Content loaded for edit.", "info");
+      //   showToast("Content loaded for edit.", "info");
       cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [editingRecord]);
@@ -145,7 +146,12 @@ const AnnouncementCreateForm = ({ editingRecord, onEditComplete }) => {
         showToast("Announcement updated!", "success");
         onEditComplete?.();
       } else {
-        const { error } = await supabase.from("announcements").insert(payload);
+        const cached = queryClient.getQueryData([QK_ANNOUNCEMENTS]) ?? [];
+        const maxOrder =
+          cached.length > 0 ? Math.max(...cached.map((r) => r.order ?? 0)) : 0;
+        const { error } = await supabase
+          .from("announcements")
+          .insert({ ...payload, order: maxOrder + 1 });
         if (error) throw error;
         showToast("Announcement published!", "success");
         setForm(empty());

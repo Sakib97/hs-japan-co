@@ -81,3 +81,5 @@ export const QK_NOTIFICATIONS = "notifications";
 // ─── Announcements ───────────────────────────────────────────────────────────
 // Used in: AnnouncementCreateForm, AnnouncementDirectory
 export const QK_ANNOUNCEMENTS = "announcements";
+// Used in: AnnouncementComp (home page public carousel — active + in-range only)
+export const QK_HOME_ANNOUNCEMENTS = "home-announcements";

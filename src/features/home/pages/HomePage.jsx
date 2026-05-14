@@ -1,3 +1,4 @@
+import AnnouncementComp from "../components/AnnouncementComp";
 import CarouselComp from "../components/CarouselComp";
 import IntroComp from "../components/IntroComp";
 import AboutComp from "../components/AboutComp";
@@ -12,6 +13,7 @@ import ActivityComp from "../components/ActivityComp";
 const HomePage = () => {
   return (
     <div>
+      <AnnouncementComp />
       <IntroComp />
       <CarouselComp />
       <AboutComp />

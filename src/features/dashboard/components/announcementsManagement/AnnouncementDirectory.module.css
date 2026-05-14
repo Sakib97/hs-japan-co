@@ -153,3 +153,87 @@
     width: 100%;
   }
 }
+
+/* ── actions cell ── */
+.actionsCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── order badge ── */
+.orderBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ── Toggle switch ── */
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.toggleOn {
+  background: #b91c1c;
+}
+
+.toggleOff {
+  background: #d1d5db;
+}
+
+.toggleThumb {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: left 0.25s;
+}
+
+.toggleOn .toggleThumb {
+  left: 20px;
+}
+
+.toggleOff .toggleThumb {
+  left: 4px;
+}
+
+.toggleLoading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.toggleSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
