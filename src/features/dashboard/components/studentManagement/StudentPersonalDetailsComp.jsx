@@ -29,7 +29,7 @@ const StudentPersonalDetailsComp = ({ email }) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("student")
-        .select("father_name, mother_name, dob, nid")
+        .select("father_name, mother_name, dob, nid, passport_no")
         .eq("email", email)
         .single();
       if (error) throw new Error(error.message);
@@ -44,6 +44,7 @@ const StudentPersonalDetailsComp = ({ email }) => {
       mother_name: student?.mother_name ?? "",
       dob: student?.dob ?? "",
       nid: student?.nid ?? "",
+      passport_no: student?.passport_no ?? "",
     });
     setEditing(true);
   };
@@ -159,6 +160,22 @@ const StudentPersonalDetailsComp = ({ email }) => {
             />
           ) : (
             <span className={styles.value}>{student?.nid || "—"}</span>
+          )}
+        </div>
+
+        <div className={styles.field}>
+          <span className={styles.label}>Passport Number</span>
+          {editing ? (
+            <input
+              className={styles.input}
+              value={form.passport_no}
+              onChange={(e) =>
+                setForm({ ...form, passport_no: e.target.value })
+              }
+              placeholder="A123456789"
+            />
+          ) : (
+            <span className={styles.value}>{student?.passport_no || "—"}</span>
           )}
         </div>
 

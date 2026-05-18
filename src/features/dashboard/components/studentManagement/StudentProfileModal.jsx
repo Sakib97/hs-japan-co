@@ -90,6 +90,11 @@ const StudentProfileModal = ({ email, open, onClose }) => {
               <span className={styles.label}>NID </span>
               <span className={styles.value}>{student.nid || "—"}</span>
             </div>
+
+            <div className={styles.field}>
+              <span className={styles.label}>PASSPORT NO</span>
+              <span className={styles.value}>{student.passport_no || "—"}</span>
+            </div>
           </div>
         </div>
       ),

@@ -182,6 +182,24 @@ const mainMenuItems = [
     ],
   },
 
+  // {
+  //   key: "/dashboard/social-media",
+  //   icon: <i className="fi fi-rr-social-media"></i>,
+  //   label: "Social Media",
+  //   // adminOnly: true,
+  //   visibleForRoles: [
+  //     {
+  //       role: "admin",
+  //       isActive: true,
+  //     },
+  //     {
+  //       role: "employee",
+  //       isActive: true,
+  //       employeeStatus: ["full_time", "part_time"],
+  //     },
+  //   ],
+  // },
+
   {
     key: "/dashboard/daily-tasks",
     icon: <i className="fi fi-rr-to-do-alt"></i>,

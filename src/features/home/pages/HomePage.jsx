@@ -18,8 +18,8 @@ const HomePage = () => {
       <CarouselComp />
       <AboutComp />
       <OfferComp />
-      <BenefitsComp />
-      <FutureComp />
+      {/* <BenefitsComp /> */}
+      {/* <FutureComp /> */}
       <VisionComp />
       <ProgramComp />
       <CourseComp />

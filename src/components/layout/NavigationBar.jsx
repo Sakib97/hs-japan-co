@@ -190,7 +190,7 @@ const NavigationBar = () => {
                 </NavDropdown>
 
                 <NavDropdown
-                  title="Japan"
+                  title="Japan Visa"
                   id="japan-dropdown"
                   className={styles.hoverDropdown}
                   show={activeDropdown === "japan"}
@@ -379,7 +379,7 @@ const NavigationBar = () => {
                         } me-2`}
                         style={{ fontSize: "12px", width: "15px" }}
                       ></i>
-                      Japan
+                      Japan Visa
                     </div>
                     <button className={styles.mobileDropdownToggle}>
                       <i

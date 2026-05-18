@@ -19,7 +19,6 @@ import TeamPage from "./features/team/pages/TeamPage.jsx";
 import ContactPage from "./features/contact/pages/ContactPage.jsx";
 import LoginPage from "./features/auth/pages/LoginPage.jsx";
 import RegisterPage from "./features/auth/pages/RegisterPage.jsx";
-import FooterComp from "./features/home/components/FooterComp.jsx";
 import DashboardPage from "./features/dashboard/pages/DashboardPage.jsx";
 import StudentManagementPage from "./features/dashboard/pages/StudentManagementPage.jsx";
 import CourseManagementPage from "./features/dashboard/pages/CourseManagementPage.jsx";
@@ -48,6 +47,8 @@ import CourseAssignmentPage from "./features/dashboard/pages/CourseAssignmentPag
 import DailyTaskPage from "./features/dashboard/pages/DailyTaskPage.jsx";
 import ResetPassword from "./features/auth/pages/ResetPassword.jsx";
 import AnnouncementsPage from "./features/dashboard/pages/AnnouncementsPage.jsx";
+import WhatsappFloatBtn from "./components/common/WhatsappFloatBtn.jsx";
+import Footer from "./components/layout/Footer.jsx";
 
 
 const SPLASH_KEY = "hs_japan_splash_shown";
@@ -66,6 +67,7 @@ function App() {
     <BrowserRouter>
       {showSplash && <SplashScreen onDone={handleSplashDone} />}
       <ScrollToTopOnNav />
+      <WhatsappFloatBtn />
       <NavigationBar />
       <Toaster />
       <Routes>
@@ -241,7 +243,8 @@ function App() {
         <Route path="/404" element={<NotFound />} />
       </Routes>
       <ScrollToTop />
-      <FooterComp />
+      {/* <FooterComp /> */}
+      <Footer/>
     </BrowserRouter>
   );
 }

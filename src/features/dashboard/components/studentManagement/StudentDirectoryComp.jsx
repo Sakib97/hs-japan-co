@@ -101,7 +101,7 @@ const getColumns = (
     key: "passport",
     width: 150,
     render: (_, record) => (
-      <span className={styles.cellText}>{record.passport ?? "—"}</span>
+      <span className={styles.cellText}>{record.passport_no ?? "—"}</span>
     ),
   },
   {
@@ -121,7 +121,6 @@ const getColumns = (
         <Tag color={STUDENT_STATUS_COLOR[record.status] ?? "default"}>
           {statusLabelMap[record.status] ?? record.status ?? "—"}
         </Tag>
-        <br /> <br />
         {record.admission_interest && (
           <div
             style={{
@@ -130,6 +129,7 @@ const getColumns = (
               wordBreak: "break-word",
             }}
           >
+            <hr />
             <Tag color="blue">Interest :</Tag> &nbsp;
             {(() => {
               const matchedTags = STUDENT_INTERESTS_OPTIONS.filter(
@@ -518,9 +518,9 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         .range(from, to);
 
       if (searchQuery) {
-        // search by name, email, or phone using case-insensitive partial match
+        // search by name, email, phone, or passport number using case-insensitive partial match
         query = query.or(
-          `name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%`,
+          `name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%,passport_no.ilike.%${searchQuery}%`,
         );
       }
 
@@ -782,6 +782,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         )}
       </Modal>
 
+      {/* Assign Session modal */}
       <Modal
         open={!!sessionRecord}
         title="Assign Session"
@@ -830,6 +831,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         )}
       </Modal>
 
+      {/* Change Student Status modal */}
       <Modal
         open={!!statusRecord}
         title="Change Student Status"

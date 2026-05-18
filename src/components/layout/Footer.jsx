@@ -1,6 +1,8 @@
-import styles from "../styles/FooterComp.module.css";
+import { Link } from "react-router";
+import styles from "./Footer.module.css";
 
-const FooterComp = () => {
+
+const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.topSection}>
@@ -19,19 +21,19 @@ const FooterComp = () => {
               <h3 className={styles.columnTitle}>STUDY LINKS</h3>
               <ul className={styles.linksList}>
                 <li>
-                  <a href="#">Admission</a>
+                  <Link to="/admission">Admission</Link>
                 </li>
                 <li>
-                  <a href="#">Online Admission</a>
+                  <Link to="/online-admission">Online Admission</Link>
                 </li>
                 <li>
-                  <a href="#">Why Japan</a>
+                  <Link to="/why-japan">Why Japan</Link>
                 </li>
                 <li>
-                  <a href="#">Our Team</a>
+                  <Link to="/team">Our Team</Link>
                 </li>
                 <li>
-                  <a href="#">Contact Us</a>
+                  <Link to="/contact">Contact Us</Link>
                 </li>
               </ul>
             </div>
@@ -40,20 +42,20 @@ const FooterComp = () => {
               <h3 className={styles.columnTitle}>QUICK LINKS</h3>
               <ul className={styles.linksList}>
                 <li>
-                  <a href="#">About Us</a>
+                  <Link to="/about">About Us</Link>
                 </li>
-                <li>
+                {/* <li>
                   <a href="#">School Feature</a>
                 </li>
                 <li>
                   <a href="#">School Map</a>
-                </li>
+                </li> */}
                 <li>
-                  <a href="#">Gallery</a>
+                  <Link to="/gallery">Gallery</Link>
                 </li>
-                <li>
+                {/* <li>
                   <a href="#">FAQ's</a>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>
@@ -64,16 +66,14 @@ const FooterComp = () => {
         <div className={styles.container}>
           <div className={styles.bottomContent}>
             <p className={styles.copyright}>
-              Copyright &copy; 2024 Hs Japan Academy All Rights Reserved
+              Copyright &copy; {new Date().getFullYear()} Hs Japan Academy All Rights Reserved
             </p>
             <div className={styles.socialLinks}>
-              <a href="#" className={styles.socialLink}>
+              <a target="_blank" rel="noopener noreferrer" href="#" className={styles.socialLink}>
                 <i className="fa-brands fa-facebook-f" />
-                <span>Facebook</span>
               </a>
-              <a href="#" className={styles.socialLink}>
-                <i className="fa-brands fa-twitter" />
-                <span>Twitter</span>
+              <a target="_blank" rel="noopener noreferrer" href="#" className={styles.socialLink}>
+                <i className="fi fi-brands-twitter-alt"></i>
               </a>
             </div>
           </div>
@@ -83,4 +83,4 @@ const FooterComp = () => {
   );
 };
 
-export default FooterComp;
+export default Footer;

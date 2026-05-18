@@ -20,7 +20,7 @@ const StudentManagementPage = () => {
       <div className={styles.topBar}>
         <h1 className={styles.pageTitle}>Student Management</h1>
         <Input
-          placeholder="Search students by Phone, Email, or Name..."
+          placeholder="Search students by Phone, Email, Name, or Passport Number..."
           prefix={<SearchOutlined />}
           className={styles.searchInput}
           allowClear
