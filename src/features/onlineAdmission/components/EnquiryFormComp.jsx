@@ -1,11 +1,15 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Input, Button, Card } from "antd";
+import { Input, Button, Select } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import styles from "../styles/EnquiryFormComp.module.css";
 import { showToast } from "../../../components/layout/CustomToast";
 import { supabase } from "../../../config/supabaseClient";
-import { STUDENT_STATUS } from "../../../config/statusAndRoleConfig";
+import {
+  STUDENT_STATUS,
+  STUDENT_INTERESTS,
+  STUDENT_INTERESTS_OPTIONS,
+} from "../../../config/statusAndRoleConfig";
 import { QK_STUDENTS, QK_STUDENT_STATS } from "../../../config/queryKeyConfig";
 
 const validationSchema = Yup.object({
@@ -19,21 +23,40 @@ const validationSchema = Yup.object({
   phone: Yup.string()
     .matches(/^[0-9+\-\s()]{7,15}$/, "Please enter a valid phone number")
     .required("Phone number is required"),
+  interests: Yup.string().required("Please select your interest"),
+  otherInterest: Yup.string().when("interests", {
+    is: STUDENT_INTERESTS.OTHER,
+    then: (schema) => schema.required("Please specify your interest"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });
 
 const EnquiryFormComp = () => {
   const queryClient = useQueryClient();
 
   const formik = useFormik({
-    initialValues: { fullName: "", email: "", address: "", phone: "" },
+    initialValues: {
+      fullName: "",
+      email: "",
+      address: "",
+      phone: "",
+      interests: "",
+      otherInterest: "",
+    },
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
+      const admissionInterest =
+        values.interests === STUDENT_INTERESTS.OTHER
+          ? values.otherInterest
+          : values.interests;
+
       const { error } = await supabase.from("student").insert({
         name: values.fullName,
         email: values.email,
         phone: values.phone,
         present_address: values.address,
         status: STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST,
+        admission_interest: admissionInterest,
       });
 
       if (error) {
@@ -55,8 +78,9 @@ const EnquiryFormComp = () => {
     },
   });
 
-  const field = (name, placeholder, extra = {}) => (
+  const field = (name, label, placeholder, extra = {}) => (
     <div className={styles.fieldWrap}>
+      <label className={styles.label}>{label}</label>
       <Input
         {...extra}
         placeholder={placeholder}
@@ -73,46 +97,66 @@ const EnquiryFormComp = () => {
     </div>
   );
 
+  const selectField = (name, label, placeholder) => (
+    <div className={styles.fieldWrap}>
+      <label className={styles.label}>{label}</label>
+      <Select
+        placeholder={placeholder}
+        className={styles.formSelect}
+        style={{ width: "100%" }}
+        value={formik.values[name] || undefined}
+        onChange={(val) => formik.setFieldValue(name, val)}
+        onBlur={() => formik.setFieldTouched(name, true)}
+        options={STUDENT_INTERESTS_OPTIONS}
+        status={formik.touched[name] && formik.errors[name] ? "error" : ""}
+      />
+      {formik.touched[name] && formik.errors[name] && (
+        <p className={styles.errorMsg}>{formik.errors[name]}</p>
+      )}
+    </div>
+  );
+
   return (
     <section className={styles.section}>
-      <div className={styles.formContainer}>
-        <div className={styles.yellowCircle}></div>
-        <Card className={styles.contactCard} bordered={false}>
-          <Card.Meta
-            title={
-              <div className={styles.cardTitle}>
-                Join over{" "}
-                <span className={styles.highlightText}>1500 students</span>{" "}
-                who've now registered for their courses. Don't miss out. <br />
-                {/* <span style={{ fontSize: "30px", fontWeight: "bold" }}>
-                  Interested ?{" "}
-                </span>{" "} */}
-                <br />
-                Drop us your contact details &amp; we will get back to you very
-                soon.
-              </div>
-            }
-          />
-          <form onSubmit={formik.handleSubmit} className={styles.form}>
-            {field("fullName", "Enter Your Full Name *")}
-            {field("email", "Email Address *", { type: "email" })}
-            {field("address", "Current Address *")}
-            {field("phone", "Phone No *", { type: "tel" })}
-
-            <div className={styles.submitItem}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                block
-                loading={formik.isSubmitting}
-                className={styles.submitButton}
-              >
-                Apply Today
-              </Button>
-            </div>
-          </form>
-        </Card>
-      </div>
+      <h2 className={styles.formTitle}>Registration Form</h2>
+      <p className={styles.formSubtitle}>
+        Join over <strong>1,500 students</strong> currently enrolled.
+      </p>
+      <form onSubmit={formik.handleSubmit} className={styles.form}>
+        <div className={styles.fieldRow}>
+          {field("fullName", "Full Name *", "e.g. John Doe")}
+          {field("email", "Email Address *", "john.doe@example.com", {
+            type: "email",
+          })}
+        </div>
+        {field("address", "Current Address *", "Street, City, Country")}
+        <div className={styles.fieldRow}>
+          {field("phone", "Phone No *", "012345678910", { type: "tel" })}
+          {selectField(
+            "interests",
+            "What are you interested in? *",
+            "Select an interest",
+          )}
+        </div>
+        {formik.values.interests === STUDENT_INTERESTS.OTHER &&
+          field(
+            "otherInterest",
+            "Please specify your interest *",
+            "Tell us more...",
+          )}
+        <Button
+          type="primary"
+          htmlType="submit"
+          block
+          loading={formik.isSubmitting}
+          className={styles.submitButton}
+        >
+          Submit Application &rarr;
+        </Button>
+        <p className={styles.termsText}>
+          By submitting, you agree to our Terms of Service and Privacy Policy.
+        </p>
+      </form>
     </section>
   );
 };

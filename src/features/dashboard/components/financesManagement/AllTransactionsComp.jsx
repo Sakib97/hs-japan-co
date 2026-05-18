@@ -11,6 +11,7 @@ import {
   Tooltip,
   Dropdown,
   DatePicker,
+  Spin,
 } from "antd";
 import {
   SearchOutlined,
@@ -27,6 +28,8 @@ import {
   PAYMENT_STATUS,
   PAYMENT_STATUS_OPTIONS,
   PAYMENT_STATUS_COLOR,
+  PAYMENT_STATUS_SUMMARY_STYLE,
+  PAYMENT_STATUS_WATERMARK,
   NOTIFICATION_TYPE,
 } from "../../../../config/statusAndRoleConfig";
 import {
@@ -34,6 +37,7 @@ import {
   QK_FEE_TYPES,
   QK_NOTIFICATIONS,
   QK_SESSIONS,
+  QK_TRANSACTION_SUMMARY,
 } from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { useAuth } from "../../../../context/AuthProvider";
@@ -53,14 +57,6 @@ const formatDate = (d) => {
 const paymentStatusLabelMap = Object.fromEntries(
   PAYMENT_STATUS_OPTIONS.map(({ value, label }) => [value, label]),
 );
-
-const WATERMARK_TEXT = {
-  [PAYMENT_STATUS.PENDING]: "UNPAID",
-  [PAYMENT_STATUS.VERIFICATION_PENDING]: "VERIFICATION PENDING",
-  [PAYMENT_STATUS.PAID]: "PAID",
-  [PAYMENT_STATUS.FAILED]: "FAILED",
-  [PAYMENT_STATUS.REFUNDED]: "REFUNDED",
-};
 
 const svgContainerToDataUrl = (container) =>
   new Promise((resolve) => {
@@ -158,6 +154,82 @@ const AllTransactionsComp = () => {
       },
     },
   ];
+
+  const hasActiveFilter = !!(
+    searchQuery ||
+    selectedMonth ||
+    selectedPaymentMonth ||
+    selectedFeeType ||
+    selectedPaymentStatus ||
+    selectedSession
+  );
+
+  const statusFilterLabel = selectedPaymentStatus
+    ? (paymentStatusLabelMap[selectedPaymentStatus] ?? selectedPaymentStatus)
+    : "Paid";
+
+  const statusCardStyle =
+    PAYMENT_STATUS_SUMMARY_STYLE[
+      selectedPaymentStatus ?? PAYMENT_STATUS.PAID
+    ] ?? PAYMENT_STATUS_SUMMARY_STYLE[PAYMENT_STATUS.PAID];
+
+  const activeFilterChips = [
+    selectedFeeType === "__other__" ? "Other Fee Types" : selectedFeeType,
+    selectedSession,
+    selectedMonth ? `Issued: ${selectedMonth.format("MMM YYYY")}` : null,
+    selectedPaymentMonth
+      ? `Payment: ${selectedPaymentMonth.format("MMM YYYY")}`
+      : null,
+    searchQuery ? `"${searchQuery}"` : null,
+    selectedPaymentStatus ? paymentStatusLabelMap[selectedPaymentStatus] : null,
+  ].filter(Boolean);
+
+  const { data: summaryData, isLoading: summaryLoading } = useQuery({
+    queryKey: [
+      QK_TRANSACTION_SUMMARY,
+      searchQuery,
+      selectedMonth?.format("YYYY-MM"),
+      selectedPaymentMonth?.format("YYYY-MM"),
+      selectedFeeType,
+      selectedPaymentStatus,
+      selectedSession,
+    ],
+    queryFn: async () => {
+      const knownFeeTypes = feeTypesData.map((ft) => ft.fee_type_title);
+      const { data: rpcData, error } = await supabase.rpc(
+        "get_transaction_summary",
+        {
+          p_search_query: searchQuery || null,
+          p_issued_month_start: selectedMonth
+            ? selectedMonth.startOf("month").format("YYYY-MM-DD")
+            : null,
+          p_issued_month_end: selectedMonth
+            ? selectedMonth.endOf("month").format("YYYY-MM-DD")
+            : null,
+          p_payment_month_start: selectedPaymentMonth
+            ? selectedPaymentMonth.startOf("month").format("YYYY-MM-DD")
+            : null,
+          p_payment_month_end: selectedPaymentMonth
+            ? selectedPaymentMonth.endOf("month").format("YYYY-MM-DD")
+            : null,
+          p_fee_type:
+            selectedFeeType && selectedFeeType !== "__other__"
+              ? selectedFeeType
+              : null,
+          p_fee_type_is_other: selectedFeeType === "__other__",
+          p_payment_status: selectedPaymentStatus || null,
+          p_session: selectedSession || null,
+          p_known_fee_types:
+            selectedFeeType === "__other__" && knownFeeTypes.length > 0
+              ? knownFeeTypes
+              : null,
+        },
+      );
+      if (error) throw new Error(error.message);
+      return rpcData?.[0] ?? { total_issued: 0, total_for_status: 0 };
+    },
+    enabled: hasActiveFilter,
+  });
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: [
@@ -339,7 +411,9 @@ const AllTransactionsComp = () => {
           transactionId={record.trxn_id || ""}
           remarks={record.remarks_by_student || ""}
           logoBase64={logoBase64}
-          watermarkText={WATERMARK_TEXT[record.payment_status] ?? "UNPAID"}
+          watermarkText={
+            PAYMENT_STATUS_WATERMARK[record.payment_status] ?? "UNPAID"
+          }
           qrCodeSrc={qrCodeSrc}
         />,
       ).toBlob();
@@ -586,6 +660,63 @@ const AllTransactionsComp = () => {
           value={searchQuery}
         />
       </div>
+
+      {/* ── Filter Summary Strip ── */}
+      {hasActiveFilter && (
+        <div className={styles.summaryStrip}>
+          {activeFilterChips.length > 0 && (
+            <div className={styles.summaryContext}>
+              <i
+                className="fi fi-rr-chart-pie-alt"
+                style={{ marginRight: 5 }}
+              />
+              Summary for:&nbsp;
+              {activeFilterChips.map((chip, i) => (
+                <span key={i} className={styles.summaryChip}>
+                  {chip}
+                </span>
+              ))}
+            </div>
+          )}
+          <div className={styles.summaryCards}>
+            <div className={styles.summaryCard}>
+              <span className={styles.summaryCardLabel}>TOTAL ISSUED</span>
+              {summaryLoading ? (
+                <Spin size="small" />
+              ) : (
+                <span className={styles.summaryCardValue}>
+                  BDT {Number(summaryData?.total_issued ?? 0).toLocaleString()}
+                </span>
+              )}
+            </div>
+            <div
+              className={styles.summaryCard}
+              style={{
+                background: statusCardStyle.bg,
+                borderColor: statusCardStyle.border,
+              }}
+            >
+              <span
+                className={styles.summaryCardLabel}
+                style={{ color: statusCardStyle.text }}
+              >
+                TOTAL {statusFilterLabel.toUpperCase()}
+              </span>
+              {summaryLoading ? (
+                <Spin size="small" />
+              ) : (
+                <span
+                  className={styles.summaryCardValue}
+                  style={{ color: statusCardStyle.text }}
+                >
+                  BDT{" "}
+                  {Number(summaryData?.total_for_status ?? 0).toLocaleString()}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <Table
         columns={columns}

@@ -25,6 +25,8 @@ import {
   STUDENT_STATUS_COLOR,
   STUDENT_STATUS_OPTIONS,
   STUDENT_STATUS,
+  STUDENT_INTERESTS,
+  STUDENT_INTERESTS_OPTIONS,
   NOTIFICATION_TYPE,
 } from "../../../../config/statusAndRoleConfig";
 import {
@@ -115,9 +117,37 @@ const getColumns = (
     key: "status",
     width: 200,
     render: (_, record) => (
-      <Tag color={STUDENT_STATUS_COLOR[record.status] ?? "default"}>
-        {statusLabelMap[record.status] ?? record.status ?? "—"}
-      </Tag>
+      <>
+        <Tag color={STUDENT_STATUS_COLOR[record.status] ?? "default"}>
+          {statusLabelMap[record.status] ?? record.status ?? "—"}
+        </Tag>
+        <br /> <br />
+        {record.admission_interest && (
+          <div
+            style={{
+              maxWidth: "200px",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+            }}
+          >
+            <Tag color="blue">Interest :</Tag> &nbsp;
+            {(() => {
+              const matchedTags = STUDENT_INTERESTS_OPTIONS.filter(
+                ({ value }) => record.admission_interest.includes(value),
+              ).map(({ value, label }) => (
+                <Tag key={value} color="blue">
+                  {label}
+                </Tag>
+              ));
+              return matchedTags.length > 0 ? (
+                matchedTags
+              ) : (
+                <span>{record.admission_interest}</span>
+              );
+            })()}
+          </div>
+        )}
+      </>
     ),
   },
   {
@@ -479,7 +509,8 @@ const StudentDirectoryComp = ({ searchQuery }) => {
           status,
           created_at,
           dob,
-          avatar_url
+          avatar_url,
+          admission_interest
           `,
           { count: "exact" },
         )

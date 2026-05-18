@@ -7,8 +7,14 @@ const OnlineAdmissionPage = () => {
   return (
     <div className={styles.page}>
       <OnlineAdmBannerComp />
-      <CourseInfoComp />
-      <EnquiryFormComp />
+      <div className={styles.mainSection}>
+        <div className={styles.container}>
+          <div className={styles.twoCol}>
+            <CourseInfoComp />
+            <EnquiryFormComp />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,3 +1,33 @@
 .page {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0ebe6;
+  min-height: 100vh;
+}
+
+.mainSection {
+  padding: 52px 24px 80px;
+}
+
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .twoCol {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  .mainSection {
+    padding: 32px 16px 60px;
+  }
 }

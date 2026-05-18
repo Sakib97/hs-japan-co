@@ -21,6 +21,8 @@ export const QK_MY_PAYMENTS = "my-payments";
 export const QK_MY_STUDENT_INFO = "my-student-info";
 // Used in: AllTransactionsComp — admin view of all student payments
 export const QK_ALL_TRANSACTIONS = "all-transactions";
+// Used in: AllTransactionsComp — filter-aware aggregate summary (RPC)
+export const QK_TRANSACTION_SUMMARY = "transaction-summary";
 // Used in: FinancialOverviewComp — aggregate payment stats
 export const QK_FINANCIAL_OVERVIEW = "financial-overview";
 // Used in: PaymentVerifyPage — public receipt verification by receiptId

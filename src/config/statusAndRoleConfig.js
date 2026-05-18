@@ -29,9 +29,9 @@ export const STUDENT_STATUS_OPTIONS = [
     value: STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST,
     label: "Expressed Interest",
   },
-  { 
-    value: STUDENT_STATUS.PASSWORD_RESET_MAIL_SENT, 
-    label: "Password Reset Mail Sent" 
+  {
+    value: STUDENT_STATUS.PASSWORD_RESET_MAIL_SENT,
+    label: "Password Reset Mail Sent",
   },
   { value: STUDENT_STATUS.ENROLLED, label: "Enrolled" },
   { value: STUDENT_STATUS.GRADUATED, label: "Graduated" },
@@ -52,6 +52,22 @@ export const STUDENT_STATUS_COLOR = {
   [STUDENT_STATUS.GRADUATED]: "purple",
   [STUDENT_STATUS.WITHDRAWN]: "red",
 };
+
+
+// Student Interests
+export const STUDENT_INTERESTS = {
+  JAPANESE_LANGUAGE: "japanese_language",
+  STUDENT_VISA: "student_visa",
+  WORK_VISA: "work_visa",
+  OTHER: "other",
+};
+
+export const STUDENT_INTERESTS_OPTIONS = [
+  { value: STUDENT_INTERESTS.JAPANESE_LANGUAGE, label: "Japanese Language" },
+  { value: STUDENT_INTERESTS.STUDENT_VISA, label: "Student Visa" },
+  { value: STUDENT_INTERESTS.WORK_VISA, label: "Work Visa" },
+  { value: STUDENT_INTERESTS.OTHER, label: "Other" },
+];
 
 // ─── Employee / User Account Status ─────────────────────────────────────────────
 // Used in: employees.activity_status, users_meta.is_active
@@ -116,7 +132,6 @@ export const ENQUIRY_STATUS_COLOR = {
   [ENQUIRY_STATUS.CANCELLED]: "default",
 };
 
-
 // Emp daily task status (future)
 export const DAILY_TASK_STATUS = {
   UNDER_REVIEW: "under_review",
@@ -128,7 +143,10 @@ export const DAILY_TASK_STATUS = {
 
 export const DAILY_TASK_STATUS_OPTIONS = [
   { value: DAILY_TASK_STATUS.UNDER_REVIEW, label: "Under Review" },
-  { value: DAILY_TASK_STATUS.EXCELLENT_PERFORMANCE, label: "Excellent Performance" },
+  {
+    value: DAILY_TASK_STATUS.EXCELLENT_PERFORMANCE,
+    label: "Excellent Performance",
+  },
   { value: DAILY_TASK_STATUS.MEETS_EXPECTATIONS, label: "Meets Expectations" },
   { value: DAILY_TASK_STATUS.BELOW_EXPECTATIONS, label: "Below Expectations" },
   { value: DAILY_TASK_STATUS.UNSATISFACTORY, label: "Unsatisfactory" },
@@ -168,6 +186,37 @@ export const PAYMENT_STATUS_COLOR = {
   [PAYMENT_STATUS.REFUNDED]: "blue",
 };
 
+export const PAYMENT_STATUS_SUMMARY_STYLE = {
+  [PAYMENT_STATUS.PENDING]: {
+    bg: "#fffbe6",
+    border: "#ffe58f",
+    text: "#d46b08",
+  },
+  [PAYMENT_STATUS.VERIFICATION_PENDING]: {
+    bg: "#fffbe6",
+    border: "#ffe58f",
+    text: "#d46b08",
+  },
+  [PAYMENT_STATUS.PAID]: { bg: "#f6fff8", border: "#b7eb8f", text: "#389e0d" },
+  [PAYMENT_STATUS.FAILED]: {
+    bg: "#fff2f0",
+    border: "#ffccc7",
+    text: "#cf1322",
+  },
+  [PAYMENT_STATUS.REFUNDED]: {
+    bg: "#e6f7ff",
+    border: "#91d5ff",
+    text: "#0958d9",
+  },
+};
+
+export const PAYMENT_STATUS_WATERMARK = {
+  [PAYMENT_STATUS.PENDING]: "UNPAID",
+  [PAYMENT_STATUS.VERIFICATION_PENDING]: "VERIFICATION PENDING",
+  [PAYMENT_STATUS.PAID]: "PAID",
+  [PAYMENT_STATUS.FAILED]: "FAILED",
+  [PAYMENT_STATUS.REFUNDED]: "REFUNDED",
+};
 
 // For Notifications (type, options, color and icon)
 export const NOTIFICATION_TYPE = {

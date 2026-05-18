@@ -101,6 +101,76 @@
   top: 115px;
 }
 
+/* ── Transaction Summary Strip ─────────────────────────────────────────────── */
+.summaryStrip {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summaryContext {
+  font-size: 0.75rem;
+  color: #888;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.summaryChip {
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.summaryCards {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.summaryCard {
+  flex: 1;
+  min-width: 150px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 7px;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryCardLabel {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #aaa;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.summaryCardValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+@media (max-width: 768px) {
+  .summaryCards {
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 768px) {
   .transactionDetailsModal {
     top: 70px;
