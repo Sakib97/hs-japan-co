@@ -18,6 +18,9 @@ import {
   DollarOutlined,
   ReadOutlined,
 } from "@ant-design/icons";
+import { TbEPassport } from "react-icons/tb";
+import { BsPassport } from "react-icons/bs";
+  
 import { Layout, Input, Button, Avatar, Badge } from "antd";
 import styles from "../styles/DashboardPage.module.css";
 import ScrollToTop from "../../../components/common/ScrollToTop";
@@ -66,8 +69,8 @@ const mainMenuItems = [
   },
   {
     key: "/dashboard/student-management",
-    // icon: <SolutionOutlined />, 
-    icon:<i className="fi fi-rr-graduation-cap"></i>,
+    // icon: <SolutionOutlined />,
+    icon: <i className="fi fi-rr-graduation-cap"></i>,
     label: "Student Management",
     visibleForRoles: [
       {
@@ -182,23 +185,23 @@ const mainMenuItems = [
     ],
   },
 
-  // {
-  //   key: "/dashboard/social-media",
-  //   icon: <i className="fi fi-rr-social-media"></i>,
-  //   label: "Social Media",
-  //   // adminOnly: true,
-  //   visibleForRoles: [
-  //     {
-  //       role: "admin",
-  //       isActive: true,
-  //     },
-  //     {
-  //       role: "employee",
-  //       isActive: true,
-  //       employeeStatus: ["full_time", "part_time"],
-  //     },
-  //   ],
-  // },
+  {
+    key: "/dashboard/visa-page-management",
+    icon: <TbEPassport />,
+    label: "Visa Page Management",
+    // adminOnly: true,
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+      {
+        role: "employee",
+        isActive: true,
+        employeeStatus: ["full_time"],
+      },
+    ],
+  },
 
   {
     key: "/dashboard/daily-tasks",

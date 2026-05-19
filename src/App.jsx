@@ -49,6 +49,7 @@ import ResetPassword from "./features/auth/pages/ResetPassword.jsx";
 import AnnouncementsPage from "./features/dashboard/pages/AnnouncementsPage.jsx";
 import WhatsappFloatBtn from "./components/common/WhatsappFloatBtn.jsx";
 import Footer from "./components/layout/Footer.jsx";
+import VisaPageManagement from "./features/dashboard/pages/VisaPageManagement.jsx";
 
 
 const SPLASH_KEY = "hs_japan_splash_shown";
@@ -204,6 +205,17 @@ function App() {
                 allowedEmployeeStatuses={["full_time", "part_time"]}
               >
                 <EventsActivitiesManagementPage />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="visa-page-management"
+            element={
+              <RoleBasedRoute
+                allowedRoles={["admin", "employee"]}
+                allowedEmployeeStatuses={["full_time"]}
+              >
+                <VisaPageManagement />
               </RoleBasedRoute>
             }
           />

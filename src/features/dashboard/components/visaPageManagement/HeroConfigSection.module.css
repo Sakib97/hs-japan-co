@@ -1,0 +1,116 @@
+.section {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin-bottom: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.iconWrap {
+  width: 32px;
+  height: 32px;
+  background: #fef2f2;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b91c1c;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 32px;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.req {
+  color: #dc2626;
+}
+
+.dragger {
+  flex: 1;
+}
+
+.dragger :global(.ant-upload-drag) {
+  border-color: #e5e7eb !important;
+  background: #fafafa !important;
+  border-radius: 8px !important;
+  min-height: 160px;
+}
+
+.draggerIcon {
+  font-size: 2rem;
+  color: #b91c1c;
+  margin: 0 0 6px;
+}
+
+.draggerText {
+  font-size: 0.82rem;
+  color: #b91c1c;
+  margin: 0;
+}
+
+.draggerHint {
+  font-size: 0.74rem;
+  color: #9ca3af;
+  margin: 4px 0 0;
+}
+
+.previewImg {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section {
+    padding: 20px 18px;
+  }
+}
