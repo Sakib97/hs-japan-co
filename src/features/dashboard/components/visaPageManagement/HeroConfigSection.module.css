@@ -1,6 +1,7 @@
 .section {
   background: #fff;
-  border: 1px solid #e8e8e8;
+  /* border: 1px solid #e8e8e8; */
+  border: 2px solid #000000;
   border-radius: 10px;
   padding: 28px 32px;
   margin-bottom: 20px;
@@ -31,6 +32,13 @@
   font-weight: 700;
   color: #111;
   margin: 0;
+}
+.sectionSubtitle {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin: 4px 0 0;
+  font-weight: 800;
+  color: #b91c1c;
 }
 
 .grid {
@@ -105,12 +113,25 @@
   border-radius: 6px;
 }
 
+.draftBtnWrapper {
+  margin-top: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: span 2;
+}
+
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .section {
     padding: 20px 18px;
+  }
+
+  .draftBtnWrapper {
+    grid-column: span 1;
   }
 }

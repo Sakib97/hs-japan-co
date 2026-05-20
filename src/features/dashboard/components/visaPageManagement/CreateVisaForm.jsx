@@ -30,6 +30,12 @@ const getInitialState = () => ({
 const CreateVisaForm = ({ onCancel, onSubmit }) => {
   const [formData, setFormData] = useState(getInitialState);
 
+  const heroComplete = !!(
+    formData.hero.title?.trim() &&
+    formData.hero.subtitle?.trim() &&
+    formData.hero.imageUrl
+  );
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -47,6 +53,7 @@ const CreateVisaForm = ({ onCancel, onSubmit }) => {
             type="primary"
             className={styles.publishBtn}
             onClick={() => onSubmit(formData)}
+            disabled={!heroComplete}
           >
             Publish Visa Page
           </Button>
@@ -60,16 +67,19 @@ const CreateVisaForm = ({ onCancel, onSubmit }) => {
       <EligibilitySection
         data={formData.eligibility}
         onChange={(val) => setFormData((f) => ({ ...f, eligibility: val }))}
+        disabled={!heroComplete}
       />
       <ApplicationProcessSection
         data={formData.applicationProcess}
         onChange={(val) =>
           setFormData((f) => ({ ...f, applicationProcess: val }))
         }
+        disabled={!heroComplete}
       />
       <RequiredDocSection
         data={formData.requiredDocs}
         onChange={(val) => setFormData((f) => ({ ...f, requiredDocs: val }))}
+        disabled={!heroComplete}
       />
 
       <div className={styles.footer}>
@@ -78,6 +88,7 @@ const CreateVisaForm = ({ onCancel, onSubmit }) => {
           type="primary"
           className={styles.publishBtn}
           onClick={() => onSubmit(formData)}
+          disabled={!heroComplete}
         >
           Publish Visa Page
         </Button>

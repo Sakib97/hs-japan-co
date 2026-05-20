@@ -1,10 +1,11 @@
 import { Input, Button } from "antd";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import styles from "./ApplicationProcessSection.module.css";
+import SaveDraftBtnComp from "./SaveDraftBtnComp";
 
 const { TextArea } = Input;
 
-const ApplicationProcessSection = ({ data, onChange }) => {
+const ApplicationProcessSection = ({ data, onChange, disabled }) => {
   const addStep = () => {
     onChange({
       ...data,
@@ -30,7 +31,14 @@ const ApplicationProcessSection = ({ data, onChange }) => {
   };
 
   return (
-    <div className={styles.section}>
+    <div className={`${styles.section} ${disabled ? styles.disabled : ""}`}>
+      {disabled && (
+        <div className={styles.disabledOverlay}>
+          <span className={styles.disabledMsg}>
+            <i className="fi fi-rr-lock"></i> Complete Hero Configuration first
+          </span>
+        </div>
+      )}
       <div className={styles.sectionHeader}>
         <span className={styles.iconWrap}>
           <i className="fi fi-rr-layers"></i>
@@ -109,6 +117,9 @@ const ApplicationProcessSection = ({ data, onChange }) => {
           >
             ADD PROCESS STEP
           </Button>
+        </div>
+        <div className={styles.draftBtnWrapper}>
+          <SaveDraftBtnComp />
         </div>
       </div>
     </div>

@@ -47,6 +47,17 @@
   border-radius: 6px !important;
 }
 
+/* keep the hover design same for disabled state */
+.publishBtn:disabled,
+.publishBtn[disabled] {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: white !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
 .publishBtn:hover {
   background: #991b1b !important;
   border-color: #991b1b !important;

@@ -1,8 +1,9 @@
 import { Input, Upload, Button } from "antd";
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import styles from "./RequiredDocSection.module.css";
+import SaveDraftBtnComp from "./SaveDraftBtnComp";
 
-const RequiredDocSection = ({ data, onChange }) => {
+const RequiredDocSection = ({ data, onChange, disabled }) => {
   const handleImageUpload = (file) => {
     onChange({
       ...data,
@@ -36,7 +37,14 @@ const RequiredDocSection = ({ data, onChange }) => {
   };
 
   return (
-    <div className={styles.section}>
+    <div className={`${styles.section} ${disabled ? styles.disabled : ""}`}>
+      {disabled && (
+        <div className={styles.disabledOverlay}>
+          <span className={styles.disabledMsg}>
+            <i className="fi fi-rr-lock"></i> Complete Hero Configuration first
+          </span>
+        </div>
+      )}
       <div className={styles.sectionHeader}>
         <span className={styles.iconWrap}>
           <i className="fi fi-rr-folder-open"></i>
@@ -131,6 +139,9 @@ const RequiredDocSection = ({ data, onChange }) => {
           >
             ADD NEW DOCUMENT FIELD
           </Button>
+        </div>
+        <div className={styles.draftBtnWrapper}>
+          <SaveDraftBtnComp />
         </div>
       </div>
     </div>

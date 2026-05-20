@@ -1,10 +1,11 @@
 import { Input, Button } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import styles from "./EligibilitySection.module.css";
+import SaveDraftBtnComp from "./SaveDraftBtnComp";
 
 const { TextArea } = Input;
 
-const EligibilitySection = ({ data, onChange }) => {
+const EligibilitySection = ({ data, onChange, disabled }) => {
   const addSubsection = () => {
     onChange({
       ...data,
@@ -33,7 +34,14 @@ const EligibilitySection = ({ data, onChange }) => {
   };
 
   return (
-    <div className={styles.section}>
+    <div className={`${styles.section} ${disabled ? styles.disabled : ""}`}>
+      {disabled && (
+        <div className={styles.disabledOverlay}>
+          <span className={styles.disabledMsg}>
+            <i className="fi fi-rr-lock"></i> Complete Hero Configuration first
+          </span>
+        </div>
+      )}
       <div className={styles.sectionHeader}>
         <span className={styles.iconWrap}>
           <i className="fi fi-rr-ballot"></i>
@@ -116,6 +124,9 @@ const EligibilitySection = ({ data, onChange }) => {
           >
             Add Subsection
           </Button>
+        </div>
+        <div className={styles.draftBtnWrapper}>
+          <SaveDraftBtnComp />
         </div>
       </div>
     </div>
