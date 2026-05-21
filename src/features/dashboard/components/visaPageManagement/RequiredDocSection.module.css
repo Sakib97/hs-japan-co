@@ -174,14 +174,20 @@
   font-size: 0.88rem !important;
 }
 
-.addDocBtn {
+
+.addBtn {
+  border: 1px dashed #b91c1c !important;
   color: #b91c1c !important;
-  font-size: 0.78rem !important;
-  font-weight: 700 !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
   letter-spacing: 0.05em;
-  padding: 0 !important;
-  height: auto !important;
-  margin-top: 4px;
+}
+
+.addBtn:hover {
+  border-color: #991b1b !important;
+  color: #991b1b !important;
+  font-size: 0.85rem !important;
 }
 
 .draftBtnWrapper {

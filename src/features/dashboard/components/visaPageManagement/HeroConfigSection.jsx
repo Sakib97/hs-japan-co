@@ -97,7 +97,7 @@ const HeroConfigSection = ({ data, onChange }) => {
         <div>
           <h2 className={styles.sectionTitle}>Hero Configuration</h2>
           <span className={styles.sectionSubtitle}>
-            ** You must fill up this section first to proceed with other
+            ** You must fill up this section AND "Save Draft" first to proceed with other
             sections.
           </span>
         </div>

@@ -1,13 +1,9 @@
-import { Button, Card, Tag, Avatar, Tooltip, Dropdown } from "antd";
-import {
-  PlusOutlined,
-  EllipsisOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import styles from "./VisaPageManagement.module.css";
 import CreateVisaForm from "../components/visaPageManagement/CreateVisaForm";
+import VisaPageDirectoryComp from "../components/visaPageManagement/VisaPageDirectoryComp";
 
 const VisaPageManagement = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -48,10 +44,7 @@ const VisaPageManagement = () => {
 
       <div className={styles.directorySection}>
         <h3 className={styles.directoryTitle}>Visa Page Directory</h3>
-        <p className={styles.directoryEmpty}>
-          No visa pages created yet. Click &ldquo;Create New Visa Page&rdquo; to
-          get started.
-        </p>
+        <VisaPageDirectoryComp onEdit={(page) => console.log("Edit:", page)} />
       </div>
     </div>
   );
