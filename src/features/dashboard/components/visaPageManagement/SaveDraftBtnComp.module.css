@@ -16,3 +16,16 @@
   background: #991b1b !important;
   border-color: #991b1b !important;
 }
+
+/* disabled state */
+.drafteBtn:disabled {
+  /* background: #e5e7eb !important;
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed; */
+    background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: white !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+}

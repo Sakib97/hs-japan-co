@@ -254,3 +254,23 @@ export const NOTIFICATION_TYPE_ICON = {
   [NOTIFICATION_TYPE.WARNING]: "fi fi-rs-octagon-exclamation",
   [NOTIFICATION_TYPE.ERROR]: "fi fi-br-octagon-xmark",
 };
+
+
+// Visa Page statuses
+export const VISA_PAGE_STATUS = {
+  DRAFT: "draft",
+  PUBLISHED: "published",
+  ARCHIVED: "archived",
+};
+
+export const VISA_PAGE_STATUS_OPTIONS = [
+  { value: VISA_PAGE_STATUS.DRAFT, label: "Draft" },
+  { value: VISA_PAGE_STATUS.PUBLISHED, label: "Published" },
+  { value: VISA_PAGE_STATUS.ARCHIVED, label: "Archived" },
+];
+
+export const VISA_PAGE_STATUS_COLOR = {
+  [VISA_PAGE_STATUS.DRAFT]: "orange",
+  [VISA_PAGE_STATUS.PUBLISHED]: "green",
+  [VISA_PAGE_STATUS.ARCHIVED]: "red",
+};

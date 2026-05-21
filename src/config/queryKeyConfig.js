@@ -85,3 +85,7 @@ export const QK_NOTIFICATIONS = "notifications";
 export const QK_ANNOUNCEMENTS = "announcements";
 // Used in: AnnouncementComp (home page public carousel — active + in-range only)
 export const QK_HOME_ANNOUNCEMENTS = "home-announcements";
+
+// ─── Visa Pages ───────────────────────────────────────────────────────────────
+// Used in: VisaPageManagement, HeroConfigSection (save draft)
+export const QK_VISA_PAGES = "visa_pages";

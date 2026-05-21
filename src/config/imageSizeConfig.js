@@ -32,6 +32,16 @@ export const IMAGE_SIZES = {
     label: "2 MB",
   },
 
+  VISA_PAGE_HERO: {
+    maxBytes: 3 * 1024 * 1024, // 3 MB
+    label: "3 MB",
+  },
+
+  VISA_PAGE_OTHERS: {
+    maxBytes: 2 * 1024 * 1024, // 2 MB
+    label: "2 MB",
+  },
+
   // Course cover image (create / edit course form + schema)
   COURSE_COVER: {
     maxBytes: 2 * 1024 * 1024, // 2 MB
