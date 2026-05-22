@@ -1,4 +1,4 @@
-import { Card, Tag, Tooltip, Popconfirm, Empty, Skeleton } from "antd";
+import { Button, Card, Tag, Tooltip, Popconfirm, Empty, Skeleton } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -100,6 +100,11 @@ const VisaPageDirectoryComp = ({ onEdit }) => {
                   className={styles.actionEdit}
                   onClick={() => onEdit?.(page)}
                 />
+                {/* <Button
+                  size="small"
+                  icon={<EditOutlined />}
+                  onClick={() => onEdit?.(page)}
+                /> */}
               </Tooltip>,
               <Tooltip title="Delete" key="delete">
                 <Popconfirm
@@ -110,6 +115,7 @@ const VisaPageDirectoryComp = ({ onEdit }) => {
                   okButtonProps={{ danger: true }}
                   cancelText="Cancel"
                 >
+                  {/* <Button size="small" danger icon={<DeleteOutlined />} /> */}
                   <DeleteOutlined className={styles.actionDelete} />
                 </Popconfirm>
               </Tooltip>,

@@ -41,6 +41,7 @@ const VisaPageManagement = () => {
           onSubmit={handlePublish}
         />
       )}
+      <hr />
 
       <div className={styles.directorySection}>
         <h3 className={styles.directoryTitle}>Visa Page Directory</h3>

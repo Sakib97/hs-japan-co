@@ -140,12 +140,12 @@
 
 .actionDelete {
   font-size: 1rem;
-  color: #ef4444;
+  color: #ef4444 !important;
   transition: color 0.15s;
 }
 
 .actionDelete:hover {
-  color: #dc2626;
+  color: #dc2626 !important;
 }
 
 /* ─── Empty state ──────────────────────────────────────────────────────────── */
