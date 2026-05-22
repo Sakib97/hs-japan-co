@@ -7,7 +7,10 @@ import SaveDraftBtnComp from "./SaveDraftBtnComp";
 import FAIconPicker from "../../../../components/common/FAIconPicker";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_VISA_PAGES } from "../../../../config/queryKeyConfig";
+import {
+  QK_VISA_PAGES,
+  QK_VISA_PAGE_FULL,
+} from "../../../../config/queryKeyConfig";
 
 const { TextArea } = Input;
 
@@ -76,6 +79,9 @@ const EligibilitySection = forwardRef(
         }
 
         queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGES] });
+        queryClient.invalidateQueries({
+          queryKey: [QK_VISA_PAGE_FULL, pageId],
+        });
         showToast("Eligibility section saved successfully!", "success");
         return true;
       } catch (err) {

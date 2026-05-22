@@ -11,13 +11,16 @@ import { useAuth } from "../../../../context/AuthProvider";
 import { uploadImage } from "../../../../utils/handleImage";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_VISA_PAGES } from "../../../../config/queryKeyConfig";
+import {
+  QK_VISA_PAGES,
+  QK_VISA_PAGE_FULL,
+} from "../../../../config/queryKeyConfig";
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
 const heroImageConfig = IMAGE_SIZES.VISA_PAGE_HERO;
 
-const HeroConfigSection = ({ data, onChange }) => {
+const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
   const { userMeta } = useAuth();
   const userMail = userMeta?.email || "unknown";
   const queryClient = useQueryClient();
@@ -31,34 +34,46 @@ const HeroConfigSection = ({ data, onChange }) => {
     try {
       const slug = slugify(data.title.trim());
 
-      // STEP 1: Validate slug & title before uploading image
-      const { error: validationError } = await supabase.rpc(
-        "validate_visa_page",
-        {
-          p_slug: slug,
-          p_title: data.title.trim(),
-        },
-      );
+      // STEP 1: Validate slug & title (only for new pages, not edits)
+      if (!isEdit) {
+        const { error: validationError } = await supabase.rpc(
+          "validate_visa_page",
+          {
+            p_slug: slug,
+            p_title: data.title.trim(),
+          },
+        );
 
-      if (validationError) {
-        if (validationError.message?.includes("SLUG_EXISTS")) {
-          showToast("A visa page with this title already exists.", "error");
-        } else if (validationError.message?.includes("TITLE_EXISTS")) {
-          showToast("A hero section with this title already exists.", "error");
-        } else {
-          showToast(validationError.message || "Validation failed.", "error");
+        if (validationError) {
+          if (validationError.message?.includes("SLUG_EXISTS")) {
+            showToast("A visa page with this title already exists.", "error");
+          } else if (validationError.message?.includes("TITLE_EXISTS")) {
+            showToast(
+              "A hero section with this title already exists.",
+              "error",
+            );
+          } else {
+            showToast(validationError.message || "Validation failed.", "error");
+          }
+          return;
         }
-        return;
       }
 
-      // STEP 2: Upload image only if validation passes
-      const uploadedUrl = await uploadImage(
-        data.image,
-        "combined_page_images",
-        "visa_page",
-      );
+      // STEP 2: Upload image only if a new file was selected
+      let uploadedUrl = data.imageUrl;
+      if (data.image && !data.imageUrl?.startsWith("http")) {
+        uploadedUrl = await uploadImage(
+          data.image,
+          "combined_page_images",
+          "visa_page",
+        );
+      }
 
       // STEP 3: Save to database
+      const imageSize = data.image
+        ? `${(data.image.size / 1024).toFixed(0)} KB`
+        : data.imageSize || "";
+
       const { data: result, error } = await supabase.rpc(
         "save_visa_page_hero_draft",
         {
@@ -66,7 +81,7 @@ const HeroConfigSection = ({ data, onChange }) => {
           p_title: data.title.trim(),
           p_subtitle: data.subtitle.trim(),
           p_image_url: uploadedUrl,
-          p_image_size: `${(data.image.size / 1024).toFixed(0)} KB`,
+          p_image_size: imageSize,
           p_primary_button_text: data.primaryButtonLabel?.trim() || null,
           p_primary_button_url: data.primaryButtonUrl?.trim() || null,
           p_created_by: userMail,
@@ -79,6 +94,7 @@ const HeroConfigSection = ({ data, onChange }) => {
       }
 
       queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGES] });
+      queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGE_FULL, result] });
       showToast("Hero section draft saved successfully!", "success");
       onChange({ ...data, pageId: result });
     } catch (err) {
@@ -97,8 +113,8 @@ const HeroConfigSection = ({ data, onChange }) => {
         <div>
           <h2 className={styles.sectionTitle}>Hero Configuration</h2>
           <span className={styles.sectionSubtitle}>
-            ** You must fill up this section AND "Save Draft" first to proceed with other
-            sections.
+            ** You must fill up this section AND "Save Draft" first to proceed
+            with other sections.
           </span>
         </div>
       </div>

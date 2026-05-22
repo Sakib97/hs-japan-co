@@ -3,16 +3,14 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import styles from "./VisaPageManagement.module.css";
 import CreateVisaForm from "../components/visaPageManagement/CreateVisaForm";
+import EditVisaForm from "../components/visaPageManagement/EditVisaForm";
 import VisaPageDirectoryComp from "../components/visaPageManagement/VisaPageDirectoryComp";
 
 const VisaPageManagement = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingPageId, setEditingPageId] = useState(null);
 
-  const handlePublish = (data) => {
-    // TODO: persist to Supabase
-    console.log("Publish visa page:", data);
-    setShowCreateForm(false);
-  };
+  const showingForm = showCreateForm || !!editingPageId;
 
   return (
     <div className={styles.page}>
@@ -23,7 +21,7 @@ const VisaPageManagement = () => {
             Create and manage visa guidance pages for prospective students.
           </p>
         </div>
-        {!showCreateForm && (
+        {!showingForm && (
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -38,14 +36,22 @@ const VisaPageManagement = () => {
       {showCreateForm && (
         <CreateVisaForm
           onCancel={() => setShowCreateForm(false)}
-          onSubmit={handlePublish}
+          onSuccess={() => setShowCreateForm(false)}
+        />
+      )}
+
+      {editingPageId && (
+        <EditVisaForm
+          pageId={editingPageId}
+          onCancel={() => setEditingPageId(null)}
+          onSuccess={() => setEditingPageId(null)}
         />
       )}
       <hr />
 
       <div className={styles.directorySection}>
         <h3 className={styles.directoryTitle}>Visa Page Directory</h3>
-        <VisaPageDirectoryComp onEdit={(page) => console.log("Edit:", page)} />
+        <VisaPageDirectoryComp onEdit={(page) => setEditingPageId(page.id)} />
       </div>
     </div>
   );

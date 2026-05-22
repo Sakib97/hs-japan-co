@@ -89,3 +89,5 @@ export const QK_HOME_ANNOUNCEMENTS = "home-announcements";
 // ─── Visa Pages ───────────────────────────────────────────────────────────────
 // Used in: VisaPageManagement, HeroConfigSection (save draft)
 export const QK_VISA_PAGES = "visa_pages";
+// Used in: EditVisaForm (fetch full page data for editing)
+export const QK_VISA_PAGE_FULL = "visa_page_full";

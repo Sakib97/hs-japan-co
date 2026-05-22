@@ -8,7 +8,10 @@ import { showToast } from "../../../../components/layout/CustomToast";
 import { supabase } from "../../../../config/supabaseClient";
 import { uploadImage } from "../../../../utils/handleImage";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
-import { QK_VISA_PAGES } from "../../../../config/queryKeyConfig";
+import {
+  QK_VISA_PAGES,
+  QK_VISA_PAGE_FULL,
+} from "../../../../config/queryKeyConfig";
 
 const RequiredDocSection = forwardRef(
   ({ data, onChange, disabled, pageId }, ref) => {
@@ -98,7 +101,11 @@ const RequiredDocSection = forwardRef(
             p_section_title: data.sectionTitle.trim(),
             p_section_subtitle: data.sectionSubtitle.trim(),
             p_side_image_url: uploadedImageUrl,
-            p_side_image_size: `${(data.sideImage.size / 1024).toFixed(0)} KB`,
+            // p_side_image_size: data.sideImage
+            //   ? `${(data.sideImage.size / 1024).toFixed(0)} KB`
+            //   : data.sideImageSize || "",
+            // image size in number
+            p_side_image_size: data.sideImage ? data.sideImage.size : null,
             p_documents: data.documents.map((d, i) => ({
               title: d.title.trim(),
               order: i,
@@ -115,6 +122,9 @@ const RequiredDocSection = forwardRef(
         }
 
         queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGES] });
+        queryClient.invalidateQueries({
+          queryKey: [QK_VISA_PAGE_FULL, pageId],
+        });
         showToast("Required documentation saved successfully!", "success");
         return true;
       } catch (err) {

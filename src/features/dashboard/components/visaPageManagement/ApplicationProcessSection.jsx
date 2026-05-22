@@ -6,7 +6,10 @@ import styles from "./ApplicationProcessSection.module.css";
 import SaveDraftBtnComp from "./SaveDraftBtnComp";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_VISA_PAGES } from "../../../../config/queryKeyConfig";
+import {
+  QK_VISA_PAGES,
+  QK_VISA_PAGE_FULL,
+} from "../../../../config/queryKeyConfig";
 
 const { TextArea } = Input;
 
@@ -71,6 +74,9 @@ const ApplicationProcessSection = forwardRef(
         }
 
         queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGES] });
+        queryClient.invalidateQueries({
+          queryKey: [QK_VISA_PAGE_FULL, pageId],
+        });
         showToast("Application process saved successfully!", "success");
         return true;
       } catch (err) {
