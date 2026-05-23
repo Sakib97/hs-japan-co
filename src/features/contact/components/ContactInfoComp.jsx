@@ -11,6 +11,7 @@ import { supabase } from "../../../config/supabaseClient";
 import { QK_CONTACT_US } from "../../../config/queryKeyConfig";
 import { showToast } from "../../../components/layout/CustomToast";
 import styles from "../styles/ContactInfoComp.module.css";
+import ContactPageLoading from "../../../components/loadingSkeletons/ContactPageLoading";
 
 const EMPTY_OFFICE = {
   office_name: "",
@@ -113,19 +114,10 @@ const ContactInfoComp = ({ isEditMode }) => {
     return (
       <section className={styles.section}>
         <div className={styles.container}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              padding: "60px 0",
-            }}
-          >
-            <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 40 }} spin />}
-            />
-          </div>
+          <ContactPageLoading />
         </div>
       </section>
+      
     );
   }
 

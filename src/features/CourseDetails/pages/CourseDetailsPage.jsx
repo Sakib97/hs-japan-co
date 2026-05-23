@@ -5,6 +5,8 @@ import { supabase } from "../../../config/supabaseClient";
 import { useAuth } from "../../../context/AuthProvider";
 import styles from "../styles/CourseDetailsPage.module.css";
 import { decodeCourseID } from "../../../utils/generateToken";
+import CourseDetailsLoading from "../../../components/loadingSkeletons/CourseDetailsLoading";
+
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
@@ -47,7 +49,8 @@ const CourseDetailsPage = () => {
   if (isLoading) {
     return (
       <div className={styles.loadingWrapper}>
-        <div className={styles.spinner} />
+        {/* <div className={styles.spinner} /> */}
+        <CourseDetailsLoading />
       </div>
     );
   }
@@ -66,6 +69,7 @@ const CourseDetailsPage = () => {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
+        {/* <CourseDetailsLoading /> */}
         {/* ── Header ── */}
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>

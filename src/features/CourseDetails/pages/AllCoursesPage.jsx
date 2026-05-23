@@ -7,6 +7,7 @@ import { supabase } from "../../../config/supabaseClient";
 import { QK_ALL_COURSES } from "../../../config/queryKeyConfig";
 import styles from "../styles/AllCoursesPage.module.css";
 import { encodeCourseID } from "../../../utils/generateToken";
+import AllCoursePageLoading from "../../../components/loadingSkeletons/AllCoursePageLoading";
 
 const PAGE_SIZE = 10;
 
@@ -90,72 +91,80 @@ const AllCoursesPage = () => {
 
         {/* ── Grid ── */}
         {isLoading ? (
-          <div className={styles.loadingWrap}>
-            <LoadingOutlined style={{ fontSize: 48, color: "#4f46e5" }} spin />
-          </div>
+          // <div className={styles.loadingWrap}>
+          //   <LoadingOutlined style={{ fontSize: 48, color: "#4f46e5" }} spin />
+          // </div>
+          <AllCoursePageLoading />
         ) : rows.length === 0 ? (
           <div className={styles.empty}>
             <i className="fa-solid fa-graduation-cap" />
             <p>No courses found.</p>
           </div>
         ) : (
-          <div className={styles.grid}>
-            {rows.map((course) => {
-              const levelStyle = LEVEL_COLORS[course.course_level] ?? {
-                bg: "#f3f4f6",
-                color: "#374151",
-              };
-              return (
-                <Link
-                  key={course.id}
-                  to={`/courses/${encodeCourseID(course.id)}`}
-                  className={styles.card}
-                >
-                  <div className={styles.imageWrap}>
-                    {course.cover_image_url ? (
-                      <img
-                        src={course.cover_image_url}
-                        alt={course.course_name}
-                        className={styles.image}
-                      />
-                    ) : (
-                      <div className={styles.imagePlaceholder}>
-                        <i className="fa-solid fa-graduation-cap" />
-                      </div>
-                    )}
-                    {course.course_level && (
-                      <span
-                        className={styles.levelBadge}
-                        style={{
-                          background: levelStyle.bg,
-                          color: levelStyle.color,
-                        }}
-                      >
-                        {course.course_level}
-                      </span>
-                    )}
-                  </div>
-                  <div className={styles.cardBody}>
-                    <h3 className={styles.courseName}>{course.course_name}</h3>
-                    {course.instructor_name && (
-                      <p className={styles.instructor}>
-                        BY {course.instructor_name.toUpperCase()}
-                      </p>
-                    )}
-                    <div className={styles.meta}>
-                      {course.course_duration && (
-                        <span className={styles.metaItem}>
-                          <i className="fa-solid fa-calendar-days" />
-                          {course.course_duration}
+          <>
+              {/* <AllCoursePageLoading /> */}
+
+            <div className={styles.grid}>
+
+              {rows.map((course) => {
+                const levelStyle = LEVEL_COLORS[course.course_level] ?? {
+                  bg: "#f3f4f6",
+                  color: "#374151",
+                };
+                return (
+                  <Link
+                    key={course.id}
+                    to={`/courses/${encodeCourseID(course.id)}`}
+                    className={styles.card}
+                  >
+                    <div className={styles.imageWrap}>
+                      {course.cover_image_url ? (
+                        <img
+                          src={course.cover_image_url}
+                          alt={course.course_name}
+                          className={styles.image}
+                        />
+                      ) : (
+                        <div className={styles.imagePlaceholder}>
+                          <i className="fa-solid fa-graduation-cap" />
+                        </div>
+                      )}
+                      {course.course_level && (
+                        <span
+                          className={styles.levelBadge}
+                          style={{
+                            background: levelStyle.bg,
+                            color: levelStyle.color,
+                          }}
+                        >
+                          {course.course_level}
                         </span>
                       )}
-                      <span className={styles.viewMore}>View Details →</span>
                     </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                    <div className={styles.cardBody}>
+                      <h3 className={styles.courseName}>
+                        {course.course_name}
+                      </h3>
+                      {course.instructor_name && (
+                        <p className={styles.instructor}>
+                          BY {course.instructor_name.toUpperCase()}
+                        </p>
+                      )}
+                      <div className={styles.meta}>
+                        {course.course_duration && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-solid fa-calendar-days" />
+                            {course.course_duration}
+                          </span>
+                        )}
+                        <span className={styles.viewMore}>View Details →</span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {/* ── Pagination ── */}

@@ -6,7 +6,7 @@ import OnlineCourseComp from "../components/OnlineCourseComp";
 import AdmissionProcessComp from "../components/AdmissionProcessComp";
 import MapComp from "../components/MapComp";
 import GalleryComp from "../components/GalleryComp";
-import { Spin } from "antd";
+import { Spin, Skeleton, Flex, Space } from "antd";
 import { supabase } from "../../../config/supabaseClient";
 import { showToast } from "../../../components/layout/CustomToast";
 import { useAuth } from "../../../context/AuthProvider";
@@ -15,6 +15,8 @@ import EditModeToggleBtn from "../../../components/common/EditModeToggleBtn";
 import { useQuery } from "@tanstack/react-query";
 import { QK_ABOUT_PAGE } from "../../../config/queryKeyConfig";
 import { useState } from "react";
+import AboutPageLoading from "../../../components/loadingSkeletons/AboutPageLoading";
+
 
 const fetchAboutPageData = async () => {
   const { data, error } = await supabase.from("about_page").select("*");
@@ -34,9 +36,7 @@ const AboutPage = () => {
   return (
     <div className={styles.page}>
       {aboutLoading ? (
-        <div className={styles.loadingOverlay}>
-          <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} />
-        </div>
+        <AboutPageLoading />
       ) : (
         <>
           {user && userMeta?.role === "admin" && (
@@ -85,7 +85,6 @@ const AboutPage = () => {
 
           {/* Map section */}
           <MapComp />
-
           {/* Gallery section */}
           {/* <GalleryComp /> */}
         </>

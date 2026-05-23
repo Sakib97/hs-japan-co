@@ -3,6 +3,7 @@ import styles from "../styles/GalleryGridComp.module.css";
 import { useQuery } from "@tanstack/react-query";
 import { QK_GALLERY_PAGE_IMAGES } from "../../../config/queryKeyConfig";
 import { LoadingOutlined } from "@ant-design/icons";
+import GalleryPageLoading from "../../../components/loadingSkeletons/GalleryPageLoading";
 
 const fetchGalleryImages = async () => {
   const { data, error } = await supabase
@@ -31,16 +32,7 @@ const GalleryGridComp = () => {
     return (
       <section className={styles.section}>
         <div className={styles.container}>
-          <p
-            style={{
-              textAlign: "center",
-              padding: "40px 0",
-              fontSize: "1.2rem",
-              color: "#888",
-            }}
-          >
-            <LoadingOutlined spin /> &nbsp;Loading gallery...
-          </p>
+          <GalleryPageLoading />
         </div>
       </section>
     );

@@ -4,7 +4,7 @@ import TechnologyComp from "../components/TechnologyComp";
 import BuildDreamComp from "../components/BuildDreamComp";
 import { IMAGE_SIZES } from "../../../config/imageSizeConfig";
 import { useAuth } from "../../../context/AuthProvider";
-import { Spin } from "antd";
+import { Spin, Skeleton } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import EditModeToggleBtn from "../../../components/common/EditModeToggleBtn";
 import styles from "../styles/WhyJapanPage.module.css";
@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { QK_WHY_JAPAN_PAGE } from "../../../config/queryKeyConfig";
 import { supabase } from "../../../config/supabaseClient";
+import WhyJapanLoading from "../../../components/loadingSkeletons/WhyJapanLoading";
 
 const WhyJapanPage = () => {
   const { user, userMeta } = useAuth();
@@ -38,9 +39,10 @@ const WhyJapanPage = () => {
   return (
     <div className={styles.page}>
       {isLoading ? (
-        <div className={styles.loadingOverlay}>
-          <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} />
-        </div>
+        // <div style={{ padding: "120px 10vw 4rem" }}>
+        //   <Skeleton active paragraph={{ rows: 10 }} />
+        // </div>
+        <WhyJapanLoading />
       ) : (
         <>
           {user && userMeta?.role === "admin" && (
@@ -61,6 +63,8 @@ const WhyJapanPage = () => {
               </span>
             </div>
           )}
+        {/* <WhyJapanLoading /> */}
+
           <BetterFutureComp isEditMode={isEditMode} data={betterFuture} />
           <TechnologyComp isEditMode={isEditMode} data={advancedTech} />
           <BuildDreamComp isEditMode={isEditMode} data={bydCards} />

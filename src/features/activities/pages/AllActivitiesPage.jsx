@@ -5,6 +5,8 @@ import { SearchOutlined, LoadingOutlined } from "@ant-design/icons";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_ALL_ACTIVITIES } from "../../../config/queryKeyConfig";
 import styles from "../styles/AllActivitiesPage.module.css";
+import AllActivitiesLoading from "../../../components/loadingSkeletons/AllActivitiesLoading";
+
 
 const PAGE_SIZE = 8;
 
@@ -76,6 +78,8 @@ const AllActivitiesPage = () => {
 
       {/* Content */}
       <div className={styles.container}>
+      {/* <AllActivitiesLoading /> */}
+
         {/* Toolbar */}
         <div className={styles.toolbar}>
           <Input
@@ -96,7 +100,7 @@ const AllActivitiesPage = () => {
         {/* List */}
         {isLoading ? (
           <div className={styles.loadingWrap}>
-            <LoadingOutlined style={{ fontSize: 48, color: "#4f46e5" }} spin />
+            <AllActivitiesLoading />
           </div>
         ) : activities.length === 0 ? (
           <div className={styles.empty}>

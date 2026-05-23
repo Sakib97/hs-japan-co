@@ -5,6 +5,8 @@ import { SearchOutlined, LoadingOutlined } from "@ant-design/icons";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_ALL_EVENTS } from "../../../config/queryKeyConfig";
 import styles from "../styles/AllEventsPage.module.css";
+import AllEventsLoading from "../../../components/loadingSkeletons/AllEventsLoading";
+
 
 const PAGE_SIZE = 8;
 
@@ -112,7 +114,8 @@ const AllEventsPage = () => {
         {/* List */}
         {isLoading ? (
           <div className={styles.loadingWrap}>
-            <LoadingOutlined style={{ fontSize: 48, color: "#4f46e5" }} spin />
+            {/* <LoadingOutlined style={{ fontSize: 48, color: "#4f46e5" }} spin /> */}
+            <AllEventsLoading />
           </div>
         ) : events.length === 0 ? (
           <div className={styles.empty}>
@@ -121,6 +124,7 @@ const AllEventsPage = () => {
           </div>
         ) : (
           <div className={styles.list}>
+            {/* <AllEventsLoading /> */}
             {events.map((event) => {
               const { day, month, year } = parseDate(event.event_date);
               return (

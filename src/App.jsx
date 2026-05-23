@@ -51,6 +51,7 @@ import WhatsappFloatBtn from "./components/common/WhatsappFloatBtn.jsx";
 import Footer from "./components/layout/Footer.jsx";
 import VisaPageManagement from "./features/dashboard/pages/VisaPageManagement.jsx";
 import VisaPage from "./features/visaPage/pages/VisaPage.jsx";
+import HomePage2 from "./features/home2/pages/HomePage2.jsx";
 
 
 const SPLASH_KEY = "hs_japan_splash_shown";
@@ -74,6 +75,7 @@ function App() {
       <Toaster />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/home2" element={<HomePage2 />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/admission" element={<AdmissionPage />} />
         <Route path="/online-admission" element={<OnlineAdmissionPage />} />

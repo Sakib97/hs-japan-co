@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { QK_TEAM_PAGE_MEMBERS } from "../../../config/queryKeyConfig";
 import styles from "../styles/TeamMembersComp.module.css";
 import { supabase } from "../../../config/supabaseClient";
+import TeamPageLoading from "../../../components/loadingSkeletons/TeamPageLoading";
 
 const TeamMembersComp = () => {
   const { data = [], isLoading } = useQuery({
@@ -21,14 +22,9 @@ const TeamMembersComp = () => {
 
   if (isLoading) {
     return (
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <div className={styles.loading}>
-            <span className={styles.spinner} />
-            <span>Loading team members...</span>
-          </div>
-        </div>
-      </section>
+      <div className={styles.headerArea}>
+        <TeamPageLoading />
+      </div>
     );
   }
 

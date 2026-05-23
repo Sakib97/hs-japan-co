@@ -7,6 +7,8 @@ import VisaPageHeroComp from "../components/VisaPageHeroComp";
 import VisaPageEligibilityComp from "../components/VisaPageEligibilityComp";
 import VisaPageApplicationProcessComp from "../components/VisaPageApplicationProcessComp";
 import VisaPageRequiredDocsComp from "../components/VisaPageRequiredDocsComp";
+import VisaPageLoading from "../../../components/loadingSkeletons/VisaPageLoading";
+
 
 const VisaPage = () => {
   const { visaSlug } = useParams();
@@ -26,9 +28,10 @@ const VisaPage = () => {
 
   if (isLoading) {
     return (
-      <div style={{ padding: "120px 10vw 4rem" }}>
-        <Skeleton active paragraph={{ rows: 10 }} />
-      </div>
+    //   <div style={{ padding: "120px 10vw 4rem" }}>
+    //     <Skeleton active paragraph={{ rows: 10 }} />
+    //   </div>
+        <VisaPageLoading />
     );
   }
 
@@ -62,6 +65,7 @@ const VisaPage = () => {
             steps={data.application_steps}
           />
         )}
+
 
       {data.required_docs_section && (
         <VisaPageRequiredDocsComp
