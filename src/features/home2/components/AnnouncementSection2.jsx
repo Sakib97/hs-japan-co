@@ -75,7 +75,7 @@ const AnnouncementSection2 = () => {
           autoplaySpeed={speed}
           adaptiveHeight
           draggable
-          //   dots
+          dots
           className={styles.carousel}
         >
           {activeSlides.map((slide) => (

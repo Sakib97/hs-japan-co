@@ -23,7 +23,7 @@
 }
 
 /* Ant Design dot overrides */
-.wrapper :global(.slick-dots li button) {
+/* .wrapper :global(.slick-dots li button) {
   background: rgba(255, 255, 255, 0.55) !important;
   width: 10px !important;
   height: 10px !important;
@@ -38,7 +38,7 @@
 
 .wrapper :global(.slick-dots) {
   bottom: 14px !important;
-}
+} */
 
 @media (max-width: 768px) {
   .slide {

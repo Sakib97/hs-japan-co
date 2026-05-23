@@ -153,12 +153,12 @@
 }
 
 .quote {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.82);
   line-height: 1.8;
   font-style: italic;
-  margin-bottom: 1.75rem;
-  flex: 1;
+  margin-bottom: 50px;
+  /* flex: 1; */
 }
 
 .person {
@@ -234,8 +234,7 @@
   }
   .eventTitle {
     font-size: 0.9rem;
-  white-space: wrap;
-    
+    white-space: wrap;
   }
   .coverThumb {
     width: 90px;
