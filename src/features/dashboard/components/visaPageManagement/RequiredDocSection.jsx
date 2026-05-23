@@ -1,16 +1,21 @@
 import { Input, Upload, Button } from "antd";
-import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  PlusCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { useState, forwardRef, useImperativeHandle } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import styles from "./RequiredDocSection.module.css";
 import SaveDraftBtnComp from "./SaveDraftBtnComp";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { supabase } from "../../../../config/supabaseClient";
-import { uploadImage } from "../../../../utils/handleImage";
+import { uploadImage, replaceImage } from "../../../../utils/handleImage";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import {
   QK_VISA_PAGES,
   QK_VISA_PAGE_FULL,
+  QK_VISA_PAGE_BY_SLUG,
 } from "../../../../config/queryKeyConfig";
 
 const RequiredDocSection = forwardRef(
@@ -40,6 +45,10 @@ const RequiredDocSection = forwardRef(
       onChange({
         ...data,
         sideImage: file,
+        // Preserve the original storage URL before overwriting with blob URL
+        prevSideImageUrl: data.sideImageUrl?.startsWith("http")
+          ? data.sideImageUrl
+          : data.prevSideImageUrl || null,
         sideImageUrl: URL.createObjectURL(file),
       });
       return false;
@@ -83,15 +92,39 @@ const RequiredDocSection = forwardRef(
     const saveDraft = async () => {
       setDraftSaving(true);
       try {
-        let uploadedImageUrl = data.sideImageUrl;
+        let uploadedImageUrl = data.sideImageUrl?.startsWith("http")
+          ? data.sideImageUrl
+          : null;
 
-        // Upload image only if it's a new file (not a URL)
-        if (data.sideImage && !data.sideImageUrl.startsWith("http")) {
-          uploadedImageUrl = await uploadImage(
-            data.sideImage,
-            "combined_page_images",
-            "visa_page",
-          );
+        if (data.sideImage) {
+          // prevSideImageUrl holds the original storage URL before blob URL overwrote sideImageUrl
+          let oldUrl = data.prevSideImageUrl || null;
+
+          // Fallback: fetch from DB if we have a pageId but prevSideImageUrl wasn't tracked
+          if (!oldUrl && pageId) {
+            const { data: docRow } = await supabase
+              .from("visa_page_section")
+              .select("image_url")
+              .eq("page_id", pageId)
+              .eq("section_type", "required_documentation")
+              .single();
+            oldUrl = docRow?.image_url || null;
+          }
+
+          if (oldUrl) {
+            uploadedImageUrl = await replaceImage(
+              data.sideImage,
+              "combined_page_images",
+              "visa_page",
+              oldUrl,
+            );
+          } else {
+            uploadedImageUrl = await uploadImage(
+              data.sideImage,
+              "combined_page_images",
+              "visa_page",
+            );
+          }
         }
 
         const { error } = await supabase.rpc(
@@ -125,7 +158,15 @@ const RequiredDocSection = forwardRef(
         queryClient.invalidateQueries({
           queryKey: [QK_VISA_PAGE_FULL, pageId],
         });
+        queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGE_BY_SLUG] });
         showToast("Required documentation saved successfully!", "success");
+        // Reset image state: store final storage URL, clear pending file and prevSideImageUrl
+        onChange({
+          ...data,
+          sideImageUrl: uploadedImageUrl,
+          sideImage: null,
+          prevSideImageUrl: null,
+        });
         return true;
       } catch (err) {
         showToast(err.message || "An unexpected error occurred.", "error");
@@ -249,7 +290,7 @@ const RequiredDocSection = forwardRef(
 
             <Button
               type="link"
-              icon={<PlusCircleOutlined />}
+              icon={<PlusOutlined />}
               onClick={addDocument}
               className={styles.addBtn}
             >

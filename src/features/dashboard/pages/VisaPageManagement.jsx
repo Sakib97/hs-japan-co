@@ -52,8 +52,8 @@ const VisaPageManagement = () => {
       <div className={styles.directorySection}>
         <h3 className={styles.directoryTitle}>Visa Page Directory</h3>
         <VisaPageDirectoryComp onEdit={(page) => setEditingPageId(page.id)} />
-      </div>
-    </div>
+      </div> 
+    </div> 
   );
 };
 

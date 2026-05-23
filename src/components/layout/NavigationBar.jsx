@@ -15,11 +15,28 @@ import { BellOutlined } from "@ant-design/icons";
 import { Badge } from "antd";
 import useNotification from "../../hooks/useNotification";
 import useNotificationRealTime from "../../hooks/useNotificationRealTIme";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "../../config/supabaseClient";
+import { QK_PUBLISHED_VISA_PAGES } from "../../config/queryKeyConfig";
 
 const NavigationBar = () => {
   const { user, userMeta } = useAuth();
   const { unreadCount } = useNotification(user?.email);
   // useNotificationRealTime(user?.email);
+
+  const { data: publishedVisaPages = [] } = useQuery({
+    queryKey: [QK_PUBLISHED_VISA_PAGES],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("visa_page")
+        .select("slug, visa_page_hero(title)")
+        .eq("publication_status", "published")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
   // Offcanvas state
   const [show, setShow] = useState(false);
@@ -214,6 +231,20 @@ const NavigationBar = () => {
                   >
                     Why Japan
                   </NavDropdown.Item>
+                  {publishedVisaPages.map((vp) => {
+                    const title = vp.visa_page_hero?.title;
+                    if (!title) return null;
+                    return (
+                      <NavDropdown.Item
+                        key={vp.slug}
+                        as={Link}
+                        to={`/visa/${vp.slug}`}
+                        onClick={closeDropdownCheck}
+                      >
+                        {title}
+                      </NavDropdown.Item>
+                    );
+                  })}
                 </NavDropdown>
 
                 <Nav.Link onClick={handleClose} as={Link} to="/gallery">
@@ -404,6 +435,26 @@ const NavigationBar = () => {
                           Japan
                         </Link>
                       </div>
+                      {publishedVisaPages.map((vp) => {
+                        const title = vp.visa_page_hero?.title;
+                        if (!title) return null;
+                        return (
+                          <div
+                            key={vp.slug}
+                            className={styles.mobileMenuItem}
+                            style={{ borderBottom: "none" }}
+                          >
+                            <Link
+                              to={`/visa/${vp.slug}`}
+                              className={styles.mobileNavLink}
+                              onClick={handleClose}
+                            >
+                              <i className="fa-solid fa-chevron-right"></i>{" "}
+                              {title}
+                            </Link>
+                          </div>
+                        );
+                      })}
                       {/* <div
                         className={styles.mobileMenuItem}
                         style={{ borderBottom: "none" }}
@@ -462,9 +513,7 @@ const NavigationBar = () => {
                           {unreadCount}
                         </span>
                       ) : unreadCount >= 100 ? (
-                        <span className={styles.mobileBadge}>
-                          99+
-                        </span>
+                        <span className={styles.mobileBadge}>99+</span>
                       ) : null}
                     </Link>
                   </div>

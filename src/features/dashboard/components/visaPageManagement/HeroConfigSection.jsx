@@ -8,12 +8,14 @@ import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { slugify } from "../../../../utils/slugAndString";
 import { VISA_PAGE_STATUS } from "../../../../config/statusAndRoleConfig";
 import { useAuth } from "../../../../context/AuthProvider";
-import { uploadImage } from "../../../../utils/handleImage";
+import { uploadImage, replaceImage } from "../../../../utils/handleImage";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { supabase } from "../../../../config/supabaseClient";
 import {
   QK_VISA_PAGES,
   QK_VISA_PAGE_FULL,
+  QK_VISA_PAGE_BY_SLUG,
+  QK_PUBLISHED_VISA_PAGES,
 } from "../../../../config/queryKeyConfig";
 
 const { TextArea } = Input;
@@ -39,6 +41,7 @@ const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
         const { error: validationError } = await supabase.rpc(
           "validate_visa_page",
           {
+            // p_page_id: data.pageId || null,
             p_slug: slug,
             p_title: data.title.trim(),
           },
@@ -59,14 +62,39 @@ const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
         }
       }
 
-      // STEP 2: Upload image only if a new file was selected
-      let uploadedUrl = data.imageUrl;
-      if (data.image && !data.imageUrl?.startsWith("http")) {
-        uploadedUrl = await uploadImage(
-          data.image,
-          "combined_page_images",
-          "visa_page",
-        );
+      // STEP 2: Upload image if a new file was selected
+      let uploadedUrl = data.imageUrl?.startsWith("http")
+        ? data.imageUrl
+        : null;
+
+      if (data.image) {
+        // prevImageUrl holds the original storage URL before the blob URL overwrote imageUrl
+        let oldUrl = data.prevImageUrl || null;
+
+        // Fallback: fetch from DB if we have a pageId but prevImageUrl wasn't tracked
+        if (!oldUrl && data.pageId) {
+          const { data: heroRow } = await supabase
+            .from("visa_page_hero")
+            .select("image_url")
+            .eq("page_id", data.pageId)
+            .single();
+          oldUrl = heroRow?.image_url || null;
+        }
+
+        if (oldUrl) {
+          uploadedUrl = await replaceImage(
+            data.image,
+            "combined_page_images",
+            "visa_page",
+            oldUrl,
+          );
+        } else {
+          uploadedUrl = await uploadImage(
+            data.image,
+            "combined_page_images",
+            "visa_page",
+          );
+        }
       }
 
       // STEP 3: Save to database
@@ -77,6 +105,7 @@ const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
       const { data: result, error } = await supabase.rpc(
         "save_visa_page_hero_draft",
         {
+          p_page_id: data.pageId || null,
           p_slug: slug,
           p_title: data.title.trim(),
           p_subtitle: data.subtitle.trim(),
@@ -89,14 +118,30 @@ const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
       );
 
       if (error) {
-        showToast(error.message || "Failed to save draft.", "error");
+        if (error.code === "23505") {
+          showToast(
+            "A visa page with this title already exists. Please choose a different title.",
+            "error",
+          );
+        } else {
+          showToast(error.message || "Failed to save draft.", "error");
+        }
         return;
       }
 
       queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGES] });
       queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGE_FULL, result] });
+      queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGE_BY_SLUG] });
+      queryClient.invalidateQueries({ queryKey: [QK_PUBLISHED_VISA_PAGES] });
       showToast("Hero section draft saved successfully!", "success");
-      onChange({ ...data, pageId: result });
+      // Reset image state: store the final storage URL, clear the pending file and prevImageUrl
+      onChange({
+        ...data,
+        pageId: result,
+        imageUrl: uploadedUrl,
+        image: null,
+        prevImageUrl: null,
+      });
     } catch (err) {
       showToast(err.message || "An unexpected error occurred.", "error");
     } finally {
@@ -197,6 +242,10 @@ const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
               onChange({
                 ...data,
                 image: file,
+                // Preserve the original storage URL before overwriting with blob URL
+                prevImageUrl: data.imageUrl?.startsWith("http")
+                  ? data.imageUrl
+                  : data.prevImageUrl || null,
                 imageUrl: URL.createObjectURL(file),
               });
               return false;

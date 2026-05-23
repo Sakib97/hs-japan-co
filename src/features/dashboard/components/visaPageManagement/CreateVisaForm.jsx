@@ -8,7 +8,11 @@ import RequiredDocSection from "./RequiredDocSection";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { supabase } from "../../../../config/supabaseClient";
 import { useQueryClient } from "@tanstack/react-query";
-import { QK_VISA_PAGES } from "../../../../config/queryKeyConfig";
+import {
+  QK_VISA_PAGES,
+  QK_VISA_PAGE_BY_SLUG,
+  QK_PUBLISHED_VISA_PAGES,
+} from "../../../../config/queryKeyConfig";
 
 const getInitialState = () => ({
   hero: { title: "", subtitle: "", image: null, imageUrl: null },
@@ -98,6 +102,8 @@ const CreateVisaForm = ({ onCancel, onSuccess }) => {
       }
 
       queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGES] });
+      queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGE_BY_SLUG] });
+      queryClient.invalidateQueries({ queryKey: [QK_PUBLISHED_VISA_PAGES] });
       showToast("Visa page published successfully!", "success");
       if (onSuccess) onSuccess();
     } catch (err) {

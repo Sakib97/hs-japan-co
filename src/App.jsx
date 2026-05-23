@@ -50,6 +50,7 @@ import AnnouncementsPage from "./features/dashboard/pages/AnnouncementsPage.jsx"
 import WhatsappFloatBtn from "./components/common/WhatsappFloatBtn.jsx";
 import Footer from "./components/layout/Footer.jsx";
 import VisaPageManagement from "./features/dashboard/pages/VisaPageManagement.jsx";
+import VisaPage from "./features/visaPage/pages/VisaPage.jsx";
 
 
 const SPLASH_KEY = "hs_japan_splash_shown";
@@ -88,6 +89,7 @@ function App() {
           path="/payment/verify/:receiptId"
           element={<PaymentVerifyPage />}
         />
+          <Route path="/visa/:visaSlug" element={<VisaPage />} />
         <Route
           path="/auth/signin"
           element={

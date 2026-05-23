@@ -91,3 +91,7 @@ export const QK_HOME_ANNOUNCEMENTS = "home-announcements";
 export const QK_VISA_PAGES = "visa_pages";
 // Used in: EditVisaForm (fetch full page data for editing)
 export const QK_VISA_PAGE_FULL = "visa_page_full";
+// Used in: VisaPage (public display by slug)
+export const QK_VISA_PAGE_BY_SLUG = "visa_page_by_slug";
+// Used in: NavigationBar (dynamic Japan Visa dropdown)
+export const QK_PUBLISHED_VISA_PAGES = "published_visa_pages";

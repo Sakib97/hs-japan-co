@@ -10,6 +10,7 @@ import { supabase } from "../../../../config/supabaseClient";
 import {
   QK_VISA_PAGES,
   QK_VISA_PAGE_FULL,
+  QK_VISA_PAGE_BY_SLUG,
 } from "../../../../config/queryKeyConfig";
 
 const { TextArea } = Input;
@@ -82,6 +83,7 @@ const EligibilitySection = forwardRef(
         queryClient.invalidateQueries({
           queryKey: [QK_VISA_PAGE_FULL, pageId],
         });
+        queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGE_BY_SLUG] });
         showToast("Eligibility section saved successfully!", "success");
         return true;
       } catch (err) {

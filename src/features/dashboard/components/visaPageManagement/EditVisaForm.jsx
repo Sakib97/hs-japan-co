@@ -5,6 +5,8 @@ import { supabase } from "../../../../config/supabaseClient";
 import {
   QK_VISA_PAGES,
   QK_VISA_PAGE_FULL,
+  QK_VISA_PAGE_BY_SLUG,
+  QK_PUBLISHED_VISA_PAGES,
 } from "../../../../config/queryKeyConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
 import styles from "./CreateVisaForm.module.css";
@@ -126,6 +128,8 @@ const EditVisaFormInner = ({ initialData, onCancel, onSuccess }) => {
       queryClient.invalidateQueries({
         queryKey: [QK_VISA_PAGE_FULL, formData.hero.pageId],
       });
+      queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGE_BY_SLUG] });
+      queryClient.invalidateQueries({ queryKey: [QK_PUBLISHED_VISA_PAGES] });
       showToast("Visa page updated and published!", "success");
       if (onSuccess) onSuccess();
     } catch (err) {
@@ -215,7 +219,7 @@ const EditVisaForm = ({ pageId, onCancel, onSuccess }) => {
       if (error) throw error;
       return data;
     },
-    staleTime: 20*60*1000, // 20 mins - avoid refetching while editing
+    staleTime: 20 * 60 * 1000, // 20 mins - avoid refetching while editing
   });
 
   if (isLoading) {
