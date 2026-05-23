@@ -111,8 +111,8 @@
 }
 
 .coverThumb {
-  width: 62px;
-  height: 62px;
+  width: 200px;
+  height: 100px;
   object-fit: cover;
   border-radius: 8px;
   flex-shrink: 0;
@@ -228,6 +228,18 @@
 
   .eventsCol {
     padding: 3rem 6vw;
+  }
+  .eventInfo {
+    gap: 3px;
+  }
+  .eventTitle {
+    font-size: 0.9rem;
+  white-space: wrap;
+    
+  }
+  .coverThumb {
+    width: 90px;
+    height: 55px;
   }
 
   .testimonialsCol {
