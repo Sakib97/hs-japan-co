@@ -1,0 +1,158 @@
+.section {
+  padding: 4.5rem 8vw;
+  background: #f8fafc;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #c0392b;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  white-space: nowrap;
+  align-self: center;
+  transition: gap 0.2s;
+}
+
+.viewAll:hover {
+  gap: 10px;
+  color: #a93226;
+}
+
+.cards {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  flex: 1 1 200px;
+  max-width: 260px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+}
+
+.imageWrap {
+  position: relative;
+  height: 160px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.coverImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imageFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.levelBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #c0392b;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cardBody {
+  padding: 0.9rem 1rem;
+  flex: 1;
+}
+
+.courseName {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+}
+
+.instructor {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0 0 0.3rem;
+}
+
+.duration {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cardFooter {
+  padding: 0.7rem 1rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  gap: 8px;
+}
+
+.detailsBtn {
+  border-color: #c0392b !important;
+  color: #c0392b !important;
+}
+
+@media (max-width: 900px) {
+  .card {
+    flex: 1 1 calc(50% - 0.625rem);
+    max-width: unset;
+  }
+}
+
+@media (max-width: 500px) {
+  .card {
+    flex: 1 1 100%;
+  }
+}

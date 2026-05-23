@@ -1,0 +1,47 @@
+.wrapper {
+  width: 90%;
+  overflow: hidden;
+  margin: 0 auto;
+
+  /* collapse whitespace gap below carousel */
+  /* line-height: 0;  */
+
+  margin-bottom: 5px;
+}
+
+.carousel {
+  width: 100%;
+}
+
+.slide {
+  width: 100%;
+  height: 500px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Ant Design dot overrides */
+.wrapper :global(.slick-dots li button) {
+  background: rgba(255, 255, 255, 0.55) !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  opacity: 1 !important;
+}
+
+.wrapper :global(.slick-dots li.slick-active button) {
+  background: #c0392b !important;
+  width: 10px !important;
+}
+
+.wrapper :global(.slick-dots) {
+  bottom: 14px !important;
+}
+
+@media (max-width: 768px) {
+  .slide {
+    height: 240px;
+  }
+}

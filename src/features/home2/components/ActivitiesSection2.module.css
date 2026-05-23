@@ -1,0 +1,142 @@
+.section {
+  padding: 4.5rem 8vw;
+  background: #f8fafc;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.6rem;
+}
+
+.titleBar {
+  width: 52px;
+  height: 3px;
+  background: #c0392b;
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* ── List ── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.listItem {
+  display: flex !important;
+  align-items: center;
+  gap: 1.1rem;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 0.85rem 1.1rem !important;
+  border: 1px solid #e2e8f0;
+  transition: box-shadow 0.2s ease;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.listItem:hover {
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.07);
+}
+
+/* ── Thumbnail ── */
+.thumbWrap {
+  width: 148px;
+  height: 90px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Text content ── */
+.itemContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.itemTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.itemDesc {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.itemDate {
+  font-size: 0.78rem;
+  color: #6366f1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+/* ── View all ── */
+.viewAllWrap {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+.viewAllLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #c0392b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: gap 0.2s;
+}
+
+.viewAllLink:hover {
+  gap: 10px;
+  color: #a93226;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .section {
+    padding: 3rem 5vw;
+  }
+
+  .listItem {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .thumbWrap {
+    width: 100%;
+    height: 180px;
+  }
+}

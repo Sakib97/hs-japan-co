@@ -1,0 +1,142 @@
+.section {
+  padding: 2.5rem 8vw 3rem;
+  background: #f8fafc;
+}
+
+/* ── Header row ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c0392b;
+  background: rgba(192, 57, 43, 0.08);
+  border: 1px solid rgba(192, 57, 43, 0.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+.badge::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c0392b;
+  flex-shrink: 0;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 0.75rem;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+  padding: 0;
+}
+
+.arrow:hover {
+  border-color: #c0392b;
+  color: #c0392b;
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+}
+
+/* ── Preload (hidden) ── */
+.preload {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── Carousel container ── */
+.carouselWrap {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.carousel {
+  width: 100%;
+}
+
+.slideLink {
+  display: block;
+  line-height: 0;
+}
+
+.bannerImg {
+  width: 100%;
+  max-height: 350px;
+  /* object-fit: cover; */
+  display: block;
+  user-select: none;
+  /* border-radius: 15px; */
+}
+
+/* ── Dot overrides ── */
+.carouselWrap :global(.slick-dots li button) {
+  background: rgba(255, 255, 255, 0.6) !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  opacity: 1 !important;
+}
+
+.carouselWrap :global(.slick-dots li.slick-active button) {
+  background: #c0392b !important;
+  width: 8px !important;
+}
+
+.carouselWrap :global(.slick-dots) {
+  bottom: 12px !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .section {
+    padding: 2rem 5vw;
+  }
+
+  .bannerImg {
+    max-height: 200px;
+  }
+}

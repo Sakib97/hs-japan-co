@@ -50,6 +50,7 @@ const VisaPage = () => {
   return (
     <div>
       {data.hero && <VisaPageHeroComp hero={data.hero} />}
+        {/* <VisaPageLoading /> */}
 
       {data.eligibility_section && data.eligibility_items?.length > 0 && (
         <VisaPageEligibilityComp

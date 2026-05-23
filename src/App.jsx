@@ -74,8 +74,8 @@ function App() {
       <NavigationBar />
       <Toaster />
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home2" element={<HomePage2 />} />
+        <Route path="/" element={<HomePage2 />} />
+        {/* <Route path="/home2" element={<HomePage2 />} /> */}
         <Route path="/about" element={<AboutPage />} />
         <Route path="/admission" element={<AdmissionPage />} />
         <Route path="/online-admission" element={<OnlineAdmissionPage />} />

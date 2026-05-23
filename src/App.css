@@ -41,3 +41,10 @@
 .read-the-docs {
   color: #888;
 }
+
+/* for mobile screens */
+@media (max-width: 640px) {
+  #root {
+    margin-top: 60px;
+  }
+}

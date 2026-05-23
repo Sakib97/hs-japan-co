@@ -56,11 +56,11 @@ const VisaPageLoading = () => {
         >
           <Skeleton.Input
             active
-            style={{ width: 380, height: 42, marginBottom: 18 }}
+            style={{ width: 320, height: 42, marginBottom: 18 }}
           />
 
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <Skeleton.Input active style={{ width: 500, height: 20 }} />
+            <Skeleton.Input active style={{ width: 350, height: 20 }} />
           </div>
         </div>
 

@@ -220,19 +220,19 @@ const mainMenuItems = [
     ],
   },
 
-  {
-    key: "/dashboard/my-courses",
-    icon: <ReadOutlined />,
-    label: "My Courses",
-    // studentOnly: true,
-    visibleForRoles: [
-      {
-        role: "student",
-        isActive: true,
-        studentStatus: ["enrolled"],
-      },
-    ],
-  },
+  // {
+  //   key: "/dashboard/my-courses",
+  //   icon: <ReadOutlined />,
+  //   label: "My Courses",
+  //   // studentOnly: true,
+  //   visibleForRoles: [
+  //     {
+  //       role: "student",
+  //       isActive: true,
+  //       studentStatus: ["enrolled"],
+  //     },
+  //   ],
+  // },
 
   {
     key: "/dashboard/my-finances",

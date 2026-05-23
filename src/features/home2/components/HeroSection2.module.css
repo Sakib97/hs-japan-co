@@ -1,0 +1,74 @@
+.hero {
+  position: relative;
+  min-height: 88vh;
+  background-image: url("https://images.unsplash.com/photo-1480796927426-f609979314bd?w=1600&q=80");
+  background-size: cover;
+  background-position: center 30%;
+  display: flex;
+  align-items: center;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(8, 8, 25, 0.85) 45%,
+    rgba(8, 8, 25, 0.3) 100%
+  );
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  padding: 0 8vw;
+  max-width: 640px;
+}
+
+.heading {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.subheading {
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.75;
+  margin-bottom: 2rem;
+  max-width: 500px;
+}
+
+.btnGroup {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  background: #c0392b !important;
+  border-color: #c0392b !important;
+  font-weight: 600;
+  border-radius: 6px !important;
+}
+
+.btnSecondary {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.65) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  border-radius: 6px !important;
+}
+
+.btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: #ffffff !important;
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 0 6vw;
+  }
+}
