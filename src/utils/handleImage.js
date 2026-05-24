@@ -23,7 +23,8 @@ export const uploadImage = async (file, bucket, folder) => {
 export const replaceImage = async (file, bucket, folder, oldUrl) => {
   // Delete old image from storage if it exists
   if (oldUrl) {
-    const path = oldUrl.split(`/storage/v1/object/public/${bucket}/`)[1];
+    const encoded = oldUrl.split(`/storage/v1/object/public/${bucket}/`)[1];
+    const path = encoded ? decodeURIComponent(encoded) : null;
     if (path) {
       await supabase.storage.from(bucket).remove([path]);
     }
@@ -37,7 +38,8 @@ export const replaceImage = async (file, bucket, folder, oldUrl) => {
 export const deleteImage = async (url, bucket, dbOptions = null) => {
   // Extract the file path from the public URL
   // URL format: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
-  const path = url.split(`/storage/v1/object/public/${bucket}/`)[1];
+  const encoded = url.split(`/storage/v1/object/public/${bucket}/`)[1];
+  const path = encoded ? decodeURIComponent(encoded) : null;
 
   if (!path) throw new Error("Could not extract file path from URL");
 

@@ -8,7 +8,7 @@ import styles from "../../styles/AssetsManagement.module.css";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { supabase } from "../../../../config/supabaseClient";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
-import { Modal } from "antd";
+import { Modal, Spin } from "antd";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { QK_HOMEPAGE_CAROUSEL } from "../../../../config/queryKeyConfig";
@@ -18,13 +18,15 @@ const MAX_FILE_SIZE = IMAGE_SIZES.HOMEPAGE_CAROUSEL.maxBytes;
 const fetchSlides = async () => {
   const { data, error } = await supabase
     .from("home_page")
-    .select("id, image_link")
-    .eq("image_section", "homepage_carousel");
+    .select("id, image_link, image_order")
+    .eq("image_section", "homepage_carousel")
+    .order("image_order", { ascending: true, nullsFirst: false })
+    .order("id", { ascending: true });
   if (error) throw new Error(error.message);
   return data.map((row) => ({
     id: row.id,
     url: row.image_link,
-    name: row.image_link,
+    order: row.image_order,
   }));
 };
 
@@ -33,6 +35,9 @@ const HomepagePanel = () => {
   const carouselInput = useRef();
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [reordering, setReordering] = useState(false);
+  const [dragOverId, setDragOverId] = useState(null);
+  const dragId = useRef(null);
 
   const {
     data: slides = [],
@@ -73,6 +78,7 @@ const HomepagePanel = () => {
         image_link: publicUrl,
         image_section: "homepage_carousel",
         image_size: file.size,
+        image_order: slides.length,
       });
 
       if (dbError) throw new Error(dbError.message);
@@ -91,23 +97,66 @@ const HomepagePanel = () => {
     try {
       await deleteImage(slide.url, "home_page_images", {
         table: "home_page",
-        // column: "id",
         column: "image_link",
-        // value: slide.id,
         value: slide.url,
       });
       queryClient.invalidateQueries({ queryKey: [QK_HOMEPAGE_CAROUSEL] });
       showToast("Slide deleted successfully!", "success");
-    } catch {
+    } catch (err) {
+      console.error("Delete error:", err);
       showToast("Failed to delete slide. Please try again.", "error");
     } finally {
       setDeletingId(null);
     }
   };
 
-  const confirmRemoveSlide = (slide) => {
-    // console.log("slide::", slide);
+  const handleDragStart = (e, id) => {
+    dragId.current = id;
+    e.dataTransfer.effectAllowed = "move";
+  };
 
+  const handleDragOver = (e, id) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverId(id);
+  };
+
+  const handleDragLeave = () => setDragOverId(null);
+
+  const handleDrop = async (e, targetId) => {
+    e.preventDefault();
+    setDragOverId(null);
+    if (!dragId.current || dragId.current === targetId) return;
+
+    const fromIdx = slides.findIndex((s) => s.id === dragId.current);
+    const toIdx = slides.findIndex((s) => s.id === targetId);
+    if (fromIdx === -1 || toIdx === -1) return;
+
+    const reordered = [...slides];
+    const [moved] = reordered.splice(fromIdx, 1);
+    reordered.splice(toIdx, 0, moved);
+
+    setReordering(true);
+    try {
+      await Promise.all(
+        reordered.map((s, idx) =>
+          supabase
+            .from("home_page")
+            .update({ image_order: idx })
+            .eq("id", s.id),
+        ),
+      );
+      queryClient.invalidateQueries({ queryKey: [QK_HOMEPAGE_CAROUSEL] });
+    } catch (err) {
+      console.error("Reorder error:", err);
+      showToast("Failed to update order. Please try again.", "error");
+    } finally {
+      setReordering(false);
+      dragId.current = null;
+    }
+  };
+
+  const confirmRemoveSlide = (slide) => {
     Modal.confirm({
       title: "Delete Slide",
       content:
@@ -166,35 +215,52 @@ const HomepagePanel = () => {
             onChange={addSlide}
           />
         </div>
-        <div className={styles.carouselGrid}>
-          {fetching ? (
-            <p className={styles.emptyHint}>
-              <LoadingOutlined spin /> Loading slides...
-            </p>
-          ) : isError ? (
-            <p className={styles.emptyHint}>Failed to load slides.</p>
-          ) : slides.length === 0 ? (
-            <p className={styles.emptyHint}>
-              No slides yet — click &ldquo;Add Slide&rdquo; to upload.
-            </p>
-          ) : null}
-          {slides.map((s) => (
-            <div key={s.id} className={styles.carouselSlide}>
-              <img src={s.url} alt={s.name} className={styles.carouselImg} />
-              <button
-                className={styles.carouselRemove}
-                onClick={() => confirmRemoveSlide(s)}
-                disabled={deletingId === s.id}
+        <Spin spinning={reordering} tip="Updating order…">
+          <div className={styles.carouselGrid}>
+            {fetching ? (
+              <p className={styles.emptyHint}>
+                <LoadingOutlined spin /> Loading slides...
+              </p>
+            ) : isError ? (
+              <p className={styles.emptyHint}>Failed to load slides.</p>
+            ) : slides.length === 0 ? (
+              <p className={styles.emptyHint}>
+                No slides yet — click &ldquo;Add Slide&rdquo; to upload.
+              </p>
+            ) : null}
+            {slides.map((s, idx) => (
+              <div
+                key={s.id}
+                className={`${styles.carouselSlide} ${
+                  dragOverId === s.id ? styles.carouselDragOver : ""
+                }`}
+                draggable={slides.length > 1}
+                onDragStart={(e) => handleDragStart(e, s.id)}
+                onDragOver={(e) => handleDragOver(e, s.id)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, s.id)}
               >
-                {deletingId === s.id ? (
-                  <LoadingOutlined spin />
-                ) : (
-                  <DeleteOutlined />
-                )}
-              </button>
-            </div>
-          ))}
-        </div>
+                <img
+                  src={s.url}
+                  alt={`slide-${idx + 1}`}
+                  className={styles.carouselImg}
+                />
+                <button
+                  className={styles.carouselRemove}
+                  onClick={() => confirmRemoveSlide(s)}
+                  disabled={deletingId === s.id}
+                >
+                  {deletingId === s.id ? (
+                    <LoadingOutlined spin />
+                  ) : (
+                    <DeleteOutlined />
+                  )}
+                </button>
+                <span className={styles.carouselOrder}>{idx + 1}</span>
+              </div>
+            ))}
+          </div>
+        </Spin>
       </section>
 
       {/* Vision & Mission Media */}

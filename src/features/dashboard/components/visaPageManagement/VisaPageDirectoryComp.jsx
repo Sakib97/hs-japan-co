@@ -169,7 +169,7 @@ const VisaPageDirectoryComp = ({ onEdit }) => {
               <p className={styles.subtitle}>{subtitle}</p>
 
               <div className={styles.meta}>
-                <span className={styles.metaSlug}>/{page.slug}</span>
+                <span className={styles.metaSlug}>/visa/{page.slug}</span>
                 <span className={styles.metaDate}>
                   {getFormattedDate(page.created_at)}
                 </span>

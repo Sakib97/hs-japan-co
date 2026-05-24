@@ -172,7 +172,7 @@ const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
             </label>
             <span style={{ fontSize: "0.78rem", color: "#9ca3af" }}>
               ** This title will be used for URL{" "}
-              {data.title && <> : /{slugify(data.title)}</>} **
+              {data.title && <> : /visa/{slugify(data.title)}</>} **
             </span>
             <Input
               placeholder="e.g. Student Visa"

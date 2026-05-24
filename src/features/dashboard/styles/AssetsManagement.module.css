@@ -251,34 +251,64 @@
 .carouselSlide {
   position: relative;
   width: 180px;
-  height: 120px;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid #e5e7eb;
+  cursor: grab;
+  user-select: none;
+}
+
+.carouselSlide:active {
+  cursor: grabbing;
+}
+
+.carouselDragOver {
+  border-color: #b91c1c;
+  box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.25);
 }
 
 .carouselImg {
-  width: 100%;
-  height: 100%;
+  width: 180px;
+  height: 120px;
   object-fit: cover;
+  display: block;
+  border-radius: 10px 10px 0 0;
+}
+
+.carouselOrder {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0 0 10px 10px;
+  padding: 4px 0;
+  letter-spacing: 0.04em;
 }
 
 .carouselRemove {
   position: absolute;
   top: 5px;
   right: 5px;
-  width: 5px;
-  height: 30px;
-  background: rgba(0, 0, 0, 0.87);
+  width: 26px;
+  height: 26px;
+  background: rgba(0, 0, 0, 0.72);
   color: #fff;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
+  transition: background 0.15s;
+}
+
+.carouselRemove:hover {
+  background: #b91c1c;
 }
 
 /* ─── Media grid (Vision/Mission) ─────────────────────────────────────────── */
