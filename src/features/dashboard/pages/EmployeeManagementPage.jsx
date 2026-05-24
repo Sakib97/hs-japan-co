@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input, Button } from "antd";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import EmployeeStatsComp from "../components/employeeManagement/EmployeeStatsComp";
+import AdminDirectoryComp from "../components/employeeManagement/AdminDirectoryComp";
 import EmployeeDirectoryComp from "../components/employeeManagement/EmployeeDirectoryComp";
 import CreateEmployeeModal from "../components/employeeManagement/CreateEmployeeModal";
 import DeptDesignationComp from "../components/employeeManagement/DeptDesignationComp";
@@ -38,6 +39,9 @@ const EmployeeManagementPage = () => {
 
       {/* Stats Cards */}
       <EmployeeStatsComp />
+
+      {/* Admin Directory Table */}
+      <AdminDirectoryComp />
 
       {/* Employee Directory Table */}
       <EmployeeDirectoryComp />

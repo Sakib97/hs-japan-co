@@ -31,6 +31,8 @@ export const QK_VERIFY_RECEIPT = "verify-receipt";
 // ─── Employee / HR ─────────────────────────────────────────────────────────────
 // Used in: EmployeeDirectoryComp, CreateEmployeeModal
 export const QK_EMPLOYEES = "employees";
+// Used in: AdminDirectoryComp, CreateEmployeeModal
+export const QK_ADMINS = "admins";
 export const QK_DEPARTMENTS = "departments";
 export const QK_DESIGNATIONS = "designations";
 export const QK_DEPT_AND_DESIG = "dept-and-desig";

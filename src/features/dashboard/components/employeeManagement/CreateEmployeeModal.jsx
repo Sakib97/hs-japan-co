@@ -17,6 +17,7 @@ import {
   QK_DEPARTMENTS,
   QK_DESIGNATIONS,
   QK_EMPLOYEES,
+  QK_ADMINS,
 } from "../../../../config/queryKeyConfig";
 
 const CreateEmployeeModal = ({ open, onClose }) => {
@@ -122,6 +123,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
         console.error(emailError);
       }
 
+      queryClient.invalidateQueries({ queryKey: [QK_ADMINS] });
       handleClose();
     } catch (err) {
       showToast("Unexpected error: " + err.message, "error");
