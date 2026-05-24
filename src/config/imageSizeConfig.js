@@ -71,4 +71,10 @@ export const IMAGE_SIZES = {
     maxBytes: 300 * 1024, // 300 KB
     label: "300 KB",
   },
+
+  // Success story student avatar
+  SUCCESS_STORY_AVATAR: {
+    maxBytes: 150 * 1024, // 150 KB
+    label: "150 KB",
+  },
 };

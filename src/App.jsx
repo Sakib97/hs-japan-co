@@ -52,7 +52,7 @@ import Footer from "./components/layout/Footer.jsx";
 import VisaPageManagement from "./features/dashboard/pages/VisaPageManagement.jsx";
 import VisaPage from "./features/visaPage/pages/VisaPage.jsx";
 import HomePage2 from "./features/home2/pages/HomePage2.jsx";
-
+import HomePageManagement from "./features/dashboard/pages/HomePageManagement.jsx";
 
 const SPLASH_KEY = "hs_japan_splash_shown";
 
@@ -91,7 +91,7 @@ function App() {
           path="/payment/verify/:receiptId"
           element={<PaymentVerifyPage />}
         />
-          <Route path="/visa/:visaSlug" element={<VisaPage />} />
+        <Route path="/visa/:visaSlug" element={<VisaPage />} />
         <Route
           path="/auth/signin"
           element={
@@ -192,9 +192,9 @@ function App() {
           <Route
             path="announcements"
             element={
-              <RoleBasedRoute 
-                  allowedRoles={["admin", "employee"]}
-                  allowedEmployeeStatuses={["full_time", "part_time"]}
+              <RoleBasedRoute
+                allowedRoles={["admin", "employee"]}
+                allowedEmployeeStatuses={["full_time", "part_time"]}
               >
                 <AnnouncementsPage />
               </RoleBasedRoute>
@@ -212,6 +212,19 @@ function App() {
               </RoleBasedRoute>
             }
           />
+
+          <Route
+            path="home-page-management"
+            element={
+              <RoleBasedRoute
+                allowedRoles={["admin", "employee"]}
+                allowedEmployeeStatuses={["full_time"]}
+              >
+                <HomePageManagement />
+              </RoleBasedRoute>
+            }
+          />
+
           <Route
             path="visa-page-management"
             element={
@@ -260,7 +273,7 @@ function App() {
       </Routes>
       <ScrollToTop />
       {/* <FooterComp /> */}
-      <Footer/>
+      <Footer />
     </BrowserRouter>
   );
 }

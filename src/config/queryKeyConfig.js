@@ -95,3 +95,7 @@ export const QK_VISA_PAGE_FULL = "visa_page_full";
 export const QK_VISA_PAGE_BY_SLUG = "visa_page_by_slug";
 // Used in: NavigationBar (dynamic Japan Visa dropdown)
 export const QK_PUBLISHED_VISA_PAGES = "published_visa_pages";
+
+// ─── Success Stories ──────────────────────────────────────────────────────────
+// Used in: SuccessStoriesComp (admin dashboard), EventsTestimonialsSection (public home)
+export const QK_SUCCESS_STORIES = "success_stories";

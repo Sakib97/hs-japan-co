@@ -138,7 +138,13 @@
 /* ── Right: Testimonials ── */
 .testimonialsCol {
   flex: 1 1 45%;
-  background: #1a1a3e;
+  /* background: #1a1a3e; */
+   background: linear-gradient(
+    135deg,
+    #0f172a 0%,
+    #1e1b4b 45%,
+    #4c0519 100%
+  );
   padding: 4rem 5vw;
   display: flex;
   flex-direction: column;
@@ -169,8 +175,8 @@
 }
 
 .avatar {
-  width: 46px;
-  height: 46px;
+  width: 56px;
+  height: 60px;
   border-radius: 50%;
   background: #c0392b;
   display: flex;
@@ -179,6 +185,14 @@
   font-weight: 700;
   font-size: 0.9rem;
   color: #fff;
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  object-fit: cover;
   flex-shrink: 0;
 }
 
@@ -201,47 +215,67 @@
 }
 
 .navBtn {
-  width: 30px;
+  position: relative;
+  width: 45px;
   height: 45px;
-  border-radius: 20%;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  /* position: relative; */
-  font-size: 1.4rem;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
-  line-height: 1;
 }
 
 .navBtn:hover {
   background: rgba(255, 255, 255, 0.24);
 }
 
+.navBtn span {
+  display: block;
+  position: absolute;
+  transform: scale(2.8);
+  top: 6px;
+}
+
 @media (max-width: 768px) {
   .layout {
     flex-direction: column;
+    min-height: auto;
+    overflow: hidden;
   }
 
   .eventsCol {
     padding: 3rem 6vw;
+    overflow: hidden;
   }
+
+  .eventCard {
+    min-height: auto;
+    overflow: hidden;
+  }
+
   .eventInfo {
     gap: 3px;
+    min-width: 0;
   }
+
   .eventTitle {
     font-size: 0.9rem;
     white-space: wrap;
   }
+
   .coverThumb {
     width: 90px;
     height: 55px;
+    flex-shrink: 0;
   }
 
   .testimonialsCol {
     padding: 3rem 6vw;
+    overflow: hidden;
   }
 }

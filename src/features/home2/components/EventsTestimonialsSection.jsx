@@ -3,7 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { supabase } from "../../../config/supabaseClient";
+import { QK_SUCCESS_STORIES } from "../../../config/queryKeyConfig";
 import styles from "./EventsTestimonialsSection.module.css";
+import EventsAndStoriesLoading from "../../../components/loadingSkeletons/EventsAndStoriesLoading";
 
 const MONTHS = [
   "Jan",
@@ -33,34 +35,24 @@ const parseDate = (dateStr) => {
 
 const ACCENT_COLORS = ["#c0392b", "#e67e22", "#2980b9", "#16a085"];
 
-const TESTIMONIALS = [
-  {
-    quote:
-      '"HS Japan Academy changed my life. From zero Japanese knowledge to working as a software engineer in Osaka, their guidance was impeccable at every step."',
-    name: "Rakib Chowdhury",
-    role: "Software Engineer, Osaka",
-    initials: "RC",
-  },
-  {
-    quote:
-      '"The visa consultation service was incredibly thorough. They handled all my paperwork and I got my student visa approved within weeks."',
-    name: "Nusrat Jahan",
-    role: "Graduate Student, Tokyo",
-    initials: "NJ",
-  },
-  {
-    quote:
-      '"Excellent JLPT preparation classes. The instructors are native-level speakers who make learning fun and effective."',
-    name: "Mehedi Hassan",
-    role: "JLPT N2 Certified",
-    initials: "MH",
-  },
-];
-
 const EventsTestimonialsSection = () => {
   const [activeIdx, setActiveIdx] = useState(0);
 
-  const { data: events = [] } = useQuery({
+  const { data: stories = [], isLoading: storiesLoading } = useQuery({
+    queryKey: [QK_SUCCESS_STORIES],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("success_stories")
+        .select(
+          "id, student_name, student_profession, student_image_url, content",
+        )
+        .order("created_at", { ascending: false });
+      if (error) throw new Error(error.message);
+      return data ?? [];
+    },
+  });
+
+  const { data: events = [], isLoading: eventsLoading } = useQuery({
     queryKey: ["home2_events"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -75,102 +67,130 @@ const EventsTestimonialsSection = () => {
     },
   });
 
+  const safeIdx = stories.length > 0 ? activeIdx % stories.length : 0;
   const prev = () =>
-    setActiveIdx((i) => (i - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-  const next = () => setActiveIdx((i) => (i + 1) % TESTIMONIALS.length);
+    setActiveIdx((i) => (i - 1 + stories.length) % Math.max(stories.length, 1));
+  const next = () => setActiveIdx((i) => (i + 1) % Math.max(stories.length, 1));
 
-  const t = TESTIMONIALS[activeIdx];
+  const t = stories[safeIdx] ?? null;
 
   return (
     <section className={styles.section}>
-      <div className={styles.layout}>
-        {/* Left: Events */}
-        <div className={styles.eventsCol}>
-          <h2 className={styles.eventsTitle}>Upcoming Events</h2>
+      {storiesLoading || eventsLoading ? (
+        <EventsAndStoriesLoading />
+      ) : (
+        <div className={styles.layout}>
+          {/* Left: Events */}
+          <div className={styles.eventsCol}>
+            <h2 className={styles.eventsTitle}>Upcoming Events</h2>
 
-          <div className={styles.eventsList}>
-            {events.length === 0 && (
-              <p className={styles.noEvents}>No upcoming events.</p>
-            )}
-            {events.map((event, i) => {
-              const { day, month, year } = parseDate(event.event_date);
-              return (
-                <div key={event.id} className={styles.eventCard}>
-                  <div
-                    className={styles.dateBadge}
-                    style={{
-                      background: ACCENT_COLORS[i % ACCENT_COLORS.length],
-                    }}
-                  >
-                    <span className={styles.dateDay}>{day}</span>
-                    <span className={styles.dateMonthYear}>
-                      {month}
-                      {year ? `, ${year}` : ""}
-                    </span>
-                  </div>
-                  <div className={styles.eventInfo}>
-                    <h4 className={styles.eventTitle}>
-                      {event.event_title ?? "—"}
-                    </h4>
-                    <div className={styles.eventMeta}>
-                      {event.event_time && (
-                        <span className={styles.metaItem}>
-                          <i className="fa-regular fa-clock" />
-                          {event.event_time}
-                        </span>
-                      )}
-                      {event.event_place && (
-                        <span className={styles.metaItem}>
-                          <i className="fa-solid fa-building-columns" />
-                          {event.event_place}
-                        </span>
-                      )}
-                      {event.event_speaker && (
-                        <span className={styles.metaItem}>
-                          <i className="fa-regular fa-user" />
-                          {event.event_speaker}
-                        </span>
-                      )}
+            <div className={styles.eventsList}>
+              {events.length === 0 && (
+                <p className={styles.noEvents}>No upcoming events.</p>
+              )}
+              {events.map((event, i) => {
+                const { day, month, year } = parseDate(event.event_date);
+                return (
+                  <div key={event.id} className={styles.eventCard}>
+                    <div
+                      className={styles.dateBadge}
+                      style={{
+                        background: ACCENT_COLORS[i % ACCENT_COLORS.length],
+                      }}
+                    >
+                      <span className={styles.dateDay}>{day}</span>
+                      <span className={styles.dateMonthYear}>
+                        {month}
+                        {year ? `, ${year}` : ""}
+                      </span>
                     </div>
+                    <div className={styles.eventInfo}>
+                      <h4 className={styles.eventTitle}>
+                        {event.event_title ?? "—"}
+                      </h4>
+                      <div className={styles.eventMeta}>
+                        {event.event_time && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-regular fa-clock" />
+                            {event.event_time}
+                          </span>
+                        )}
+                        {event.event_place && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-solid fa-building-columns" />
+                            {event.event_place}
+                          </span>
+                        )}
+                        {event.event_speaker && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-regular fa-user" />
+                            {event.event_speaker}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {event.cover_url && (
+                      <img
+                        src={event.cover_url}
+                        alt={event.event_title ?? ""}
+                        className={styles.coverThumb}
+                      />
+                    )}
                   </div>
-                  {event.cover_url && (
-                    <img
-                      src={event.cover_url}
-                      alt={event.event_title ?? ""}
-                      className={styles.coverThumb}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <Link to="/events" className={styles.viewAllLink}>
-            View All Events <FaArrowRightLong />
-          </Link>
-        </div>
-
-        {/* Right: Testimonials */}
-        <div className={styles.testimonialsCol}>
-          <h2 className={styles.testimonialsTitle}>Success Stories</h2>
-          <p className={styles.quote}>{t.quote}</p>
-          <div className={styles.person}>
-            <div className={styles.avatar}>{t.initials}</div>
-            <div>
-              <p className={styles.personName}>{t.name}</p>
-              <p className={styles.personRole}>{t.role}</p>
+                );
+              })}
             </div>
+
+            <Link to="/events" className={styles.viewAllLink}>
+              View All Events <FaArrowRightLong />
+            </Link>
           </div>
-          <div className={styles.navBtns}>
-            <button className={styles.navBtn} onClick={prev}>
-              &#8249;
-            </button>
-            <button className={styles.navBtn} onClick={next}>
-              &#8250;
-            </button>
+
+          {/* Right: Success Stories */}
+          <div className={styles.testimonialsCol}>
+            <h2 className={styles.testimonialsTitle}>Our Success Stories</h2>
+
+            {t === null ? (
+              <p className={styles.noEvents}>No stories yet.</p>
+            ) : (
+              <>
+                <p className={styles.quote}>
+                  {t.content ? `"${t.content}"` : "—"}
+                </p>
+                <div className={styles.person}>
+                  {t.student_image_url ? (
+                    <img
+                      src={t.student_image_url}
+                      alt={t.student_name ?? ""}
+                      className={styles.avatarImg}
+                    />
+                  ) : (
+                    <div className={styles.avatar}>
+                      {(t.student_name?.[0] ?? "?").toUpperCase()}
+                    </div>
+                  )}
+                  <div>
+                    <p className={styles.personName}>{t.student_name ?? "—"}</p>
+                    <p className={styles.personRole}>
+                      {t.student_profession ?? ""}
+                    </p>
+                  </div>
+                </div>
+                {stories.length > 1 && (
+                  <div className={styles.navBtns}>
+                    <button className={styles.navBtn} onClick={prev}>
+                      <span>&#8249;</span>
+                    </button>
+                    <button className={styles.navBtn} onClick={next}>
+                      <span>&#8250;</span>
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

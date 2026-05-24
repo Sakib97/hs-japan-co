@@ -29,6 +29,7 @@ import { useAuth } from "../../../context/AuthProvider";
 import NotificationPanel from "../components/notifications/NotificationPanel";
 import useNotification from "../../../hooks/useNotification";
 import useNotificationRealTime from "../../../hooks/useNotificationRealTIme";
+import { GoHome } from "react-icons/go";
 
 const { Content } = Layout;
 
@@ -189,6 +190,24 @@ const mainMenuItems = [
     key: "/dashboard/visa-page-management",
     icon: <TbEPassport />,
     label: "Visa Page Management",
+    // adminOnly: true,
+    visibleForRoles: [
+      {
+        role: "admin",
+        isActive: true,
+      },
+      {
+        role: "employee",
+        isActive: true,
+        employeeStatus: ["full_time"],
+      },
+    ],
+  },
+
+   {
+    key: "/dashboard/home-page-management",
+    icon: <i className="fi fi-rr-house-chimney"></i>,
+    label: "Home Page Management",
     // adminOnly: true,
     visibleForRoles: [
       {
