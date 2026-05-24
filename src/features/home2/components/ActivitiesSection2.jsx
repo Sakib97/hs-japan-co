@@ -5,6 +5,10 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_ACTIVITIES } from "../../../config/queryKeyConfig";
 import styles from "./ActivitiesSection2.module.css";
+import AllActivitiesLoading from "../../../components/loadingSkeletons/AllActivitiesLoading";
+import { Grid } from "antd";
+
+const { useBreakpoint } = Grid;
 
 const formatDate = (dateStr) => {
   if (!dateStr) return null;
@@ -18,7 +22,10 @@ const formatDate = (dateStr) => {
 };
 
 const ActivitiesSection2 = () => {
-  const { data: activities = [] } = useQuery({
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+
+  const { data: activities = [], isLoading } = useQuery({
     queryKey: [QK_ACTIVITIES],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -31,6 +38,19 @@ const ActivitiesSection2 = () => {
     },
   });
 
+  if (isLoading)
+    return (
+      <div
+        style={{
+          padding: isMobile ? "0 10px" : "0 300px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <AllActivitiesLoading />
+      </div>
+    );
   if (activities.length === 0) return null;
 
   return (
@@ -39,6 +59,8 @@ const ActivitiesSection2 = () => {
         <h2 className={styles.title}>Our Activities</h2>
         <div className={styles.titleBar} />
       </div>
+
+    
 
       <List
         dataSource={activities}
