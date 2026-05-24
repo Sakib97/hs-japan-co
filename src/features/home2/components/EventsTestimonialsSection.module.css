@@ -145,6 +145,7 @@
     #1e1b4b 45%,
     #4c0519 100%
   );
+  border-radius: 35px;
   padding: 4rem 5vw;
   display: flex;
   flex-direction: column;
