@@ -4,18 +4,23 @@ import { supabase } from "../../../../config/supabaseClient";
 import { useFormik } from "formik";
 import { AdminSchema } from "../../schema/AdminSchema";
 import { EmployeeSchema } from "../../schema/EmployeeSchema";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { LoadingOutlined } from "@ant-design/icons";
 import { generateToken } from "../../../../utils/generateToken";
-import { sendInviteEmail } from "../../../../utils/sendInviteEmail";
+import {
+  sendInviteEmail,
+  sendInviteEmailEdgeFunction,
+} from "../../../../utils/sendInviteEmail";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { useState } from "react";
 import {
   QK_DEPARTMENTS,
   QK_DESIGNATIONS,
+  QK_EMPLOYEES,
 } from "../../../../config/queryKeyConfig";
 
 const CreateEmployeeModal = ({ open, onClose }) => {
+  const queryClient = useQueryClient();
   const [adminLoading, setAdminLoading] = useState(false);
   const [employeeLoading, setEmployeeLoading] = useState(false);
   const {
@@ -58,14 +63,14 @@ const CreateEmployeeModal = ({ open, onClose }) => {
 
   const departmentOptions = fetchDepartments
     ? fetchDepartments.map((dept) => ({
-        value: dept.id,
+        value: dept.department_name,
         label: dept.department_name,
       }))
     : [];
 
   const designationOptions = fetchDesignations
     ? fetchDesignations.map((desig) => ({
-        value: desig.id,
+        value: desig.designation_name,
         label: desig.designation_name,
       }))
     : [];
@@ -80,49 +85,41 @@ const CreateEmployeeModal = ({ open, onClose }) => {
     const role = "admin";
 
     setAdminLoading(true);
+
     try {
-      // 1. Insert into users_meta
-      const { error } = await supabase.from("users_meta").insert([
-        {
-          email,
-          name,
-          role,
-          // uid
-        },
-      ]);
+      // Generate token + expiry
+      const token = generateToken();
+
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      // Single atomic RPC
+      const { error } = await supabase.rpc("create_admin", {
+        p_email: email,
+        p_name: name,
+        p_role: role,
+        p_token: token,
+        p_expires_at: expires_at.toISOString(),
+      });
 
       if (error) {
         if (error.message.includes("users_meta_email_key")) {
-          showToast("An account with this email already exists.", "error");
+          showToast("An account with this email already exists !", "error");
         } else {
           showToast("Failed to create admin: " + error.message, "error");
         }
+
         return;
       }
 
-      // 2. Generate token and expiry
-      const token = generateToken();
-      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
-      // 3. Store token
-      const { error: tokenError } = await supabase
-        .from("user_invite_tokens")
-        .insert([{ email, token, role, expires_at }]);
-
-      if (tokenError) {
-        showToast(
-          "Failed to generate invite token: " + tokenError.message,
-          "error",
-        );
-        return;
-      }
-
-      // 4. Send invite email
+      // Send invite email
       try {
-        await sendInviteEmail(email, token, name);
+        await sendInviteEmailEdgeFunction(email, token, name);
+
         showToast("Admin created and invite email sent!", "success");
-      } catch {
+      } catch (emailError) {
         showToast("Admin created but email sending failed.", "warning");
+
+        console.error(emailError);
       }
 
       handleClose();
@@ -134,18 +131,28 @@ const CreateEmployeeModal = ({ open, onClose }) => {
   };
 
   const handleEmployeeSubmit = async (values) => {
-    const { email, name, designation, department } = values;
+    const { email, name, designation, department, employment_status } = values;
+
     const role = "employee";
 
     setEmployeeLoading(true);
+
     try {
-      // 1. Atomically insert into users_meta + employees via DB function
+      // Generate token + expiry
+      const token = generateToken();
+
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      // Single atomic RPC
       const { error } = await supabase.rpc("create_employee", {
         p_email: email,
         p_name: name,
         p_role: role,
-        p_dept_id: department,
-        p_desig_id: designation,
+        p_dept_name: department,
+        p_desig_name: designation,
+        p_token: token,
+        p_expires_at: expires_at.toISOString(),
+        p_employment_status: employment_status || null,
       });
 
       if (error) {
@@ -154,34 +161,23 @@ const CreateEmployeeModal = ({ open, onClose }) => {
         } else {
           showToast("Failed to create employee: " + error.message, "error");
         }
+
         return;
       }
 
-      // 2. Generate token and expiry
-      const token = generateToken();
-      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
-      // 3. Store token
-      const { error: tokenError } = await supabase
-        .from("user_invite_tokens")
-        .insert([{ email, token, role, expires_at }]);
-
-      if (tokenError) {
-        showToast(
-          "Failed to generate invite token: " + tokenError.message,
-          "error",
-        );
-        return;
-      }
-
-      // 4. Send invite email
+      // Send invite email
       try {
-        await sendInviteEmail(email, token, name);
+        // await sendInviteEmail(email, token, name);
+        await sendInviteEmailEdgeFunction(email, token, name);
+
         showToast("Employee created and invite email sent!", "success");
-      } catch {
+      } catch (emailError) {
+        console.error(emailError);
+
         showToast("Employee created but email sending failed.", "warning");
       }
 
+      queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
       handleClose();
     } catch (err) {
       showToast("Unexpected error: " + err.message, "error");
@@ -207,6 +203,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
       email: "",
       designation: "",
       department: "",
+      employment_status: "",
     },
     validationSchema: EmployeeSchema,
     onSubmit: async (values) => {
@@ -221,7 +218,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
       children: (
         <form onSubmit={adminFormik.handleSubmit} className={styles.form}>
           <div className={styles.field}>
-            <label className={styles.label}>FULL NAME</label>
+            <label className={styles.label}>FULL NAME *</label>
             <Input
               name="name"
               placeholder="e.g. Kenji Tanaka"
@@ -241,7 +238,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label}>EMAIL ADDRESS</label>
+            <label className={styles.label}>EMAIL ADDRESS *</label>
             <Input
               name="email"
               type="email"
@@ -290,7 +287,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
       children: (
         <form onSubmit={employeeFormik.handleSubmit} className={styles.form}>
           <div className={styles.field}>
-            <label className={styles.label}>FULL NAME</label>
+            <label className={styles.label}>FULL NAME *</label>
             <Input
               name="name"
               placeholder="e.g. Kenji Tanaka"
@@ -310,7 +307,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label}>EMAIL ADDRESS</label>
+            <label className={styles.label}>EMAIL ADDRESS *</label>
             <Input
               name="email"
               type="email"
@@ -332,7 +329,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
 
           <div className={styles.row}>
             <div className={styles.field}>
-              <label className={styles.label}>DESIGNATION</label>
+              <label className={styles.label}>DESIGNATION *</label>
               <Select
                 placeholder="Select Role"
                 options={designationOptions}
@@ -364,7 +361,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
                 )}
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>DEPARTMENT</label>
+              <label className={styles.label}>DEPARTMENT *</label>
               <Select
                 placeholder="Select Dept"
                 options={departmentOptions}
@@ -395,6 +392,41 @@ const CreateEmployeeModal = ({ open, onClose }) => {
                   </div>
                 )}
             </div>
+          </div>
+
+          <div className={styles.field}>
+            <label className={styles.label}>EMPLOYMENT STATUS *</label>
+            <Select
+              placeholder="Select Status"
+              options={[
+                { value: "full_time", label: "Full Time" },
+                { value: "part_time", label: "Part Time" },
+              ]}
+              size="large"
+              className={styles.select}
+              value={employeeFormik.values.employment_status || undefined}
+              onChange={(val) =>
+                employeeFormik.setFieldValue("employment_status", val)
+              }
+              onBlur={() =>
+                employeeFormik.setFieldTouched("employment_status", true)
+              }
+              status={
+                (employeeFormik.touched.employment_status ||
+                  employeeFormik.submitCount > 0) &&
+                employeeFormik.errors.employment_status
+                  ? "error"
+                  : ""
+              }
+              allowClear
+            />
+            {(employeeFormik.touched.employment_status ||
+              employeeFormik.submitCount > 0) &&
+              employeeFormik.errors.employment_status && (
+                <div className={styles.error}>
+                  {employeeFormik.errors.employment_status}
+                </div>
+              )}
           </div>
 
           <div className={styles.footer}>

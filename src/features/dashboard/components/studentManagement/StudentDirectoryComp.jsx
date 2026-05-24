@@ -43,6 +43,7 @@ import { showToast } from "../../../../components/layout/CustomToast";
 import { generateToken } from "../../../../utils/generateToken";
 import {
   sendInviteEmail,
+  sendInviteEmailEdgeFunction,
   sendTestMail,
   sendPasswordResetEmail,
 } from "../../../../utils/sendInviteEmail";
@@ -377,40 +378,37 @@ const StudentDirectoryComp = ({ searchQuery }) => {
       setInviteEmailError("Please enter a valid email address");
       return;
     }
+
     setInviteLoading(true);
+
     try {
+      const token = generateToken();
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
       const { error } = await supabase.rpc(
         "send_invite_to_interested_student",
         {
           p_email: inviteEmail,
           p_name: inviteRecord.name,
           p_created_by: currentUserEmail,
+          p_token: token,
+          p_expires_at: expires_at.toISOString(),
         },
       );
+
       if (error) {
-        if (error.message.includes("users_meta_email_key")) {
-          showToast("An account with this email already exists.", "error");
+        if (error.message.includes("ACCOUNT_ALREADY_EXISTS")) {
+          showToast("An account with this email already exists !", "error");
         } else {
           showToast("Failed to send invite: " + error.message, "error");
         }
         return;
       }
 
-      const token = generateToken();
-      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
-      const { error: tokenError } = await supabase
-        .from("user_invite_tokens")
-        .insert([{ email: inviteEmail, token, expires_at, role: "student" }]);
-      if (tokenError) {
-        showToast(
-          "Failed to generate invite token: " + tokenError.message,
-          "error",
-        );
-        return;
-      }
-
       try {
-        await sendInviteEmail(inviteEmail, token, inviteRecord.name);
+        // await sendInviteEmail(inviteEmail, token, inviteRecord.name);
+        await sendInviteEmailEdgeFunction(inviteEmail, token, inviteRecord.name);
+
         showToast("Invite email sent successfully!", "success");
       } catch (emailError) {
         showToast(
@@ -422,6 +420,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
 
       queryClient.invalidateQueries({ queryKey: [QK_STUDENTS] });
       queryClient.invalidateQueries({ queryKey: [QK_STUDENT_STATS] });
+
       closeInvite();
     } catch (err) {
       showToast("Unexpected error: " + err.message, "error");

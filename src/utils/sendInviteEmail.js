@@ -257,6 +257,238 @@ export const sendTestMail = async () => {
   console.log(data, error);
 };
 
+export const sendInviteEmailEdgeFunction = async (email, token, name = "") => {
+  try {
+    const baseURL = import.meta.env.VITE_APP_BASE_URL;
+    const inviteLink = `${baseURL}/auth/setup-password?token=${token}`;
+    const htmlContent = `
+        <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f7;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: #333333;
+      }
+
+      table {
+        border-spacing: 0;
+      }
+
+      .container {
+        width: 100%;
+        padding: 40px 20px;
+        background-color: #f4f4f7;
+      }
+
+      .card {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .header {
+        padding: 40px 40px 20px;
+        text-align: center;
+      }
+
+      .logo-text {
+        font-size: 28px;
+        font-weight: 700;
+        color: #b91c1c;
+        margin: 0;
+      }
+
+      .content {
+        padding: 0 40px 20px;
+        font-size: 15px;
+        line-height: 1.8;
+        color: #555555;
+      }
+
+      .greeting {
+        font-size: 16px;
+        font-weight: 600;
+        color: #222222;
+        margin-bottom: 20px;
+      }
+
+      .highlight-box {
+        background: #fff7ed;
+        border-left: 4px solid #ea580c;
+        padding: 16px;
+        border-radius: 8px;
+        margin: 20px 0;
+        color: #9a3412;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .button-container {
+        text-align: center;
+        padding: 10px 40px 30px;
+      }
+
+      .btn {
+        display: inline-block;
+        background-color: #b91c1c;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 14px 32px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .link-box {
+        background: #f8f8f8;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 10px;
+        word-break: break-all;
+        font-size: 13px;
+      }
+
+      .link-box a {
+        color: #0066cc;
+        text-decoration: none;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 24px 40px 40px;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #888888;
+        border-top: 1px solid #eeeeee;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .header,
+        .content,
+        .button-container,
+        .footer {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+        }
+
+        .btn {
+          width: 100%;
+          box-sizing: border-box;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="card">
+
+        <div class="header">
+          <h1 class="logo-text">HS Japan Academy</h1>
+        </div>
+
+        <div class="content">
+          <div class="greeting">
+            Hello ${name || "User"},
+          </div>
+
+          <p>
+			Welcome ! <br>
+            You have been invited to join <strong>HS Japan Academy</strong>.
+          </p>
+
+          <p>
+            To activate your account and complete your registration,
+            please click the button below and create your password.
+          </p>
+
+          <div class="highlight-box">
+            Your invitation link is valid for 24 hours.
+            Please complete your account setup before the link expires.
+          </div>
+        </div>
+
+        <div class="button-container">
+          <a href="${inviteLink}" class="btn">
+            Accept Invitation
+          </a>
+        </div>
+
+        <div class="content">
+          <p style="margin-bottom: 8px;">
+            If the button above does not work, copy and paste the following link into your browser:
+          </p>
+
+          <div class="link-box">
+            <a href="${inviteLink}">
+              ${inviteLink}
+            </a>
+          </div>
+        </div>
+
+        <div class="content" style="padding-bottom: 10px;">
+          <p style="margin: 0;">
+            We look forward to your journey with us.
+          </p>
+
+          <p style="margin-top: 18px;">
+            Best regards,<br />
+            <strong>HS Japan Academy</strong>
+          </p>
+        </div>
+
+        <div class="footer">
+          <p style="margin: 0 0 8px;">
+            This is an automated email. Please do not reply to this message.
+          </p>
+
+          <p style="margin: 0;">
+            © 2026 HS Japan Academy. All rights reserved.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>
+        `;
+
+    const { data, error } = await supabase.functions.invoke(
+      "invitation_mail_send",
+      {
+        body: {
+          to: email,
+          subject: "HS Japan Academy - Account Created !",
+          content: htmlContent,
+        },
+      },
+    );
+
+    if (error) {
+      console.error("Failed to send invite email:", error);
+      throw new Error(error.message || "Failed to send email");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Failed to send invite email via edge function:", error);
+    throw error;
+  }
+};
+
+// Password reset email function
 export const sendPasswordResetEmail = async (email, token, name = "") => {
   const baseURL = import.meta.env.VITE_APP_BASE_URL;
   const resetLink = `${baseURL}/auth/reset-password?token=${token}`;

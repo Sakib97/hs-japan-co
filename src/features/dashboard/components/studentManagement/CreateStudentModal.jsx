@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { useState } from "react";
 import { generateToken } from "../../../../utils/generateToken";
-import { sendInviteEmail } from "../../../../utils/sendInviteEmail";
+import { sendInviteEmail, sendInviteEmailEdgeFunction } from "../../../../utils/sendInviteEmail";
 import { useAuth } from "../../../../context/AuthProvider";
 import {
   QK_STUDENTS,
@@ -27,25 +27,36 @@ const CreateStudentModal = ({ open, onClose }) => {
 
   const handleStudentSubmit = async (values) => {
     const { name, email, phone } = values;
+
     if (!name || !email || !phone) {
       showToast("Please fill in all required fields.", "error");
       return;
     }
+
     const role = "student";
+
     setLoading(true);
+
     try {
-      // 1. Atomically insert into users_meta + student via DB function
+      // Generate token BEFORE RPC
+      const token = generateToken();
+
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      // Single atomic RPC
       const { error } = await supabase.rpc("create_student", {
         p_email: email,
         p_name: name,
         p_role: role,
         p_phone: phone,
         p_created_by: currentUserEmail,
+        p_token: token,
+        p_expires_at: expires_at.toISOString(),
       });
 
       if (error) {
         if (error.message.includes("users_meta_email_key")) {
-          showToast("An account with this email already exists.", "error");
+          showToast("An account with this email already exists !", "error");
         } else if (error.message.includes("student_phone_key")) {
           showToast(
             "An account with this phone number already exists.",
@@ -54,35 +65,15 @@ const CreateStudentModal = ({ open, onClose }) => {
         } else {
           showToast("Failed to create Student: " + error.message, "error");
         }
+
         return;
       }
 
-      // 2. Generate token and expiry
-      const token = generateToken();
-      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
-      // 3. Store token
-      const { error: tokenError } = await supabase
-        .from("user_invite_tokens")
-        .insert([
-          {
-            email,
-            token,
-            expires_at,
-            role,
-          },
-        ]);
-      if (tokenError) {
-        showToast(
-          "Failed to generate invite token: " + tokenError.message,
-          "error",
-        );
-        return;
-      }
-
-      // 4. Send invite email
+      // Send email
       try {
-        await sendInviteEmail(email, token, name);
+        // await sendInviteEmail(email, token, name);
+        await sendInviteEmailEdgeFunction(email, token, name);
+
         showToast("Student created and invite email sent!", "success");
       } catch (emailError) {
         showToast(
@@ -94,8 +85,13 @@ const CreateStudentModal = ({ open, onClose }) => {
 
       handleClose();
 
-      queryClient.invalidateQueries({ queryKey: [QK_STUDENTS] });
-      queryClient.invalidateQueries({ queryKey: [QK_STUDENT_STATS] });
+      queryClient.invalidateQueries({
+        queryKey: [QK_STUDENTS],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QK_STUDENT_STATS],
+      });
     } catch (err) {
       showToast("Unexpected error: " + err.message, "error");
     } finally {

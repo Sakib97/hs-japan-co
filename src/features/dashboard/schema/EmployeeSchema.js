@@ -13,4 +13,6 @@ export const EmployeeSchema = Yup.object({
   designation: Yup.string().required("Designation is required"),
 
   department: Yup.string().required("Department is required"),
+
+  employment_status: Yup.string().required("Employment status is required"),
 });
