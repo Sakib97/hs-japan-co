@@ -243,12 +243,18 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
         footer={null}
         width={520}
         // centered
-        title={<div className={styles.modalHeader}>
-          <i className="fa-solid fa-credit-card" style={{ color: "#b91c1c" }} />
-          <span className={styles.modalTitle}>Submit Payment</span>
-        </div>}
+        title={
+          <div className={styles.modalHeader}>
+            <i
+              className="fa-solid fa-credit-card"
+              style={{ color: "#b91c1c" }}
+            />
+            <span className={styles.modalTitle}>Submit Payment</span>
+          </div>
+        }
         closable
-        destroyOnClose
+        // destroyOnClose
+        destroyOnHidden
         className={styles.modal}
         styles={{
           body: {
