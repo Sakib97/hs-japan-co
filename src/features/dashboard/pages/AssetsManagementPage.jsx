@@ -36,8 +36,17 @@ const AssetsManagementPage = () => {
     },
   });
 
-  const storageUsedGB = (totalBytes / (1024 * 1024 * 1024)).toFixed(2);
-  const storagePercent = Math.round((storageUsedGB / STORAGE_TOTAL_GB) * 100);
+  // const storageUsedGB = (totalBytes / (1024 * 1024 * 1024)).toFixed(2);
+  // const storagePercent = Math.round((storageUsedGB / STORAGE_TOTAL_GB) * 100);
+
+  const safeBytes = totalBytes ?? 0;
+
+  const storageUsedGB = Number((safeBytes / (1024 * 1024 * 1024)).toFixed(2));
+
+  const storagePercent = Math.min(
+    Math.round((storageUsedGB / STORAGE_TOTAL_GB) * 100),
+    100,
+  );
 
   return (
     <div className={styles.pageWrapper}>
@@ -88,7 +97,8 @@ const AssetsManagementPage = () => {
               size="small"
             />
             <p className={styles.storageInfo}>
-              {storageUsedGB} GB of {STORAGE_TOTAL_GB} GB used
+              {storageUsedGB} GB of {STORAGE_TOTAL_GB} GB used <br />
+               ({storagePercent}% used)
             </p>
           </Spin>
         </div>
