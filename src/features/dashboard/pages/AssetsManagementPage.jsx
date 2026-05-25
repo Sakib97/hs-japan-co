@@ -1,12 +1,12 @@
 ﻿import { useState } from "react";
-import { RightOutlined } from "@ant-design/icons";
-import { Progress } from "antd";
+import { RightOutlined, ReloadOutlined } from "@ant-design/icons";
+import { Progress, Button, Spin } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "../../../config/supabaseClient";
 import styles from "../styles/AssetsManagement.module.css";
 import {
   PAGES,
-  STORAGE_USED_GB,
   STORAGE_TOTAL_GB,
-  storagePercent,
 } from "../components/assetsManagement/constants";
 import HomepagePanel from "../components/assetsManagement/HomepagePanel";
 import GalleryPanel from "../components/assetsManagement/GalleryPanel";
@@ -16,11 +16,28 @@ const PANEL_MAP = {
   Homepage: <HomepagePanel />,
   Gallery: <GalleryPanel />,
   "Team Page": <TeamStaffPanel />,
-//   "Contact Page": <ContactPagePanel />,
 };
 
 const AssetsManagementPage = () => {
   const [activePage, setActivePage] = useState("Homepage");
+
+  const {
+    data: totalBytes,
+    isLoading: storageLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["storage-usage"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc(
+        "get_total_image_storage_bytes",
+      );
+      if (error) throw new Error(error.message);
+      return data ?? 0;
+    },
+  });
+
+  const storageUsedGB = (totalBytes / (1024 * 1024 * 1024)).toFixed(2);
+  const storagePercent = Math.round((storageUsedGB / STORAGE_TOTAL_GB) * 100);
 
   return (
     <div className={styles.pageWrapper}>
@@ -43,17 +60,37 @@ const AssetsManagementPage = () => {
         </nav>
 
         <div className={styles.storageBox}>
-          <p className={styles.storageLabel}>Storage Usage</p>
-          <Progress
-            percent={storagePercent}
-            showInfo={false}
-            strokeColor="#b91c1c"
-            trailColor="#e5e7eb"
-            size="small"
-          />
-          <p className={styles.storageInfo}>
-            {STORAGE_USED_GB} GB of {STORAGE_TOTAL_GB} GB used
-          </p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 8,
+            }}
+          >
+            <p className={styles.storageLabel}>Storage Usage</p>
+            <Button
+              type="text"
+              size="small"
+              // icon={<ReloadOutlined />}
+              icon={<i className="fi fi-rr-refresh"></i>}
+              onClick={() => refetch()}
+              loading={storageLoading}
+              title="Refresh storage usage"
+            />
+          </div>
+          <Spin spinning={storageLoading} size="small">
+            <Progress
+              percent={storagePercent}
+              showInfo={false}
+              strokeColor="#b91c1c"
+              trailColor="#e5e7eb"
+              size="small"
+            />
+            <p className={styles.storageInfo}>
+              {storageUsedGB} GB of {STORAGE_TOTAL_GB} GB used
+            </p>
+          </Spin>
         </div>
       </aside>
 

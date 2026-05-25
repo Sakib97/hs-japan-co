@@ -138,7 +138,11 @@ const RequiredDocSection = forwardRef(
             //   ? `${(data.sideImage.size / 1024).toFixed(0)} KB`
             //   : data.sideImageSize || "",
             // image size in number
-            p_side_image_size: data.sideImage ? data.sideImage.size : null,
+            p_side_image_size: data.sideImage
+              ? data.sideImage.size
+              : data.sideImageSize
+                ? data.sideImageSize
+                : null,
             p_documents: data.documents.map((d, i) => ({
               title: d.title.trim(),
               order: i,

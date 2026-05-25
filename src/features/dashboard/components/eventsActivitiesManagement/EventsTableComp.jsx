@@ -46,7 +46,7 @@ const EventsTableComp = () => {
       const { data, error } = await supabase
         .from("events_page")
         .select(
-          "id, event_title, cover_url, event_date, event_time, event_place, event_speaker, created_at",
+          "id, event_title, cover_url, event_date, event_time, event_place, event_speaker, image_size, created_at",
         )
         .order("created_at", { ascending: false });
       if (error) throw new Error(error.message);
@@ -135,6 +135,9 @@ const EventsTableComp = () => {
         event_place: values.event_place?.trim() || null,
         event_speaker: values.event_speaker?.trim() || null,
         cover_url,
+        image_size: coverFile
+          ? coverFile.size
+          : (editingRecord?.image_size ?? null),
       };
 
       if (editingRecord) {

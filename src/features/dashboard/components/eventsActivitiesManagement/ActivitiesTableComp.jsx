@@ -45,7 +45,7 @@ const ActivitiesTableComp = () => {
       const { data, error } = await supabase
         .from("activities_page")
         .select(
-          "id, activity_title, cover_url, activity_desc, activity_date, created_at",
+          "id, activity_title, cover_url, activity_desc, activity_date, image_size, created_at",
         )
         .order("created_at", { ascending: false });
       if (error) throw new Error(error.message);
@@ -126,6 +126,9 @@ const ActivitiesTableComp = () => {
           ? values.activity_date.format("YYYY-MM-DD")
           : null,
         cover_url,
+        image_size: coverFile
+          ? coverFile.size
+          : (editingRecord?.image_size ?? null),
       };
 
       if (editingRecord) {
@@ -233,11 +236,7 @@ const ActivitiesTableComp = () => {
             cancelText="Cancel"
           >
             <Tooltip title="Delete">
-              <Button
-                size="small"
-                danger
-                icon={<DeleteOutlined />}
-              />
+              <Button size="small" danger icon={<DeleteOutlined />} />
             </Tooltip>
           </Popconfirm>
         </div>

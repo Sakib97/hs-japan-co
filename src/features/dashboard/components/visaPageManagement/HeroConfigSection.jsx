@@ -98,9 +98,16 @@ const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
       }
 
       // STEP 3: Save to database
+      //   const imageSize = data.image
+      //     ? `${(data.image.size / 1024).toFixed(0)} KB`
+      //     : data.imageSize || "";
+
+      // image size in bytes for DB storage
       const imageSize = data.image
-        ? `${(data.image.size / 1024).toFixed(0)} KB`
-        : data.imageSize || "";
+        ? data.image.size
+        : data.imageSize
+          ? data.imageSize
+          : null;
 
       const { data: result, error } = await supabase.rpc(
         "save_visa_page_hero_draft",
@@ -221,6 +228,12 @@ const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
           <label className={styles.label}>
             UPLOAD HERO IMAGE <span className={styles.req}>*</span>
           </label>
+          <p className={styles.draggerHint}>
+            Supported format: JPG/PNG (Max: {heroImageConfig.label})
+            <br />
+            Recommended: 1920×1080px
+          </p>
+
           <Dragger
             accept=".jpg,.jpeg,.png"
             maxCount={1}
