@@ -18,7 +18,12 @@ const MyFinancesPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("student_payment")
-        .select("*")
+        .select("id, created_at, \
+                 receipt_id, student_phone, student_email, receipt_gen_date, \
+                 fee_type_title, \
+                 fee_type_xtra_info, amount, payment_mode, trxn_id, due_date, \
+                 payment_date, payment_status, remarks_by_student, session, \
+                 payment_submission_time")
         .eq("student_email", email)
         .order("receipt_gen_date", { ascending: false });
       if (error) throw error;

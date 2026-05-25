@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Modal, Button, Select, DatePicker, Input, Checkbox } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import { pdf } from "@react-pdf/renderer";
 import { useQueryClient } from "@tanstack/react-query";
 import { ReactQRCode } from "@lglab/react-qr-code";
@@ -7,7 +8,9 @@ import dayjs from "dayjs";
 import { supabase } from "../../../../config/supabaseClient";
 import { PAYMENT_STATUS } from "../../../../config/statusAndRoleConfig";
 import { QK_MY_PAYMENTS } from "../../../../config/queryKeyConfig";
+import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
+import { uploadImage } from "../../../../utils/handleImage";
 import ReceiptPDFDocument from "../financesManagement/ReceiptPDFDocument";
 import styles from "../../styles/PayNowModal.module.css";
 
@@ -20,7 +23,7 @@ const PAYMENT_MODES = [
   "Mobile Banking (Nagad)",
   "Cheque",
   "Online Gateway",
-//   "Other",
+  //   "Other",
 ];
 
 const formatDate = (d) => {
@@ -59,6 +62,7 @@ const svgContainerToDataUrl = (container) =>
 const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
   const queryClient = useQueryClient();
   const qrRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const [paymentMode, setPaymentMode] = useState(null);
   const [paymentDate, setPaymentDate] = useState(null);
@@ -66,6 +70,12 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
   const [remarks, setRemarks] = useState("");
   const [verified, setVerified] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [paymentProofFile, setPaymentProofFile] = useState(null);
+  const [paymentProofPreview, setPaymentProofPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const MAX_PROOF_SIZE = IMAGE_SIZES.PAYMENT_PROOF.maxBytes;
+  const MAX_PROOF_LABEL = IMAGE_SIZES.PAYMENT_PROOF.label;
 
   useEffect(() => {
     if (!open) {
@@ -74,8 +84,31 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
       setTransactionId("");
       setRemarks("");
       setVerified(false);
+      setPaymentProofFile(null);
+      setPaymentProofPreview(null);
     }
   }, [open]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showToast("Invalid file type. Please upload an image.", "error");
+      return;
+    }
+    if (file.size > MAX_PROOF_SIZE) {
+      showToast(`Image too large. Max allowed: ${MAX_PROOF_LABEL}.`, "error");
+      return;
+    }
+    setPaymentProofFile(file);
+    setPaymentProofPreview(URL.createObjectURL(file));
+  };
+
+  const handleRemoveProof = () => {
+    setPaymentProofFile(null);
+    setPaymentProofPreview(null);
+  };
 
   if (!record) return null;
 
@@ -87,6 +120,28 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
     setSubmitting(true);
     try {
       const paymentDateStr = paymentDate.format("YYYY-MM-DD");
+      let payment_proof_image_url = null;
+      let payment_proof_image_size = null;
+
+      // Upload payment proof image if provided
+      if (paymentProofFile) {
+        setUploading(true);
+        try {
+          payment_proof_image_url = await uploadImage(
+            paymentProofFile,
+            "combined_page_images",
+            "payment_proof",
+          );
+          payment_proof_image_size = paymentProofFile.size;
+        } catch (imgErr) {
+          console.error("Image upload failed:", imgErr);
+          showToast("Failed to upload payment proof image.", "error");
+          setUploading(false);
+          setSubmitting(false);
+          return;
+        }
+        setUploading(false);
+      }
 
       const { error } = await supabase
         .from("student_payment")
@@ -96,6 +151,10 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
           trxn_id: transactionId.trim() || null,
           payment_date: paymentDateStr,
           remarks_by_student: remarks.trim() || null,
+          payment_proof_image_url,
+          payment_proof_image_size,
+          // student submission timestamp (now)
+          payment_submission_time: new Date().toISOString(),
         })
         .eq("receipt_id", record.receipt_id);
 
@@ -158,6 +217,7 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
       showToast("Failed to submit payment. Please try again.", "error");
     } finally {
       setSubmitting(false);
+      setUploading(false);
     }
   };
 
@@ -165,15 +225,16 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
     <>
       {/* Hidden QR code rendered for PDF extraction */}
       <div className={styles.hiddenQr} ref={qrRef}>
-        <ReactQRCode 
-        // imageSettings={{
-        //     src: "/assets/logo_cut_nobg.png",
-        //     width: 40,
-        //     height: 40,
-        //     excavate: true,
-        // }} 
-        value={qrValue} 
-        size={200} />
+        <ReactQRCode
+          // imageSettings={{
+          //     src: "/assets/logo_cut_nobg.png",
+          //     width: 40,
+          //     height: 40,
+          //     excavate: true,
+          // }}
+          value={qrValue}
+          size={200}
+        />
       </div>
 
       <Modal
@@ -181,16 +242,26 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
         onCancel={onClose}
         footer={null}
         width={520}
-        centered
-        title={null}
-        destroyOnClose
-        className={styles.modal}
-      >
-        {/* Header */}
-        <div className={styles.modalHeader}>
+        // centered
+        title={<div className={styles.modalHeader}>
           <i className="fa-solid fa-credit-card" style={{ color: "#b91c1c" }} />
           <span className={styles.modalTitle}>Submit Payment</span>
-        </div>
+        </div>}
+        closable
+        destroyOnClose
+        className={styles.modal}
+        styles={{
+          body: {
+            maxHeight: "80vh",
+            overflowY: "auto",
+          },
+        }}
+      >
+        {/* Header */}
+        {/* <div className={styles.modalHeader}>
+          <i className="fa-solid fa-credit-card" style={{ color: "#b91c1c" }} />
+          <span className={styles.modalTitle}>Submit Payment</span>
+        </div> */}
 
         {/* Receipt summary */}
         <div className={styles.summaryBox}>
@@ -201,6 +272,10 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
           <div className={styles.summaryRow}>
             <span className={styles.summaryKey}>Fee</span>
             <span className={styles.summaryVal}>{record.fee_type_title}</span>
+          </div>
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryKey}>Session</span>
+            <span className={styles.summaryVal}>{record.session}</span>
           </div>
           <div className={styles.summaryRow}>
             <span className={styles.summaryKey}>Due Date</span>
@@ -264,6 +339,47 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
             />
           </div>
 
+          <div className={styles.formRow}>
+            <label className={styles.label}>Payment Proof</label>
+            {paymentProofPreview ? (
+              <div className={styles.proofWrapper}>
+                <img
+                  src={paymentProofPreview}
+                  className={styles.proofPreview}
+                  alt="payment proof"
+                  onClick={() => fileInputRef.current.click()}
+                />
+                <button
+                  className={styles.proofRemoveBtn}
+                  onClick={handleRemoveProof}
+                  type="button"
+                  title="Remove image"
+                >
+                  <CloseOutlined />
+                </button>
+              </div>
+            ) : (
+              <div
+                className={styles.proofUploadBox}
+                onClick={() => fileInputRef.current.click()}
+              >
+                <div className={styles.proofPlaceholder}>
+                  + Add Payment Proof
+                </div>
+              </div>
+            )}
+            <span className={styles.sizeHint}>
+              Optional · Max {MAX_PROOF_LABEL} · Recommended: 800 × 600 px
+            </span>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className={styles.hiddenInput}
+              onChange={handleFileChange}
+            />
+          </div>
+
           <div className={styles.verifyRow}>
             <Checkbox
               checked={verified}
@@ -286,7 +402,7 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
             type="primary"
             className={styles.submitBtn}
             disabled={!isFormValid}
-            loading={submitting}
+            loading={submitting || uploading}
             onClick={handleSubmit}
           >
             Submit &amp; Download Receipt

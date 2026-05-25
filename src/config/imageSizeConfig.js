@@ -77,4 +77,10 @@ export const IMAGE_SIZES = {
     maxBytes: 150 * 1024, // 150 KB
     label: "150 KB",
   },
+
+  // Payment proof image (student payment submission)
+  PAYMENT_PROOF: {
+    maxBytes: 300 * 1024, // 300 KB
+    label: "300 KB",
+  },
 };

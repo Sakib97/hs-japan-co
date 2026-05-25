@@ -22,6 +22,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { pdf } from "@react-pdf/renderer";
 import { ReactQRCode } from "@lglab/react-qr-code";
+import { Image as AntImage } from "antd";
 import styles from "../../styles/AllTransactionsComp.module.css";
 import { supabase } from "../../../../config/supabaseClient";
 import {
@@ -42,6 +43,7 @@ import {
 import { showToast } from "../../../../components/layout/CustomToast";
 import { useAuth } from "../../../../context/AuthProvider";
 import ReceiptPDFDocument from "./ReceiptPDFDocument";
+import { getFormattedTime } from "../../../../utils/dateUtil";
 
 const PAGE_SIZE = 10;
 
@@ -425,6 +427,8 @@ const AllTransactionsComp = () => {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
+      console.error("PDF download failed:", err);
+
       showToast("Failed to download receipt.", "error");
     } finally {
       setDownloadingId(null);
@@ -442,7 +446,12 @@ const AllTransactionsComp = () => {
       title: "DATE ISSUED",
       dataIndex: "receipt_gen_date",
       key: "receipt_gen_date",
-      render: (v) => <span className={styles.cell}>{formatDate(v)}</span>,
+      // render: (v) => <span className={styles.cell}>{formatDate(v)}</span>,
+      render: (v) => (
+        <span className={styles.cell}>
+          {v ? getFormattedTime(v, "DD MMM YYYY, h:mm A") : "—"}
+        </span>
+      ),
     },
     {
       title: "STUDENT",
@@ -741,7 +750,13 @@ const AllTransactionsComp = () => {
         open={!!viewRecord}
         onCancel={() => setViewRecord(null)}
         title="Transaction Details"
-        bodyStyle={{ maxHeight: "65vh", overflowY: "auto", paddingRight: 4 }}
+        styles={{
+          body: {
+            maxHeight: "65vh",
+            overflowY: "auto",
+            paddingRight: 4,
+          },
+        }}
         footer={[
           <Button
             key="download"
@@ -826,6 +841,27 @@ const AllTransactionsComp = () => {
             </Descriptions.Item>
             <Descriptions.Item label="Student Remarks" span={2}>
               {viewRecord.remarks_by_student ?? "—"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Payment Proof" span={2}>
+              {viewRecord.payment_proof_image_url ? (
+                <AntImage
+                  src={viewRecord.payment_proof_image_url}
+                  width={200}
+                  alt="payment proof"
+                  style={{ borderRadius: 6, objectFit: "cover" }}
+                  preview
+                />
+              ) : (
+                "—"
+              )}
+            </Descriptions.Item>
+            <Descriptions.Item label="Submitted At">
+              {viewRecord.payment_submission_time
+                ? getFormattedTime(
+                    viewRecord.payment_submission_time,
+                    "DD MMM YYYY, h:mm A",
+                  )
+                : "—"}
             </Descriptions.Item>
           </Descriptions>
         )}
