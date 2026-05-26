@@ -1,8 +1,9 @@
-import { Table, Avatar, Tag } from "antd";
-import { useQuery } from "@tanstack/react-query";
+import { Table, Avatar, Tag, Button, Spin } from "antd";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
 import { QK_ADMINS } from "../../../../config/queryKeyConfig";
 import styles from "../../styles/EmployeeManagementPage.module.css";
+import styles2 from "./AdminDirectoryComp.module.css";
 
 const columns = [
   {
@@ -38,7 +39,9 @@ const columns = [
 ];
 
 const AdminDirectoryComp = () => {
-  const { data, isLoading } = useQuery({
+  const queryClient = useQueryClient();
+
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: [QK_ADMINS],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -60,18 +63,32 @@ const AdminDirectoryComp = () => {
             System administrators with full access
           </p>
         </div>
+        <Button
+          icon={<i className="fi fi-rr-refresh"></i>}
+          size="medium"
+          // loading={isFetching && !isLoading}
+          onClick={() => {
+            queryClient.invalidateQueries({ queryKey: [QK_ADMINS] });
+          }}
+          // style={{ marginLeft: "auto" }}
+          className={styles.adminRefreshBtn}
+        >
+          Refresh
+        </Button>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={data ?? []}
-        rowKey="id"
-        loading={isLoading}
-        size="small"
-        scroll={{ x: "max-content" }}
-        pagination={{ pageSize: 10, showTotal: (t) => `${t} admins` }}
-        className={styles.employeeTable}
-      />
+      <Spin spinning={isFetching} size="medium">
+        <Table
+          columns={columns}
+          dataSource={data ?? []}
+          rowKey="id"
+          loading={isLoading}
+          size="small"
+          scroll={{ x: "max-content" }}
+          pagination={{ pageSize: 10, showTotal: (t) => `${t} admins` }}
+          className={styles.employeeTable}
+        />
+      </Spin>
     </div>
   );
 };

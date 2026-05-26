@@ -405,8 +405,8 @@ const DashboardPage = () => {
   const visibleBottomMenuItems = filterMenuItemsByVisibility(
     bottomMenuItems,
     visibilityContext,
-  );
-
+  ); 
+  
   if (!user || !userMeta) {
     return (
       <p

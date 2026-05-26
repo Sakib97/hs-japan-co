@@ -4,7 +4,6 @@
   flex-direction: column;
   gap: 24px;
   margin-bottom: 90px;
-  
 }
 
 /* ===== Top Bar ===== */
@@ -273,6 +272,11 @@
     align-items: stretch;
   }
 
+  .adminRefreshBtn {
+    margin-left: 0 !important;
+    align-self: center;
+  }
+
   .directorySection {
     padding: 16px;
   }
@@ -289,5 +293,9 @@
 
   .directoryActions button {
     flex: 1;
+  }
+
+  .adminRefreshBtn {
+    width: 100%;
   }
 }
