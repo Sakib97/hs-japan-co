@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Table, Avatar, Tag, Button, Spin } from "antd";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
 import { QK_ADMINS } from "../../../../config/queryKeyConfig";
 import styles from "../../styles/EmployeeManagementPage.module.css";
-import styles2 from "./AdminDirectoryComp.module.css";
+
+const PAGE_SIZE = 10;
 
 const columns = [
   {
@@ -39,19 +41,25 @@ const columns = [
 ];
 
 const AdminDirectoryComp = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const queryClient = useQueryClient();
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: [QK_ADMINS],
+    queryKey: [QK_ADMINS, currentPage],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const from = (currentPage - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error, count } = await supabase
         .from("users_meta")
-        .select("id, name, email, avatar_url, is_active")
+        .select("id, name, email, avatar_url, is_active", { count: "exact" })
         .eq("role", "admin")
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: true })
+        .range(from, to);
       if (error) throw new Error(error.message);
-      return data ?? [];
+      return { rows: data ?? [], total: count ?? 0 };
     },
+    keepPreviousData: true,
   });
 
   return (
@@ -68,6 +76,7 @@ const AdminDirectoryComp = () => {
           size="medium"
           // loading={isFetching && !isLoading}
           onClick={() => {
+            setCurrentPage(1);
             queryClient.invalidateQueries({ queryKey: [QK_ADMINS] });
           }}
           // style={{ marginLeft: "auto" }}
@@ -80,12 +89,19 @@ const AdminDirectoryComp = () => {
       <Spin spinning={isFetching} size="medium">
         <Table
           columns={columns}
-          dataSource={data ?? []}
+          dataSource={data?.rows ?? []}
           rowKey="id"
           loading={isLoading}
           size="small"
           scroll={{ x: "max-content" }}
-          pagination={{ pageSize: 10, showTotal: (t) => `${t} admins` }}
+          pagination={{
+            current: currentPage,
+            pageSize: PAGE_SIZE,
+            total: data?.total ?? 0,
+            showTotal: (total, range) =>
+              `Showing ${range[0]}–${range[1]} of ${total.toLocaleString()} admins`,
+            onChange: (page) => setCurrentPage(page),
+          }}
           className={styles.employeeTable}
         />
       </Spin>

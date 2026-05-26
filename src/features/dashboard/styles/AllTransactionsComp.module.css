@@ -73,6 +73,82 @@
   border-bottom: none;
 }
 
+/* ── Table pagination (rows selector + showing text) ───────────────────────── */
+.table :global(.ant-pagination) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 16px;
+}
+
+.table :global(.ant-pagination-total-text) {
+  flex: 1 1 auto;
+  order: -1;
+  margin-inline-end: 0 !important;
+}
+
+.paginationBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rowsSelector {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #444;
+  background: #f5f5f5;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+  line-height: 1.2;
+}
+
+.rowsSelector:hover {
+  background: #eee;
+  border-color: #ddd;
+}
+
+.rowsSelectorIcon {
+  font-size: 10px;
+  color: #999;
+}
+
+.paginationShowing {
+  font-size: 0.82rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+.exportCsvBtn {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  border-radius: 8px;
+}
+
+.rowsMenuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-width: 72px;
+  font-size: 0.85rem;
+}
+
+.rowsMenuCheck {
+  font-size: 12px;
+  color: #111;
+}
+
 .searchInput {
   width: 400px;
 }

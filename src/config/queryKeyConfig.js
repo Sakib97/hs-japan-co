@@ -19,7 +19,7 @@ export const QK_FEE_TYPES = "fee-types";
 export const QK_MY_PAYMENTS = "my-payments";
 // Used in: MyFinancesPage — student's own name/phone for PDF
 export const QK_MY_STUDENT_INFO = "my-student-info";
-// Used in: AllTransactionsComp — admin view of all student payments
+// Used in: AllTransactionsComp — admin view of all student payments (page + pageSize in query key)
 export const QK_ALL_TRANSACTIONS = "all-transactions";
 // Used in: AllTransactionsComp — filter-aware aggregate summary (RPC)
 export const QK_TRANSACTION_SUMMARY = "transaction-summary";
