@@ -78,7 +78,7 @@ const EnquiryFormComp = () => {
     },
   });
 
-  const field = (name, label, placeholder, extra = {}) => (
+  const field = (name, label, placeholder, extra = {}, maxLength = null) => (
     <div className={styles.fieldWrap}>
       <label className={styles.label}>{label}</label>
       <Input
@@ -93,6 +93,11 @@ const EnquiryFormComp = () => {
       />
       {formik.touched[name] && formik.errors[name] && (
         <p className={styles.errorMsg}>{formik.errors[name]}</p>
+      )}
+      {maxLength && (
+        <p className={styles.charCount}>
+          {formik.values[name].length}/{maxLength} characters used
+        </p>
       )}
     </div>
   );
@@ -139,10 +144,13 @@ const EnquiryFormComp = () => {
           )}
         </div>
         {formik.values.interests === STUDENT_INTERESTS.OTHER &&
+        // show character count in the field
           field(
             "otherInterest",
-            "Please specify your interest *",
+            "Please specify your interest (within 30 characters)*",
             "Tell us more...",
+            { maxLength: 30 },
+            30,
           )}
         <Button
           type="primary"

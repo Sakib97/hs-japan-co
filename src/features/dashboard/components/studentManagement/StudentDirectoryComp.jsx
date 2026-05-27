@@ -55,12 +55,33 @@ const statusLabelMap = Object.fromEntries(
   STUDENT_STATUS_OPTIONS.map(({ value, label }) => [value, label]),
 );
 
+const RESEND_INVITE_STATUSES = [
+  STUDENT_STATUS.ACCOUNT_CREATION_MAIL_SENT,
+  STUDENT_STATUS.ACCOUNT_CREATION_MAIL_RESENT,
+];
+
 const getMailActionLabel = (status) => {
   if (status === STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST)
     return "Send Invite Mail";
-  if (status === STUDENT_STATUS.ACCOUNT_CREATION_MAIL_SENT)
-    return "Resend Invite Mail";
+  if (RESEND_INVITE_STATUSES.includes(status)) return "Resend Invite Mail";
   return "Send Password Reset Mail";
+};
+
+const isResendInviteStatus = (status) =>
+  RESEND_INVITE_STATUSES.includes(status);
+
+const mapResendInviteRpcError = (message = "") => {
+  if (message.includes("STUDENT_NOT_FOUND_OR_INVALID_STATUS")) {
+    return "Cannot resend invite. The student must have a pending account setup (invite mail sent or resent) and a valid student account.";
+  }
+  return message || "Failed to resend invite.";
+};
+
+const mapSendInviteRpcError = (message = "") => {
+  if (message.includes("ACCOUNT_ALREADY_EXISTS")) {
+    return "An account with this email already exists.";
+  }
+  return message || "Failed to send invite.";
 };
 
 const getColumns = (
@@ -359,7 +380,7 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   const onSendMail = (record) => {
     if (
       record.status === STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST ||
-      record.status === STUDENT_STATUS.ACCOUNT_CREATION_MAIL_SENT
+      isResendInviteStatus(record.status)
     ) {
       openInvite(record);
     } else {
@@ -374,8 +395,18 @@ const StudentDirectoryComp = ({ searchQuery }) => {
   };
 
   const handleSendInvite = async () => {
-    if (!inviteEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inviteEmail)) {
+    if (!inviteRecord) return;
+
+    const resending = isResendInviteStatus(inviteRecord.status);
+    const targetEmail = resending ? inviteRecord.email : inviteEmail.trim();
+
+    if (!targetEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(targetEmail)) {
       setInviteEmailError("Please enter a valid email address");
+      return;
+    }
+
+    if (resending && !inviteRecord.email) {
+      showToast("This student has no email on record. Cannot resend invite.", "error");
       return;
     }
 
@@ -385,35 +416,49 @@ const StudentDirectoryComp = ({ searchQuery }) => {
       const token = generateToken();
       const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-      const { error } = await supabase.rpc(
-        "send_invite_to_interested_student",
-        {
-          p_email: inviteEmail,
-          p_name: inviteRecord.name,
-          p_created_by: currentUserEmail,
-          p_token: token,
-          p_expires_at: expires_at.toISOString(),
-        },
-      );
+      const { error } = resending
+        ? await supabase.rpc("resend_student_invitation_mail", {
+            p_email: targetEmail,
+            p_token: token,
+            p_expires_at: expires_at.toISOString(),
+          })
+        : await supabase.rpc("send_invite_to_interested_student", {
+            p_email: targetEmail,
+            p_name: inviteRecord.name,
+            p_created_by: currentUserEmail,
+            p_token: token,
+            p_expires_at: expires_at.toISOString(),
+          });
 
       if (error) {
-        if (error.message.includes("ACCOUNT_ALREADY_EXISTS")) {
-          showToast("An account with this email already exists !", "error");
-        } else {
-          showToast("Failed to send invite: " + error.message, "error");
-        }
+        showToast(
+          resending
+            ? mapResendInviteRpcError(error.message)
+            : mapSendInviteRpcError(error.message),
+          "error",
+        );
         return;
       }
 
       try {
-        // await sendInviteEmail(inviteEmail, token, inviteRecord.name);
-        await sendInviteEmailEdgeFunction(inviteEmail, token, inviteRecord.name);
-
-        showToast("Invite email sent successfully!", "success");
+        await sendInviteEmailEdgeFunction(
+          targetEmail,
+          token,
+          inviteRecord.name,
+        );
+        showToast(
+          resending
+            ? "Invite email resent successfully!"
+            : "Invite email sent successfully!",
+          "success",
+        );
       } catch (emailError) {
         showToast(
-          "Invite created but failed to send email: " +
-            (emailError.text || emailError.message || emailError),
+          resending
+            ? "Invite token updated but failed to send email: " +
+                (emailError.text || emailError.message || emailError)
+            : "Invite created but failed to send email: " +
+                (emailError.text || emailError.message || emailError),
           "error",
         );
       }
@@ -722,10 +767,14 @@ const StudentDirectoryComp = ({ searchQuery }) => {
         )}
       </Modal>
 
-      {/* Send Invite Mail modal — for STUDENT_EXPRESSED_INTEREST */}
+      {/* Send / Resend Invite Mail — expressed interest, or pending account setup */}
       <Modal
         open={!!inviteRecord}
-        title="Send Invite Mail"
+        title={
+          inviteRecord && isResendInviteStatus(inviteRecord.status)
+            ? "Resend Invite Mail"
+            : "Send Invite Mail"
+        }
         onCancel={closeInvite}
         footer={[
           <Button
@@ -734,7 +783,9 @@ const StudentDirectoryComp = ({ searchQuery }) => {
             loading={inviteLoading}
             onClick={handleSendInvite}
           >
-            Send Invite
+            {inviteRecord && isResendInviteStatus(inviteRecord.status)
+              ? "Resend Invite"
+              : "Send Invite"}
           </Button>,
           <Button key="cancel" onClick={closeInvite}>
             Cancel
@@ -747,36 +798,52 @@ const StudentDirectoryComp = ({ searchQuery }) => {
               Student: <strong>{inviteRecord.name ?? "—"}</strong>
             </p>
             <p style={{ marginBottom: 16, fontSize: "0.85rem", color: "#555" }}>
-              Phone: <strong>{inviteRecord.phone}</strong>
+              Phone: <strong>{inviteRecord.phone ?? "—"}</strong>
             </p>
-            <p>
-              Email: <strong>{inviteRecord.email}</strong>
-            </p>
-            <Input
-              type="email"
-              placeholder="Enter student email address *"
-              value={inviteEmail}
-              onChange={(e) => {
-                setInviteEmail(e.target.value);
-                setInviteEmailError("");
-              }}
-              status={inviteEmailError ? "error" : ""}
-            />
-            {inviteEmailError && (
-              <p
-                style={{
-                  margin: "4px 0 0 2px",
-                  fontSize: "12px",
-                  color: "#dc2626",
-                }}
-              >
-                {inviteEmailError}
-              </p>
+
+            {isResendInviteStatus(inviteRecord.status) ? (
+              <>
+                <p style={{ marginBottom: 8, fontSize: "0.85rem", color: "#555" }}>
+                  Email: <strong>{inviteRecord.email ?? "—"}</strong>
+                </p>
+                <p style={{ fontSize: "0.88rem", color: "#374151" }}>
+                  A new account setup link will be generated. Any previous invite
+                  link will no longer work. You can resend the invite as many
+                  times as needed while the student has not completed setup.
+                </p>
+                <p style={{ marginTop: 12, fontSize: "0.8rem", color: "#888" }}>
+                  The invite email will be sent again to the address above.
+                </p>
+              </>
+            ) : (
+              <>
+                <Input
+                  type="email"
+                  placeholder="Enter student email address *"
+                  value={inviteEmail}
+                  onChange={(e) => {
+                    setInviteEmail(e.target.value);
+                    setInviteEmailError("");
+                  }}
+                  status={inviteEmailError ? "error" : ""}
+                />
+                {inviteEmailError && (
+                  <p
+                    style={{
+                      margin: "4px 0 0 2px",
+                      fontSize: "12px",
+                      color: "#dc2626",
+                    }}
+                  >
+                    {inviteEmailError}
+                  </p>
+                )}
+                <p style={{ marginTop: 12, fontSize: "0.8rem", color: "#888" }}>
+                  An invite email with account setup instructions will be sent
+                  to this address.
+                </p>
+              </>
             )}
-            <p style={{ marginTop: 12, fontSize: "0.8rem", color: "#888" }}>
-              An invite email with account setup instructions will be sent to
-              this address.
-            </p>
           </div>
         )}
       </Modal>
