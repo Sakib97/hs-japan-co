@@ -6,7 +6,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ReactQRCode } from "@lglab/react-qr-code";
 import dayjs from "dayjs";
 import { supabase } from "../../../../config/supabaseClient";
-import { PAYMENT_STATUS } from "../../../../config/statusAndRoleConfig";
 import { QK_MY_PAYMENTS } from "../../../../config/queryKeyConfig";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { showToast } from "../../../../components/layout/CustomToast";
@@ -143,22 +142,26 @@ const PayNowModal = ({ open, onClose, record, studentName, studentPhone }) => {
         setUploading(false);
       }
 
-      const { error } = await supabase
-        .from("student_payment")
-        .update({
-          payment_status: PAYMENT_STATUS.VERIFICATION_PENDING,
-          payment_mode: paymentMode,
-          trxn_id: transactionId.trim() || null,
-          payment_date: paymentDateStr,
-          remarks_by_student: remarks.trim() || null,
-          payment_proof_image_url,
-          payment_proof_image_size,
-          // student submission timestamp (now)
-          payment_submission_time: new Date().toISOString(),
-        })
-        .eq("receipt_id", record.receipt_id);
+      const { error } = await supabase.rpc("submit_student_payment", {
+        p_receipt_id: record.receipt_id,
+        p_payment_mode: paymentMode,
+        p_trxn_id: transactionId.trim(),
+        p_payment_date: paymentDateStr,
+        p_remarks: remarks.trim(),
+        p_payment_proof_image_url: payment_proof_image_url,
+        p_payment_proof_image_size: payment_proof_image_size,
+      });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes("PAYMENT_NOT_FOUND")) {
+          showToast(
+            "Payment record not found or you are not authorized to submit it.",
+            "error",
+          );
+          return;
+        }
+        throw error;
+      }
 
       queryClient.invalidateQueries({ queryKey: [QK_MY_PAYMENTS] });
 

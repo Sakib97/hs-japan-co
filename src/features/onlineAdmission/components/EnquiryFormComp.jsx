@@ -6,7 +6,6 @@ import styles from "../styles/EnquiryFormComp.module.css";
 import { showToast } from "../../../components/layout/CustomToast";
 import { supabase } from "../../../config/supabaseClient";
 import {
-  STUDENT_STATUS,
   STUDENT_INTERESTS,
   STUDENT_INTERESTS_OPTIONS,
 } from "../../../config/statusAndRoleConfig";
@@ -50,13 +49,12 @@ const EnquiryFormComp = () => {
           ? values.otherInterest
           : values.interests;
 
-      const { error } = await supabase.from("student").insert({
-        name: values.fullName,
-        email: values.email,
-        phone: values.phone,
-        present_address: values.address,
-        status: STUDENT_STATUS.STUDENT_EXPRESSED_INTEREST,
-        admission_interest: admissionInterest,
+      const { error } = await supabase.rpc("submit_student_enquiry_form", {
+        p_name: values.fullName,
+        p_email: values.email,
+        p_phone: values.phone,
+        p_address: values.address,
+        p_interest: admissionInterest,
       });
 
       if (error) {
