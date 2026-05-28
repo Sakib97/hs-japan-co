@@ -28,12 +28,50 @@ import {
 import {
   EMP_ACCOUNT_STATUS_OPTIONS,
   EMP_ACCOUNT_STATUS_COLOR,
+  EMP_REGISTRATION_STATUS,
+  EMP_REGISTRATION_STATUS_OPTIONS,
+  EMP_REGISTRATION_STATUS_COLOR,
   NOTIFICATION_TYPE,
 } from "../../../../config/statusAndRoleConfig";
+import { showToast } from "../../../../components/layout/CustomToast";
+import { generateToken } from "../../../../utils/generateToken";
+import {
+  sendInviteEmailEdgeFunction,
+  sendPasswordResetEmail,
+} from "../../../../utils/sendInviteEmail";
 
 const PAGE_SIZE = 10;
 
-const getColumns = (onChangeStatus, onChangeDeptDesig) => [
+const RESEND_INVITE_REGISTRATION_STATUSES = [
+  EMP_REGISTRATION_STATUS.ACCOUNT_CREATION_MAIL_SENT,
+  EMP_REGISTRATION_STATUS.ACCOUNT_CREATION_MAIL_RESENT,
+];
+
+const getEmployeeMailActionLabel = (registrationStatus) => {
+  if (RESEND_INVITE_REGISTRATION_STATUSES.includes(registrationStatus)) {
+    return "Resend Invite Email";
+  }
+  if (registrationStatus === EMP_REGISTRATION_STATUS.ACCOUNT_CREATED) {
+    return "Send Password Reset Mail";
+  }
+  return "Send Password Reset Mail";
+};
+
+const isPasswordResetMailAction = (registrationStatus) =>
+  registrationStatus === EMP_REGISTRATION_STATUS.ACCOUNT_CREATED ||
+  registrationStatus === EMP_REGISTRATION_STATUS.PASSWORD_RESET_MAIL_SENT;
+
+const isResendInviteMailAction = (registrationStatus) =>
+  RESEND_INVITE_REGISTRATION_STATUSES.includes(registrationStatus);
+
+const mapResendEmployeeInviteRpcError = (message = "") => {
+  if (message.includes("EMPLOYEE_NOT_FOUND_OR_INVALID_STATUS")) {
+    return "Cannot resend invite. The employee must have a pending account setup (invite mail sent or resent).";
+  }
+  return message || "Failed to resend invite.";
+};
+
+const getColumns = (onChangeStatus, onChangeDeptDesig, onSendMail) => [
   {
     title: "NAME",
     key: "name",
@@ -73,8 +111,20 @@ const getColumns = (onChangeStatus, onChangeDeptDesig) => [
     ),
   },
   {
-    title: "STATUS",
-    key: "status",
+    title: "REGISTRATION STATUS",
+    key: "registration_status",
+    render: (_, record) => {
+      const status = record.registration_status;
+      const opt = EMP_REGISTRATION_STATUS_OPTIONS.find(
+        (o) => o.value === status,
+      );
+      const color = EMP_REGISTRATION_STATUS_COLOR[status] ?? "default";
+      return <Tag color={color}>{opt?.label ?? status ?? "—"}</Tag>;
+    },
+  },
+  {
+    title: "EMPLOYMENT STATUS",
+    key: "activity_status",
     render: (_, record) => {
       const status = record.activity_status;
       const opt = EMP_ACCOUNT_STATUS_OPTIONS.find((o) => o.value === status);
@@ -88,7 +138,27 @@ const getColumns = (onChangeStatus, onChangeDeptDesig) => [
     fixed: "right",
     render: (_, record) => (
       <div style={{ display: "flex", gap: 18 }}>
-        <Tooltip title="Change Status">
+        <Tooltip title={getEmployeeMailActionLabel(record.registration_status)}>
+          <span
+            role="button"
+            tabIndex={0}
+            className={styles.mailActionBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSendMail(record);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                e.stopPropagation();
+                onSendMail(record);
+              }
+            }}
+          >
+            <i className={`fi fi-rr-paper-plane-launch ${styles.actionIcon}`} />
+          </span>
+        </Tooltip>
+        <Tooltip title="Change Employment Status">
           <i
             className={`fi fi-rr-career-growth ${styles.actionIcon}`}
             onClick={() => onChangeStatus(record)}
@@ -185,6 +255,139 @@ const EmployeeDirectoryComp = () => {
   const [savingDept, setSavingDept] = useState(false);
   const [savingDesig, setSavingDesig] = useState(false);
   const [savingBoth, setSavingBoth] = useState(false);
+
+  // ── Password reset confirmation ───────────────────────────────────
+  const [resetRecord, setResetRecord] = useState(null);
+  const [resetLoading, setResetLoading] = useState(false);
+
+  // ── Resend invite confirmation ────────────────────────────────────
+  const [inviteRecord, setInviteRecord] = useState(null);
+  const [inviteLoading, setInviteLoading] = useState(false);
+
+  const openResendInvite = (record) => {
+    setInviteRecord(record);
+  };
+
+  const closeResendInvite = () => {
+    setInviteRecord(null);
+  };
+
+  const openPasswordReset = (record) => {
+    setResetRecord(record);
+  };
+
+  const closePasswordReset = () => {
+    setResetRecord(null);
+  };
+
+  const onSendMail = (record) => {
+    if (isResendInviteMailAction(record.registration_status)) {
+      openResendInvite(record);
+      return;
+    }
+    if (isPasswordResetMailAction(record.registration_status)) {
+      openPasswordReset(record);
+      return;
+    }
+    showToast(
+      "No mail action is available for this employee's registration status.",
+      "warning",
+    );
+  };
+
+  const handleResendInvite = async () => {
+    if (!inviteRecord?.email) return;
+    setInviteLoading(true);
+    try {
+      const token = generateToken();
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      const { error: rpcError } = await supabase.rpc(
+        "resend_employee_invitation_mail",
+        {
+          p_email: inviteRecord.email,
+          p_token: token,
+          p_expires_at: expires_at.toISOString(),
+        },
+      );
+
+      if (rpcError) {
+        showToast(mapResendEmployeeInviteRpcError(rpcError.message), "error");
+        return;
+      }
+
+      try {
+        await sendInviteEmailEdgeFunction(
+          inviteRecord.email,
+          token,
+          inviteRecord.users_meta?.name ?? "",
+        );
+        showToast("Invite email resent successfully!", "success");
+      } catch (emailErr) {
+        showToast(
+          "Invite token updated but failed to send email: " +
+            (emailErr.message || emailErr),
+          "error",
+        );
+      }
+
+      queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      closeResendInvite();
+    } catch (err) {
+      showToast("Unexpected error: " + err.message, "error");
+    } finally {
+      setInviteLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    if (!resetRecord?.email) return;
+    setResetLoading(true);
+    try {
+      const token = generateToken();
+      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      const { error: rpcError } = await supabase.rpc(
+        "send_employee_password_reset_mail_request",
+        {
+          p_reset_email: resetRecord.email,
+          p_reset_token: token,
+          p_expires_at: expires_at.toISOString(),
+        },
+      );
+
+      if (rpcError) {
+        showToast(
+          "Failed to initiate password reset: " + rpcError.message,
+          "error",
+        );
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(
+          resetRecord.email,
+          token,
+          resetRecord.users_meta?.name ?? "",
+        );
+        showToast("Password reset email sent successfully!", "success");
+      } catch (emailErr) {
+        showToast(
+          "Reset initiated but failed to send email: " +
+            (emailErr.message || emailErr),
+          "error",
+        );
+      }
+
+      queryClient.invalidateQueries({ queryKey: [QK_EMPLOYEES] });
+      closePasswordReset();
+    } catch (err) {
+      showToast("Unexpected error: " + err.message, "error");
+    } finally {
+      setResetLoading(false);
+    }
+  };
+  // ────────────────────────────────────────────────────────────────
 
   const openDeptDesigModal = (record) => {
     setDeptDesigModal({
@@ -337,6 +540,7 @@ const EmployeeDirectoryComp = () => {
           `
           email,
           activity_status,
+          registration_status,
           department_name,
           designation_name,
           users_meta(name, avatar_url)
@@ -500,7 +704,7 @@ const EmployeeDirectoryComp = () => {
       </div>
 
       <Table
-        columns={getColumns(openStatusModal, openDeptDesigModal)}
+        columns={getColumns(openStatusModal, openDeptDesigModal, onSendMail)}
         dataSource={data?.rows ?? []}
         rowKey="email"
         loading={isLoading || isFetching}
@@ -516,6 +720,100 @@ const EmployeeDirectoryComp = () => {
         }}
         className={styles.employeeTable}
       />
+
+      <Modal
+        open={!!inviteRecord}
+        title="Resend Invite Email"
+        onCancel={closeResendInvite}
+        footer={[
+          <Button
+            key="send"
+            type="primary"
+            loading={inviteLoading}
+            onClick={handleResendInvite}
+          >
+            Resend Invite
+          </Button>,
+          <Button key="cancel" onClick={closeResendInvite}>
+            Cancel
+          </Button>,
+        ]}
+      >
+        {inviteRecord && (
+          <div style={{ padding: "8px 0" }}>
+            <p style={{ marginBottom: 8, fontSize: "0.85rem", color: "#555" }}>
+              Employee:{" "}
+              <strong>{inviteRecord.users_meta?.name ?? "—"}</strong>
+            </p>
+            <p style={{ marginBottom: 16, fontSize: "0.85rem", color: "#555" }}>
+              Email: <strong>{inviteRecord.email}</strong>
+            </p>
+            <p style={{ fontSize: "0.88rem", color: "#374151" }}>
+              A new account setup link will be generated. Any previous invite
+              link will no longer work. You can resend the invite as many times
+              as needed while the employee has not completed setup.
+            </p>
+            <p
+              style={{
+                marginTop: 10,
+                fontSize: "0.82rem",
+                color: "#dc2626",
+                fontWeight: 600,
+              }}
+            >
+              Are you sure you want to proceed?
+            </p>
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        open={!!resetRecord}
+        title="Send Password Reset Mail"
+        onCancel={closePasswordReset}
+        footer={[
+          <Button
+            key="confirm"
+            type="primary"
+            danger
+            loading={resetLoading}
+            onClick={handlePasswordReset}
+          >
+            Yes, Send Reset Mail
+          </Button>,
+          <Button key="cancel" onClick={closePasswordReset}>
+            Cancel
+          </Button>,
+        ]}
+      >
+        {resetRecord && (
+          <div style={{ padding: "8px 0" }}>
+            <p style={{ marginBottom: 8, fontSize: "0.85rem", color: "#555" }}>
+              Employee:{" "}
+              <strong>{resetRecord.users_meta?.name ?? "—"}</strong>
+            </p>
+            <p style={{ marginBottom: 16, fontSize: "0.85rem", color: "#555" }}>
+              Email: <strong>{resetRecord.email}</strong>
+            </p>
+            <p style={{ fontSize: "0.88rem", color: "#374151" }}>
+              This will deactivate the employee&apos;s account and send a
+              password reset link to their email. The link will expire in{" "}
+              <strong>24 hours</strong>. Registration status will be updated to
+              &quot;Password Reset Mail Sent&quot;.
+            </p>
+            <p
+              style={{
+                marginTop: 10,
+                fontSize: "0.82rem",
+                color: "#dc2626",
+                fontWeight: 600,
+              }}
+            >
+              Are you sure you want to proceed?
+            </p>
+          </div>
+        )}
+      </Modal>
 
       <Modal
         title="Change Employee Status"

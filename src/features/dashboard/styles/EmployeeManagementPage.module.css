@@ -199,11 +199,24 @@
   border-radius: 12px;
 }
 
+.mailActionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.mailActionBtn:hover .actionIcon {
+  color: #b91c1c;
+}
+
 .actionIcon {
   font-size: 15px;
   color: #888;
   cursor: pointer;
   transition: color 0.15s;
+  pointer-events: none;
 }
 
 .actionIcon:hover {

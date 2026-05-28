@@ -99,6 +99,28 @@ export const EMP_ACCOUNT_STATUS_COLOR = {
   [EMP_ACCOUNT_STATUS.RETIRED]: "gray",
 };
 
+export const EMP_REGISTRATION_STATUS = {
+  ACCOUNT_CREATED: "account_created",
+  ACCOUNT_CREATION_MAIL_SENT: "account_creation_mail_sent",
+  ACCOUNT_CREATION_MAIL_RESENT: "account_creation_mail_resent",
+  PASSWORD_RESET_MAIL_SENT: "password_reset_mail_sent",
+};
+
+export const EMP_REGISTRATION_STATUS_OPTIONS = [
+  { value: EMP_REGISTRATION_STATUS.ACCOUNT_CREATED, label: "Account Created" },
+  { value: EMP_REGISTRATION_STATUS.ACCOUNT_CREATION_MAIL_SENT, label: "Account Creation Mail Sent" },
+  { value: EMP_REGISTRATION_STATUS.ACCOUNT_CREATION_MAIL_RESENT, label: "Account Creation Mail Resent" },
+  { value: EMP_REGISTRATION_STATUS.PASSWORD_RESET_MAIL_SENT, label: "Password Reset Mail Sent" },
+];
+
+export const EMP_REGISTRATION_STATUS_COLOR = {
+  [EMP_REGISTRATION_STATUS.ACCOUNT_CREATED]: "green",
+  [EMP_REGISTRATION_STATUS.ACCOUNT_CREATION_MAIL_SENT]: "blue",
+  [EMP_REGISTRATION_STATUS.ACCOUNT_CREATION_MAIL_RESENT]: "purple",
+  [EMP_REGISTRATION_STATUS.PASSWORD_RESET_MAIL_SENT]: "cyan",
+};
+
+
 // ─── Course Status ───────────────────────────────────────────────────────────────
 // Used in: courses.is_active
 export const COURSE_STATUS = {
