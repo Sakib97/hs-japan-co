@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [studentStatus, setStudentStatus] = useState(null);
   const [employeeStatus, setEmployeeStatus] = useState(null);
   const fetchedUid = useRef(null);
+  const isSuperAdmin = !!userMeta?.is_superadmin;
 
   // NEW: store realtime channel
   const studentChannelRef = useRef(null);
@@ -246,6 +247,9 @@ export const AuthProvider = ({ children }) => {
         setUserMeta,
         setLoading,
         userMeta,
+        isSuperAdmin,
+        // Backward-compat alias (typo-safe)
+        isSuparAdmin: isSuperAdmin,
         loading,
         userMetaLoading,
         studentStatus,

@@ -68,19 +68,39 @@ const SetupPassword = () => {
         return;
       }
 
-      // 1.5 if user role is student,
-      // make student table's status = "enrolled"
-      if (data?.user && role === "student") {
-        const { error: updateError } = await supabase
-          .from("student")
-          .update({ status: "enrolled" })
-          .eq("email", email);
-        if (updateError) {
-          console.error("Error updating student status:", updateError);
-          showToast(
-            "Failed to update student status. Please contact support.",
-            "error",
-          );
+      // 1.5 Mark registration complete based on role
+      if (data?.user) {
+        const { error: completeError } = await supabase.rpc(
+          "complete_user_registration",
+          {
+            p_email: email,
+            p_role: role,
+          },
+        );
+
+        if (completeError) {
+          console.error("Error completing registration:", completeError);
+          const msg = completeError.message || "";
+          if (msg.includes("STUDENT_NOT_FOUND")) {
+            showToast(
+              "Student record not found. Please contact support.",
+              "error",
+            );
+          } else if (msg.includes("EMPLOYEE_NOT_FOUND")) {
+            showToast(
+              "Employee record not found. Please contact support.",
+              "error",
+            );
+          } else if (msg.includes("ADMIN_NOT_FOUND")) {
+            showToast("Admin record not found. Please contact support.", "error");
+          } else if (msg.includes("INVALID_ROLE")) {
+            showToast("Invalid user role. Please contact support.", "error");
+          } else {
+            showToast(
+              "Failed to finalize registration. Please contact support.",
+              "error",
+            );
+          }
         }
       }
 

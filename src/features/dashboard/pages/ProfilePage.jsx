@@ -35,10 +35,9 @@ const ProfilePage = () => {
   const handleSaveName = async () => {
     if (!nameValue.trim()) return;
     setNameSaving(true);
-    const { error } = await supabase
-      .from("users_meta")
-      .update({ name: nameValue.trim() })
-      .eq("uid", user.id);
+    const { error } = await supabase.rpc("update_my_profile", {
+      p_name: nameValue.trim(),
+    });
     if (error) {
       showToast("Failed to update name.", "error");
     } else {
@@ -128,10 +127,10 @@ const ProfilePage = () => {
       const publicUrl = await uploadImage(renamedFile, "profile_pics", "pics");
 
       // Update DB
-      const { error: dbError } = await supabase
-        .from("users_meta")
-        .update({ avatar_url: publicUrl, avatar_image_size: file.size })
-        .eq("email", user.email);
+      const { error: dbError } = await supabase.rpc("update_my_profile", {
+        p_avatar_url: publicUrl,
+        p_avatar_image_size: file.size,
+      });
       if (dbError) throw new Error(dbError.message);
 
       setUserMeta((prev) => ({
