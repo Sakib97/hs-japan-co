@@ -280,20 +280,16 @@ const NavigationBar = () => {
                   <Button
                     as={Link}
                     to="/dashboard"
-                    className={styles.loginBtn}
+                    className={`${styles.loginBtn} ${styles.loginBtnUser}`}
                     onClick={handleClose}
+                    title={userMeta?.name ?? user.email}
                   >
                     {/* <div className={styles.loginIcon}>
-                      <BellOutlined />
-                    </div>
-                    <span
-                      style={{
-                        borderLeft: "1px solid rgba(255,255,255,0.5)",
-                        height: "20px",
-                        margin: "0 5px",
-                      }}
-                    ></span> */}
-                    {userMeta?.name ?? user.email}
+                      <i className="fa-solid fa-user"></i>
+                    </div> */}
+                    <span className={styles.loginBtnName}>
+                      {userMeta?.name ?? user.email}
+                    </span>
                   </Button>
                 ) : (
                   <Button
@@ -527,6 +523,7 @@ const NavigationBar = () => {
                       className={styles.loginBtn}
                       onClick={handleClose}
                       style={{ width: "100%", justifyContent: "center" }}
+                      title={userMeta?.name ?? user.email}
                     >
                       <div className={styles.loginIcon}>
                         <i className="fa-solid fa-user"></i>
@@ -536,9 +533,12 @@ const NavigationBar = () => {
                           borderLeft: "1px solid rgba(255,255,255,0.5)",
                           height: "20px",
                           margin: "0 5px",
+                          flexShrink: 0,
                         }}
                       ></span>
-                      {userMeta?.name ?? user.email}
+                      <span className={styles.loginBtnName}>
+                        {userMeta?.name ?? user.email}
+                      </span>
                     </Button>
                   </div>
                 ) : (
