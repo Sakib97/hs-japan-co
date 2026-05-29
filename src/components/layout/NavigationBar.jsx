@@ -110,14 +110,20 @@ const NavigationBar = () => {
       {" "}
       <Navbar
         variant="dark"
-        expand="lg"
+        expand="xl"
         // className="shadow-sm mb-3"
         className={`shadow-sm fixed-top py-1 ${
           showNavbar ? styles.navbarShow : styles.navbarHide
         }`}
         style={{ backgroundColor: "#2D2A4A" }}
       >
-        <Container style={{ padding: "0px 10px", margin: "0 0 0 10vw" }}>
+        {/* <Container style={{ padding: "0px 10px", margin: "0 0 0 15vw" }}> */}
+        <Container
+          style={{
+            padding: "0px 10px",
+            margin: isMobile ? "0 0 0 10vw" : "0 0 0 15vw",
+          }}
+        >
           <Navbar.Brand className={styles.navbarLogo} href="/">
             <img
               alt=""
@@ -136,11 +142,11 @@ const NavigationBar = () => {
 
           <Navbar.Toggle
             onClick={handleShow}
-            aria-controls="offcanvasNavbar-expand-lg"
+            aria-controls="offcanvasNavbar-expand-xl"
           />
           <Navbar.Offcanvas
-            id="offcanvasNavbar-expand-lg"
-            aria-labelledby="offcanvasNavbarLabel-expand-lg"
+            id="offcanvasNavbar-expand-xl"
+            aria-labelledby="offcanvasNavbarLabel-expand-xl"
             placement="start"
             show={show}
             onHide={handleClose}
@@ -151,7 +157,7 @@ const NavigationBar = () => {
               onHide={handleClose}
               className="justify-content-center"
             >
-              <Offcanvas.Title id="offcanvasNavbarLabel-expand-lg">
+              <Offcanvas.Title id="offcanvasNavbarLabel-expand-xl">
                 Menu
               </Offcanvas.Title>
             </Offcanvas.Header>
@@ -162,11 +168,11 @@ const NavigationBar = () => {
               <Nav
                 style={{ fontSize: "1.1rem" }}
                 className={`
-                                    d-none d-lg-flex
+                                    d-none d-xl-flex
                                     ms-auto        /* push to right on large screens */
-                                    flex-lg-row    /* horizontal on large screens */
+                                    flex-xl-row    /* horizontal on large screens */
                                     flex-column    /* vertical on small screens */
-                                    align-items-lg-center
+                                    align-items-xl-center
                                     align-items-center  /* center align on small */
                                     gap-3
                                     ${styles.desktopNav}
@@ -314,7 +320,7 @@ const NavigationBar = () => {
               </Nav>
 
               {/* Mobile Menu */}
-              <div className="d-lg-none d-flex flex-column gap-0">
+              <div className="d-xl-none d-flex flex-column gap-0">
                 <div className={styles.mobileMenuItem}>
                   <Link
                     to="/"

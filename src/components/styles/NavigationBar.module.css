@@ -143,19 +143,7 @@
 
 .navbarLogo {
   position: relative;
-  left: -100px;
-}
-
-/* for small screens */
-@media (max-width: 1450px) {
-  .logo {
-    transform: scale(1);
-  }
-
-  .navbarLogo {
-    position: relative;
-    left: 0;
-  }
+  left: -190px;
 }
 
 .desktopNav :global(.nav-link),
@@ -163,7 +151,23 @@
   white-space: nowrap;
 }
 
-@media (min-width: 992px) and (max-width: 1280px) {
+/* for small screens */
+@media (max-width: 1450px) {
+  .logo {
+    transform: scale(1.2);
+  }
+
+  .navbarLogo {
+    position: relative;
+    left: -30px;
+  }
+  .loginBtnUser {
+    max-width: min(100px, 10vw);
+  }
+}
+
+
+@media (min-width: 992px) and (max-width: 1450px) {
   .desktopNav {
     gap: 0.4rem !important;
     font-size: 0.9rem !important;
@@ -172,5 +176,9 @@
   .desktopNav :global(.dropdown-toggle) {
     padding-left: 0.35rem !important;
     padding-right: 0.35rem !important;
+  }
+
+  .loginBtnUser {
+    max-width: min(150px, 10vw);
   }
 }
