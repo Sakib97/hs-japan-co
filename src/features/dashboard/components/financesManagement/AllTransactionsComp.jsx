@@ -11,7 +11,7 @@ import {
   Tooltip,
   Dropdown,
   DatePicker,
-  Spin,
+  Spin, Space,
 } from "antd";
 import {
   SearchOutlined,
@@ -983,7 +983,7 @@ const AllTransactionsComp = () => {
       >
         {viewRecord && (
           <Descriptions
-            column={{ xs: 1, sm: 2, md: 2, lg: 2, xl: 2 }}
+            column={{ xs: 1, sm: 2, md: 2, lg: 2, xl: 2, xxl: 2, xxxl: 2 }}
             size="small"
             bordered
             style={{ marginTop: 12 }}
@@ -1056,7 +1056,14 @@ const AllTransactionsComp = () => {
                   width={200}
                   alt="payment proof"
                   style={{ borderRadius: 6, objectFit: "cover" }}
-                  preview
+                  preview={{
+                    mask: { blur: true },
+                    cover: (
+                      <Space vertical align="center">
+                        <i style={{ fontSize: 30 }} className="fi fi-br-zoom-in"></i>
+                      </Space>
+                    ),
+                  }}
                 />
               ) : (
                 "—"
