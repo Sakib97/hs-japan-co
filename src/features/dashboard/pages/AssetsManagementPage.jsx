@@ -93,12 +93,12 @@ const AssetsManagementPage = () => {
               percent={storagePercent}
               showInfo={false}
               strokeColor="#b91c1c"
-              trailColor="#e5e7eb"
+              railColor="#e5e7eb"
               size="small"
             />
             <p className={styles.storageInfo}>
-              {storageUsedGB} GB of {STORAGE_TOTAL_GB} GB used <br />
-               ({storagePercent}% used)
+              {storageUsedGB} GB of {STORAGE_TOTAL_GB} GB used <br />(
+              {storagePercent}% used)
             </p>
           </Spin>
         </div>

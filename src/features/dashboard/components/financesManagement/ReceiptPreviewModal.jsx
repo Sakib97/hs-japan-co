@@ -113,7 +113,7 @@ const ReceiptPreviewModal = ({
       centered
       title={null}
       className={styles.modal}
-      destroyOnClose
+      destroyOnHidden
     >
       {/* ── Action bar ── */}
       <div className={styles.actionBar}>

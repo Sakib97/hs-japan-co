@@ -422,7 +422,10 @@ const TaskDirectoryComp = () => {
         onCancel={() => setViewRecord(null)}
         title="Task Details"
         width={700}
-        bodyStyle={{ maxHeight: "70vh", overflowY: "auto" }}
+        styles={{
+          body: { maxHeight: "70vh", overflowY: "auto" },
+        }}
+        destroyOnHidden
         footer={[
           <Button key="close" onClick={() => setViewRecord(null)}>
             Close

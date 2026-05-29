@@ -247,7 +247,7 @@ const StudentProfileModal = ({ email, open, onClose }) => {
       footer={null}
       width={620}
       title={null}
-      destroyOnClose
+      destroyOnHidden
     >
       {isLoading ? (
         <div className={styles.loadingWrapper}>

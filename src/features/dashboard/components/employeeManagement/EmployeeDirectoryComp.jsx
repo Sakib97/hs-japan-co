@@ -159,16 +159,44 @@ const getColumns = (onChangeStatus, onChangeDeptDesig, onSendMail) => [
           </span>
         </Tooltip>
         <Tooltip title="Change Employment Status">
-          <i
-            className={`fi fi-rr-career-growth ${styles.actionIcon}`}
-            onClick={() => onChangeStatus(record)}
-          ></i>
+          <span
+            role="button"
+            tabIndex={0}
+            className={styles.mailActionBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              onChangeStatus(record);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                e.stopPropagation();
+                onChangeStatus(record);
+              }
+            }}
+          >
+            <i className={`fi fi-rr-career-growth ${styles.actionIcon}`} />
+          </span>
         </Tooltip>
         <Tooltip title="Change Department/Designation">
-          <i
-            className={`fi fi-rr-pc-chair ${styles.actionIcon}`}
-            onClick={() => onChangeDeptDesig(record)}
-          ></i>
+          <span
+            role="button"
+            tabIndex={0}
+            className={styles.mailActionBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              onChangeDeptDesig(record);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                e.stopPropagation();
+                onChangeDeptDesig(record);
+              }
+            }}
+          >
+            <i className={`fi fi-rr-pc-chair ${styles.actionIcon}`} />
+          </span>
         </Tooltip>
       </div>
     ),
@@ -239,6 +267,12 @@ const EmployeeDirectoryComp = () => {
         queryKey: [QK_NOTIFICATIONS, statusModal.email],
       });
       setStatusModal({ open: false, email: null, newStatus: null });
+      showToast("Employment status updated successfully!", "success");
+    } catch (err) {
+      showToast(
+        "Failed to update employment status: " + err.message,
+        "error",
+      );
     } finally {
       setStatusUpdating(false);
     }
@@ -428,6 +462,9 @@ const EmployeeDirectoryComp = () => {
         queryKey: [QK_NOTIFICATIONS, deptDesigModal.email],
       });
       closeDeptDesigModal();
+      showToast("Department updated successfully!", "success");
+    } catch (err) {
+      showToast("Failed to update department: " + err.message, "error");
     } finally {
       setSavingDept(false);
     }
@@ -455,6 +492,9 @@ const EmployeeDirectoryComp = () => {
         queryKey: [QK_NOTIFICATIONS, deptDesigModal.email],
       });
       closeDeptDesigModal();
+      showToast("Designation updated successfully!", "success");
+    } catch (err) {
+      showToast("Failed to update designation: " + err.message, "error");
     } finally {
       setSavingDesig(false);
     }
@@ -490,6 +530,12 @@ const EmployeeDirectoryComp = () => {
         queryKey: [QK_NOTIFICATIONS, deptDesigModal.email],
       });
       closeDeptDesigModal();
+      showToast("Department and designation updated successfully!", "success");
+    } catch (err) {
+      showToast(
+        "Failed to update department and designation: " + err.message,
+        "error",
+      );
     } finally {
       setSavingBoth(false);
     }

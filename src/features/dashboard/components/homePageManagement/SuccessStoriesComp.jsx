@@ -275,7 +275,7 @@ const SuccessStoriesComp = () => {
         cancelText="Cancel"
         confirmLoading={saving}
         width={520}
-        destroyOnClose
+        destroyOnHidden
       >
         {/* Avatar upload */}
         <div className={styles.avatarUploadArea}>

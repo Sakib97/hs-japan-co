@@ -466,7 +466,7 @@ const CreateEmployeeModal = ({ open, onClose }) => {
       open={open}
       onCancel={handleClose}
       footer={null}
-      destroyOnClose
+      destroyOnHidden
       centered
       className={styles.modal}
       width={480}

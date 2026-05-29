@@ -216,7 +216,6 @@
   color: #888;
   cursor: pointer;
   transition: color 0.15s;
-  pointer-events: none;
 }
 
 .actionIcon:hover {
