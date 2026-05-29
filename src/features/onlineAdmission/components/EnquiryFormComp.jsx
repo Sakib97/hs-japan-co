@@ -11,6 +11,16 @@ import {
 } from "../../../config/statusAndRoleConfig";
 import { QK_STUDENTS, QK_STUDENT_STATS } from "../../../config/queryKeyConfig";
 
+const mapEnquiryFormRpcError = (message = "") => {
+  if (message.includes("EMAIL_ALREADY_REGISTERED")) {
+    return "This email is already registered !";
+  }
+  if (message.includes("student_phone_key")) {
+    return "This phone number is already registered !";
+  }
+  return null;
+};
+
 const validationSchema = Yup.object({
   fullName: Yup.string()
     .min(2, "Name must be at least 2 characters")
@@ -58,8 +68,14 @@ const EnquiryFormComp = () => {
       });
 
       if (error) {
-        if (error.code === "23505") {
-          showToast("This Phone / Email is already registered.", "error");
+        const mappedMessage = mapEnquiryFormRpcError(error.message);
+        if (mappedMessage) {
+          showToast(mappedMessage, "error");
+        } else if (error.code === "23505") {
+          showToast(
+            "This phone or email is already registered.",
+            "error",
+          );
         } else {
           showToast(
             error.message || "Submission failed. Please try again.",
