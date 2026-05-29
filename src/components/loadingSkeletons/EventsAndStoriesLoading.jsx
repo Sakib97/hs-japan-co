@@ -26,7 +26,7 @@ const EventsAndStoriesLoading = () => {
           }}
         />
 
-        <Space direction="vertical" size={18} style={{ width: "100%" }}>
+        <Space orientation="vertical" size={18} style={{ width: "100%" }}>
           {[1, 2].map((item) => (
             <div
               key={item}
