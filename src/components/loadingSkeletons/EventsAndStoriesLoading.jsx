@@ -36,28 +36,50 @@ const EventsAndStoriesLoading = () => {
                 padding: 18,
               }}
             >
-              <Flex justify="space-between" align="center" gap={16}>
-                <Flex align="center" gap={16} flex={1}>
+              <Flex
+                vertical={isMobile}
+                justify="space-between"
+                align={isMobile ? "stretch" : "center"}
+                gap={16}
+              >
+                <Flex align="flex-start" gap={16} flex={1}>
                   <Skeleton.Node
                     active
                     style={{
-                      width: 60,
-                      height: 70,
-                      borderRadius: 12,
+                      width: 58,
+                      height: 58,
+                      borderRadius: 10,
+                      flexShrink: 0,
                     }}
                   />
 
-                  <div style={{ flex: 1 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <Skeleton.Input
                       active
                       style={{
-                        width: "70%",
+                        width: "75%",
                         height: 22,
                         marginBottom: 10,
                       }}
                     />
-                    <br />
-
+                    <Skeleton.Input
+                      active
+                      size="small"
+                      style={{
+                        width: "45%",
+                        height: 14,
+                        marginBottom: 8,
+                      }}
+                    />
+                    <Skeleton.Input
+                      active
+                      size="small"
+                      style={{
+                        width: "60%",
+                        height: 14,
+                        marginBottom: 8,
+                      }}
+                    />
                     <Skeleton.Input
                       active
                       size="small"
@@ -72,8 +94,8 @@ const EventsAndStoriesLoading = () => {
                 <Skeleton.Node
                   active
                   style={{
-                    width: isMobile ? 50 : 120,
-                    height: 60,
+                    width: isMobile ? "100%" : 120,
+                    height: isMobile ? 150 : 72,
                     borderRadius: 10,
                   }}
                 />

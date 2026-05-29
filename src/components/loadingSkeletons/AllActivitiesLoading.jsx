@@ -8,11 +8,15 @@ const AllActivitiesLoading = () => {
 
   return (
     <Space
-      direction="vertical"
+      orientation="vertical"
       size={18}
       style={{
         width: "100%",
-        padding: isMobile ? 16 : 30,
+        // padding: isMobile ? 16 : 30,
+        paddingTop: isMobile ? 16 : 22,
+        paddingBottom: isMobile ? 16 : 22,
+        paddingLeft: isMobile ? 16 : 22,
+        paddingRight: isMobile ? 10 : 22,
       }}
     >
       {[1, 2].map((item) => (
@@ -52,7 +56,7 @@ const AllActivitiesLoading = () => {
                 <Skeleton.Input
                   active
                   style={{
-                    width: isMobile ? 180 : 360,
+                    width: isMobile ? 120 : 360,
                     height: 14,
                     marginBottom: 12,
                   }}
@@ -62,15 +66,12 @@ const AllActivitiesLoading = () => {
                   active
                   style={{
                     width: isMobile ? 100 : 160,
-                    height:10,
+                    height: 10,
                     marginBottom: 12,
                   }}
                 />
-
-                
               </div>
             </Flex>
-
           </Flex>
         </div>
       ))}

@@ -97,6 +97,14 @@
   box-shadow: 0 2px 10px rgba(30, 27, 75, 0.12);
 }
 
+.eventCardTop {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 1;
+  min-width: 0;
+}
+
 .eventCard:hover {
   background: #4f46e5;
   transform: translateY(-3px);
@@ -176,10 +184,24 @@
 }
 
 /* ── Cover thumbnail ── */
-.coverThumb {
+.coverWrap {
   flex-shrink: 0;
-  width: 110px;
-  height: 80px;
+  width: 220px;
+  height: 100px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.coverWrap :global(.ant-image),
+.coverWrap :global(.ant-image-img) {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.coverThumb {
+  width: 100%;
+  height: 100%;
   border-radius: 10px;
   object-fit: cover;
   opacity: 0.85;
@@ -238,28 +260,64 @@
   }
 
   .eventCard {
-    padding: 16px 18px;
-    gap: 16px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 18px 16px;
+    gap: 14px;
   }
 
-  .coverThumb {
+  .eventCard:hover {
+    transform: none;
+  }
+
+  .eventCardTop {
+    align-items: flex-start;
+    gap: 14px;
     width: 100%;
-    height: 140px;
-    border-radius: 8px;
-    order: 3;
   }
 
   .dateBadge {
     width: 64px;
     height: 64px;
+    border-radius: 10px;
   }
 
   .dateDay {
-    font-size: 1.4rem;
+    font-size: 1.45rem;
+  }
+
+  .dateMonth {
+    font-size: 0.62rem;
+  }
+
+  .eventTitle {
+    font-size: 1.05rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .eventMeta {
-    gap: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .metaItem {
+    width: 100%;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .coverWrap {
+    width: 100%;
+    height: 170px;
+    border-radius: 12px;
+  }
+
+  .coverThumb {
+    border-radius: 12px;
   }
 }

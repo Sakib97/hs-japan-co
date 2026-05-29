@@ -86,7 +86,7 @@
 .tile {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 70px;
   background: #fff;
   border-radius: 14px;
   padding: 16px;
@@ -104,11 +104,15 @@
 /* ── Image ── */
 .imageWrap {
   flex-shrink: 0;
-  width: 180px;
-  height: 120px;
+  width: 110px;
+  height: 80px;
   border-radius: 10px;
-  overflow: hidden;
-  background: #f3f4f6;
+  object-fit: cover;
+  transition: opacity 0.25s;
+  /* cenetr the image */
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
 }
 
 .tileImage {
@@ -116,6 +120,7 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s;
+  
 }
 
 .tile:hover .tileImage {

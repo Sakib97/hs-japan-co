@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Input, Pagination, Spin } from "antd";
+import { Input, Pagination, Spin, Image, Space } from "antd";
 import { SearchOutlined, LoadingOutlined } from "@ant-design/icons";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_ALL_EVENTS } from "../../../config/queryKeyConfig";
 import styles from "../styles/AllEventsPage.module.css";
 import AllEventsLoading from "../../../components/loadingSkeletons/AllEventsLoading";
+// import { useBreakpoint } from "antd";
 
 
 const PAGE_SIZE = 8;
@@ -49,7 +50,8 @@ const AllEventsPage = () => {
           "id, event_title, cover_url, event_date, event_time, event_place, event_speaker",
           { count: "exact" },
         )
-        .order("created_at", { ascending: false })
+        // .order("created_at", { ascending: false })
+        .order("event_date", { ascending: true })
         .range((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE - 1);
 
       if (searchQuery.trim()) {
@@ -129,49 +131,64 @@ const AllEventsPage = () => {
               const { day, month, year } = parseDate(event.event_date);
               return (
                 <div key={event.id} className={styles.eventCard}>
-                  {/* Date badge */}
-                  <div className={styles.dateBadge}>
-                    <span className={styles.dateDay}>{day}</span>
-                    <span className={styles.dateMonth}>
-                      {month}
-                      {year ? ` ${year}` : ""}
-                    </span>
-                  </div>
+                  <div className={styles.eventCardTop}>
+                    {/* Date badge */}
+                    <div className={styles.dateBadge}>
+                      <span className={styles.dateDay}>{day}</span>
+                      <span className={styles.dateMonth}>
+                        {month}
+                        {year ? ` ${year}` : ""}
+                      </span>
+                    </div>
 
-                  {/* Info */}
-                  <div className={styles.eventInfo}>
-                    <h3 className={styles.eventTitle}>
-                      {event.event_title ?? "—"}
-                    </h3>
-                    <div className={styles.eventMeta}>
-                      {event.event_time && (
-                        <span className={styles.metaItem}>
-                          <i className="fa-regular fa-clock" />
-                          {event.event_time}
-                        </span>
-                      )}
-                      {event.event_place && (
-                        <span className={styles.metaItem}>
-                          <i className="fa-solid fa-building-columns" />
-                          {event.event_place}
-                        </span>
-                      )}
-                      {event.event_speaker && (
-                        <span className={styles.metaItem}>
-                          <i className="fa-regular fa-user" />
-                          {event.event_speaker}
-                        </span>
-                      )}
+                    {/* Info */}
+                    <div className={styles.eventInfo}>
+                      <h3 className={styles.eventTitle}>
+                        {event.event_title ?? "—"}
+                      </h3>
+                      <div className={styles.eventMeta}>
+                        {event.event_time && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-regular fa-clock" />
+                            {event.event_time}
+                          </span>
+                        )}
+                        {event.event_place && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-solid fa-building-columns" />
+                            {event.event_place}
+                          </span>
+                        )}
+                        {event.event_speaker && (
+                          <span className={styles.metaItem}>
+                            <i className="fa-regular fa-user" />
+                            {event.event_speaker}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Cover thumbnail */}
+                  {/* Cover image */}
                   {event.cover_url && (
-                    <img
-                      src={event.cover_url}
-                      alt={event.event_title ?? ""}
-                      className={styles.coverThumb}
-                    />
+                    <div className={styles.coverWrap}>
+                      <Image
+                        src={event.cover_url}
+                        alt={event.event_title ?? ""}
+                        className={styles.coverThumb}
+                        preview={{
+                          mask: true,
+                          cover: (
+                            <Space vertical align="center">
+                              <i
+                                style={{ fontSize: 30 }}
+                                className="fi fi-br-zoom-in"
+                              ></i>
+                            </Space>
+                          ),
+                        }}
+                      />
+                    </div>
                   )}
                 </div>
               );

@@ -92,49 +92,53 @@ const EventsTestimonialsSection = () => {
                 const { day, month, year } = parseDate(event.event_date);
                 return (
                   <div key={event.id} className={styles.eventCard}>
-                    <div
-                      className={styles.dateBadge}
-                      style={{
-                        background: ACCENT_COLORS[i % ACCENT_COLORS.length],
-                      }}
-                    >
-                      <span className={styles.dateDay}>{day}</span>
-                      <span className={styles.dateMonthYear}>
-                        {month}
-                        {year ? `, ${year}` : ""}
-                      </span>
-                    </div>
-                    <div className={styles.eventInfo}>
-                      <h4 className={styles.eventTitle}>
-                        {event.event_title ?? "—"}
-                      </h4>
-                      <div className={styles.eventMeta}>
-                        {event.event_time && (
-                          <span className={styles.metaItem}>
-                            <i className="fa-regular fa-clock" />
-                            {event.event_time}
-                          </span>
-                        )}
-                        {event.event_place && (
-                          <span className={styles.metaItem}>
-                            <i className="fa-solid fa-building-columns" />
-                            {event.event_place}
-                          </span>
-                        )}
-                        {event.event_speaker && (
-                          <span className={styles.metaItem}>
-                            <i className="fa-regular fa-user" />
-                            {event.event_speaker}
-                          </span>
-                        )}
+                    <div className={styles.eventCardTop}>
+                      <div
+                        className={styles.dateBadge}
+                        style={{
+                          background: ACCENT_COLORS[i % ACCENT_COLORS.length],
+                        }}
+                      >
+                        <span className={styles.dateDay}>{day}</span>
+                        <span className={styles.dateMonthYear}>
+                          {month}
+                          {year ? `, ${year}` : ""}
+                        </span>
+                      </div>
+                      <div className={styles.eventInfo}>
+                        <h4 className={styles.eventTitle}>
+                          {event.event_title ?? "—"}
+                        </h4>
+                        <div className={styles.eventMeta}>
+                          {event.event_time && (
+                            <span className={styles.metaItem}>
+                              <i className="fa-regular fa-clock" />
+                              {event.event_time}
+                            </span>
+                          )}
+                          {event.event_place && (
+                            <span className={styles.metaItem}>
+                              <i className="fa-solid fa-building-columns" />
+                              {event.event_place}
+                            </span>
+                          )}
+                          {event.event_speaker && (
+                            <span className={styles.metaItem}>
+                              <i className="fa-regular fa-user" />
+                              {event.event_speaker}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                     {event.cover_url && (
-                      <img
-                        src={event.cover_url}
-                        alt={event.event_title ?? ""}
-                        className={styles.coverThumb}
-                      />
+                      <div className={styles.coverWrap}>
+                        <img
+                          src={event.cover_url}
+                          alt={event.event_title ?? ""}
+                          className={styles.coverThumb}
+                        />
+                      </div>
                     )}
                   </div>
                 );

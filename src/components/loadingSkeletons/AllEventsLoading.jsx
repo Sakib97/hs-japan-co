@@ -8,7 +8,7 @@ const AllEventsLoading = () => {
 
   return (
     <Space
-      direction="vertical"
+      orientation="vertical"
       size={18}
       style={{
         width: "100%",
@@ -24,49 +24,70 @@ const AllEventsLoading = () => {
             padding: isMobile ? 16 : 22,
           }}
         >
-          <Flex justify="space-between" align="center" gap={16}>
-            {/* Left */}
-            <Flex align="center" gap={16} flex={1}>
-              {/* Date */}
+          <Flex
+            vertical={isMobile}
+            justify="space-between"
+            align={isMobile ? "stretch" : "center"}
+            gap={16}
+          >
+            {/* Top: date + content */}
+            <Flex align="flex-start" gap={16} flex={1}>
               <Skeleton.Node
                 active
                 style={{
-                  width: isMobile ? 55 : 70,
-                  height: isMobile ? 70 : 85,
-                  borderRadius: 14,
+                  width: isMobile ? 64 : 76,
+                  height: isMobile ? 64 : 76,
+                  borderRadius: 10,
                   flexShrink: 0,
                 }}
               />
 
-              {/* Content */}
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <Skeleton.Input
                   active
                   style={{
-                    width: isMobile ? 100 : 260,
+                    width: isMobile ? "80%" : 260,
                     height: 24,
                     marginBottom: 12,
                   }}
                 />
+                
+                <br />
                 <Skeleton.Input
                   active
                   style={{
-                    width: isMobile ? 200 : 360,
+                    width: isMobile ? "55%" : 200,
                     height: 14,
-                    marginBottom: 12,
+                    marginBottom: 8,
                   }}
                 />
-
+              <br />
                 
+                <Skeleton.Input
+                  active
+                  style={{
+                    width: isMobile ? "70%" : 240,
+                    height: 14,
+                    marginBottom: 8,
+                  }}
+                />
+                <br />
+                <Skeleton.Input
+                  active
+                  style={{
+                    width: isMobile ? "50%" : 180,
+                    height: 14,
+                  }}
+                />
               </div>
             </Flex>
 
-            {/* Right Image */}
+            {/* Bottom image on mobile, side image on desktop */}
             <Skeleton.Node
               active
               style={{
-                width: isMobile ? 0 : 100,
-                height: isMobile ? 0 : 80,
+                width: isMobile ? "100%" : 150,
+                height: isMobile ? 170 : 100,
                 borderRadius: 12,
                 flexShrink: 0,
               }}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Input, Pagination, Spin } from "antd";
+import { Input, Pagination, Spin, Image, Space } from "antd";
 import { SearchOutlined, LoadingOutlined } from "@ant-design/icons";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_ALL_ACTIVITIES } from "../../../config/queryKeyConfig";
@@ -22,6 +22,10 @@ const formatDate = (dateStr) => {
 };
 
 const AllActivitiesPage = () => {
+  // implement isMobile hook
+  // see if mobile view
+  const isMobile = window.innerWidth < 768;
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -113,10 +117,25 @@ const AllActivitiesPage = () => {
               <div key={activity.id} className={styles.tile}>
                 {activity.cover_url && (
                   <div className={styles.imageWrap}>
-                    <img
+                    {/* <img
                       src={activity.cover_url}
                       alt={activity.activity_title ?? ""}
                       className={styles.tileImage}
+                    /> */}
+                    <Image
+                      src={activity.cover_url}
+                      alt={activity.activity_title ?? ""}
+                      className={styles.tileImage}
+                      width={isMobile ? "" : 160}
+                      height={isMobile ? "" : 80}
+                      style={{ objectFit: "cover", borderRadius: 10 }}
+                      preview={{ mask: true,
+                        cover: (
+                          <Space vertical align="center">
+                            <i style={{ fontSize: 30 }} className="fi fi-br-zoom-in"></i>
+                          </Space>
+                        ),
+                       }}
                     />
                   </div>
                 )}
