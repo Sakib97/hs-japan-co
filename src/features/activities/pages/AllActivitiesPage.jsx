@@ -38,7 +38,7 @@ const AllActivitiesPage = () => {
           count: "exact",
         })
         // .order("created_at", { ascending: false })
-        .order("activity_date", { ascending: true })
+        .order("activity_date", { ascending: false })
         .range((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE - 1);
 
       if (searchQuery.trim()) {

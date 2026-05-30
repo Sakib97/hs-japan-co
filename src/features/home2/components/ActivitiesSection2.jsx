@@ -31,7 +31,7 @@ const ActivitiesSection2 = () => {
       const { data, error } = await supabase
         .from("activities_page")
         .select("id, activity_title, cover_url, activity_desc, activity_date")
-        .order("activity_date", { ascending: true })
+        .order("activity_date", { ascending: false })
         .limit(4);
       if (error) throw new Error(error.message);
       return data ?? [];
