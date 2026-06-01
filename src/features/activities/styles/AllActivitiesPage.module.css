@@ -81,12 +81,15 @@
   flex-direction: column;
   gap: 18px;
 }
+.list:hover {
+  cursor: pointer;
+}
 
 /* ── Tile ── */
 .tile {
   display: flex;
   align-items: center;
-  gap: 70px;
+  gap: 20px;
   background: #fff;
   border-radius: 14px;
   padding: 16px;
@@ -104,15 +107,38 @@
 /* ── Image ── */
 .imageWrap {
   flex-shrink: 0;
-  width: 110px;
+  width: 150px;
   height: 80px;
   border-radius: 10px;
   object-fit: cover;
   transition: opacity 0.25s;
-  /* cenetr the image */
-  /* display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.zoomOverlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
   justify-content: center;
-  align-items: center; */
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+.zoomOverlay i {
+  color: white;
+  font-size: 28px;
+}
+
+/* show overlay when WHOLE tile is hovered */
+.tile:hover .zoomOverlay {
+  opacity: 1;
 }
 
 .tileImage {
@@ -120,7 +146,6 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s;
-  
 }
 
 .tile:hover .tileImage {

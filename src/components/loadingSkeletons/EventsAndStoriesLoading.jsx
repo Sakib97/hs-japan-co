@@ -53,7 +53,7 @@ const EventsAndStoriesLoading = () => {
                     }}
                   />
 
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", flex: 1, flexDirection: "column", minWidth: 0 }}>
                     <Skeleton.Input
                       active
                       style={{

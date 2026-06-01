@@ -176,18 +176,21 @@ const AllEventsPage = () => {
                         src={event.cover_url}
                         alt={event.event_title ?? ""}
                         className={styles.coverThumb}
-                        preview={{
-                          mask: true,
-                          cover: (
-                            <Space vertical align="center">
-                              <i
-                                style={{ fontSize: 30 }}
-                                className="fi fi-br-zoom-in"
-                              ></i>
-                            </Space>
-                          ),
-                        }}
+                        // preview={{
+                        //   mask: true,
+                        //   cover: (
+                        //     <Space vertical align="center">
+                        //       <i
+                        //         style={{ fontSize: 30 }}
+                        //         className="fi fi-br-zoom-in"
+                        //       ></i>
+                        //     </Space>
+                        //   ),
+                        // }}
                       />
+                      <div className={styles.zoomOverlay}>
+                        <i className="fi fi-br-zoom-in"></i>
+                      </div>
                     </div>
                   )}
                 </div>

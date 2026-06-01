@@ -7,7 +7,6 @@ import { QK_ALL_ACTIVITIES } from "../../../config/queryKeyConfig";
 import styles from "../styles/AllActivitiesPage.module.css";
 import AllActivitiesLoading from "../../../components/loadingSkeletons/AllActivitiesLoading";
 
-
 const PAGE_SIZE = 8;
 
 const formatDate = (dateStr) => {
@@ -83,7 +82,7 @@ const AllActivitiesPage = () => {
 
       {/* Content */}
       <div className={styles.container}>
-      {/* <AllActivitiesLoading /> */}
+        {/* <AllActivitiesLoading /> */}
 
         {/* Toolbar */}
         <div className={styles.toolbar}>
@@ -118,11 +117,6 @@ const AllActivitiesPage = () => {
               <div key={activity.id} className={styles.tile}>
                 {activity.cover_url && (
                   <div className={styles.imageWrap}>
-                    {/* <img
-                      src={activity.cover_url}
-                      alt={activity.activity_title ?? ""}
-                      className={styles.tileImage}
-                    /> */}
                     <Image
                       src={activity.cover_url}
                       alt={activity.activity_title ?? ""}
@@ -130,14 +124,22 @@ const AllActivitiesPage = () => {
                       width={isMobile ? "" : 160}
                       height={isMobile ? "" : 80}
                       style={{ objectFit: "cover", borderRadius: 10 }}
-                      preview={{ mask: true,
-                        cover: (
-                          <Space vertical align="center">
-                            <i style={{ fontSize: 30 }} className="fi fi-br-zoom-in"></i>
-                          </Space>
-                        ),
-                       }}
+                      // preview={{
+                      //   mask: true,
+                      //   cover: (
+                      //     <Space vertical align="center">
+                      //       <i
+                      //         style={{ fontSize: 30 }}
+                      //         className="fi fi-br-zoom-in"
+                      //       ></i>
+                      //     </Space>
+                      //   ),
+                      // }}
                     />
+
+                    <div className={styles.zoomOverlay}>
+                      <i className="fi fi-br-zoom-in"></i>
+                    </div>
                   </div>
                 )}
                 <div className={styles.tileContent}>
