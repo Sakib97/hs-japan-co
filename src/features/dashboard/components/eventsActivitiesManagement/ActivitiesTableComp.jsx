@@ -30,12 +30,14 @@ const BUCKET = "combined_page_images";
 const FOLDER = "activities_page";
 const MAX_SIZE = IMAGE_SIZES.ACTIVITIES_COVER.maxBytes;
 const MAX_LABEL = IMAGE_SIZES.ACTIVITIES_COVER.label;
+const PAGE_SIZE = 10;
 
 const ActivitiesTableComp = () => {
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
   const fileInputRef = useRef(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -44,18 +46,25 @@ const ActivitiesTableComp = () => {
   const [uploading, setUploading] = useState(false);
   const [togglingId, setTogglingId] = useState(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: [QK_ACTIVITIES],
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: [QK_ACTIVITIES, currentPage],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const from = (currentPage - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error, count } = await supabase
         .from("activities_page")
         .select(
           "id, activity_title, cover_url, activity_desc, activity_date, image_size, is_active, created_at",
+          { count: "exact" },
         )
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
       if (error) throw new Error(error.message);
-      return data;
+      return { rows: data ?? [], total: count ?? 0 };
     },
+    keepPreviousData: true,
   });
 
   const openCreate = () => {
@@ -303,12 +312,19 @@ const ActivitiesTableComp = () => {
 
       <Table
         columns={columns}
-        dataSource={data ?? []}
+        dataSource={data?.rows ?? []}
         rowKey="id"
-        loading={isLoading}
+        loading={isLoading || isFetching}
         size="small"
         scroll={{ x: "max-content" }}
-        pagination={{ pageSize: 10, showTotal: (t) => `${t} records` }}
+        pagination={{
+          current: currentPage,
+          pageSize: PAGE_SIZE,
+          total: data?.total ?? 0,
+          onChange: (page) => setCurrentPage(page),
+          showTotal: (t) => `${t} records`,
+          showSizeChanger: false,
+        }}
         className={styles.table}
       />
 
@@ -383,7 +399,11 @@ const ActivitiesTableComp = () => {
           >
             <Input placeholder="e.g. Cultural Day" />
           </Form.Item>
-          <Form.Item name="activity_date" label="Date">
+          <Form.Item name="activity_date" label="Date"
+          rules={[
+            { required: true, message: "Please select the activity date" },
+          ]}
+          >
             <DatePicker
               format="YYYY-MM-DD"
               style={{ width: "100%" }}

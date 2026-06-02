@@ -27,12 +27,14 @@ const BUCKET = "combined_page_images";
 const FOLDER = "events_page";
 const MAX_SIZE = IMAGE_SIZES.EVENTS_COVER.maxBytes;
 const MAX_LABEL = IMAGE_SIZES.EVENTS_COVER.label;
+const PAGE_SIZE = 10;
 
 const EventsTableComp = () => {
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
   const fileInputRef = useRef(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -41,18 +43,25 @@ const EventsTableComp = () => {
   const [uploading, setUploading] = useState(false);
   const [togglingId, setTogglingId] = useState(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: [QK_EVENTS],
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: [QK_EVENTS, currentPage],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const from = (currentPage - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error, count } = await supabase
         .from("events_page")
         .select(
           "id, event_title, cover_url, event_date, event_time, event_place, event_speaker, image_size, is_active, created_at",
+          { count: "exact" },
         )
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
       if (error) throw new Error(error.message);
-      return data;
+      return { rows: data ?? [], total: count ?? 0 };
     },
+    keepPreviousData: true,
   });
 
   const openCreate = () => {
@@ -127,9 +136,7 @@ const EventsTableComp = () => {
 
       const payload = {
         event_title: values.event_title?.trim() || null,
-        event_date: values.event_date
-          ? values.event_date.format("YYYY-MM-DD")
-          : null,
+        event_date: values.event_date.format("YYYY-MM-DD"),
         event_time: values.event_time
           ? values.event_time.format("hh:mm A")
           : null,
@@ -308,12 +315,19 @@ const EventsTableComp = () => {
 
       <Table
         columns={columns}
-        dataSource={data ?? []}
+        dataSource={data?.rows ?? []}
         rowKey="id"
-        loading={isLoading}
+        loading={isLoading || isFetching}
         size="small"
         scroll={{ x: "max-content" }}
-        pagination={{ pageSize: 10, showTotal: (t) => `${t} records` }}
+        pagination={{
+          current: currentPage,
+          pageSize: PAGE_SIZE,
+          total: data?.total ?? 0,
+          onChange: (page) => setCurrentPage(page),
+          showTotal: (t) => `${t} records`,
+          showSizeChanger: false,
+        }}
         className={styles.table}
       />
 
@@ -389,7 +403,14 @@ const EventsTableComp = () => {
             <Input placeholder="e.g. Japanese Language Seminar" />
           </Form.Item>
           <div className={styles.formRow}>
-            <Form.Item name="event_date" label="Date" style={{ flex: 1 }}>
+            <Form.Item
+              name="event_date"
+              label="Date"
+              style={{ flex: 1 }}
+              rules={[
+                { required: true, message: "Please select the event date" },
+              ]}
+            >
               <DatePicker
                 format="YYYY-MM-DD"
                 style={{ width: "100%" }}

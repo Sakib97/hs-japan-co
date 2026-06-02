@@ -15,14 +15,17 @@ import {
 import { showToast } from "../../../../components/layout/CustomToast";
 import { getFormattedDate } from "../../../../utils/dateUtil";
 import {
+  VISA_PAGE_STATUS,
   VISA_PAGE_STATUS_COLOR,
   VISA_PAGE_STATUS_OPTIONS,
 } from "../../../../config/statusAndRoleConfig";
 import styles from "./VisaPageDirectoryComp.module.css";
 import { deleteImage } from "../../../../utils/handleImage";
+import { useState } from "react";
 
 const VisaPageDirectoryComp = ({ onEdit }) => {
   const queryClient = useQueryClient();
+  const [togglingId, setTogglingId] = useState(null);
 
   const { data: pages = [], isLoading } = useQuery({
     queryKey: [QK_VISA_PAGES],
@@ -77,6 +80,32 @@ const VisaPageDirectoryComp = ({ onEdit }) => {
     },
   });
 
+  const handleTogglePublish = async (page) => {
+    const isPublished = page.publication_status === VISA_PAGE_STATUS.PUBLISHED;
+    const newStatus = isPublished
+      ? VISA_PAGE_STATUS.DRAFT
+      : VISA_PAGE_STATUS.PUBLISHED;
+
+    setTogglingId(page.id);
+    const { error } = await supabase
+      .from("visa_page")
+      .update({ publication_status: newStatus })
+      .eq("id", page.id);
+
+    if (error) {
+      showToast("Failed to update publication status.", "error");
+    } else {
+      await queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGES] });
+      await queryClient.invalidateQueries({ queryKey: [QK_PUBLISHED_VISA_PAGES] });
+      await queryClient.invalidateQueries({ queryKey: [QK_VISA_PAGE_BY_SLUG] });
+      showToast(
+        `Visa page ${newStatus === VISA_PAGE_STATUS.PUBLISHED ? "published" : "unpublished"} successfully.`,
+        "success",
+      );
+    }
+    setTogglingId(null);
+  };
+
   if (isLoading) {
     return (
       <div className={styles.grid}>
@@ -129,6 +158,26 @@ const VisaPageDirectoryComp = ({ onEdit }) => {
                   onClick={() => onEdit?.(page)}
                 />
               </Tooltip>,
+              
+              <Tooltip
+                title={status === VISA_PAGE_STATUS.PUBLISHED ? "Unpublish" : "Publish"}
+                key="toggle"
+              >
+                <button
+                  type="button"
+                  className={`${styles.toggle} ${status === VISA_PAGE_STATUS.PUBLISHED ? styles.toggleOn : styles.toggleOff} ${togglingId === page.id ? styles.toggleLoading : ""}`}
+                  onClick={() => handleTogglePublish(page)}
+                  aria-pressed={status === VISA_PAGE_STATUS.PUBLISHED}
+                  disabled={togglingId === page.id}
+                >
+                  {togglingId === page.id ? (
+                    <span className={styles.toggleSpinner} />
+                  ) : (
+                    <span className={styles.toggleThumb} />
+                  )}
+                </button>
+              </Tooltip>,
+
               <Tooltip title="Delete" key="delete">
                 <Popconfirm
                   title="Delete this visa page?"

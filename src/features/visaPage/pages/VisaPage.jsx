@@ -8,6 +8,7 @@ import VisaPageEligibilityComp from "../components/VisaPageEligibilityComp";
 import VisaPageApplicationProcessComp from "../components/VisaPageApplicationProcessComp";
 import VisaPageRequiredDocsComp from "../components/VisaPageRequiredDocsComp";
 import VisaPageLoading from "../../../components/loadingSkeletons/VisaPageLoading";
+import NotFound from "../../../components/common/NotFound";
 
 
 const VisaPage = () => {
@@ -38,11 +39,12 @@ const VisaPage = () => {
   if (isError || !data) {
     return (
       <div style={{ paddingTop: "80px" }}>
-        <Result
+        {/* <Result
           status="404"
           title="Page Not Found"
           subTitle="This visa page does not exist or has not been published yet."
-        />
+        /> */}
+        <NotFound />
       </div>
     );
   }
