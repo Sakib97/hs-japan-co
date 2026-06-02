@@ -50,6 +50,8 @@ const AllEventsPage = () => {
           "id, event_title, cover_url, event_date, event_time, event_place, event_speaker",
           { count: "exact" },
         )
+        // is_active is true
+        .eq("is_active", true)
         // .order("created_at", { ascending: false })
         .order("event_date", { ascending: true })
         .range((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE - 1);

@@ -67,6 +67,8 @@ export const QK_EVENTS = "events_page";
 export const QK_ALL_EVENTS = "all-events";
 // Used in: ActivitiesTableComp (admin dashboard)
 export const QK_ACTIVITIES = "activities_page";
+// Used in: ActivitiesSection2 (home page — active only, limit 4)
+export const QK_HOME_ACTIVITIES = "home-activities";
 // Used in: AllActivitiesPage (public paginated listing)
 export const QK_ALL_ACTIVITIES = "all-activities";
 

@@ -58,8 +58,9 @@ const EventsTestimonialsSection = () => {
       const { data, error } = await supabase
         .from("events_page")
         .select(
-          "id, event_title, cover_url, event_date, event_time, event_place, event_speaker",
+          "id, event_title, cover_url, event_date, event_time, event_place, event_speaker, is_active",
         )
+        .eq("is_active", true)
         .order("event_date", { ascending: true })
         .limit(4);
       if (error) throw new Error(error.message);

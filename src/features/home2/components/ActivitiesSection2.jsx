@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { List } from "antd";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { supabase } from "../../../config/supabaseClient";
-import { QK_ACTIVITIES } from "../../../config/queryKeyConfig";
+import { QK_HOME_ACTIVITIES } from "../../../config/queryKeyConfig";
 import styles from "./ActivitiesSection2.module.css";
 import AllActivitiesLoading from "../../../components/loadingSkeletons/AllActivitiesLoading";
 import { Grid } from "antd";
@@ -26,11 +26,12 @@ const ActivitiesSection2 = () => {
   const isMobile = !screens.md;
 
   const { data: activities = [], isLoading } = useQuery({
-    queryKey: [QK_ACTIVITIES],
+    queryKey: [QK_HOME_ACTIVITIES],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("activities_page")
-        .select("id, activity_title, cover_url, activity_desc, activity_date")
+        .select("id, activity_title, cover_url, activity_desc, activity_date, is_active")
+        .eq("is_active", true)
         .order("activity_date", { ascending: false })
         .limit(4);
       if (error) throw new Error(error.message);

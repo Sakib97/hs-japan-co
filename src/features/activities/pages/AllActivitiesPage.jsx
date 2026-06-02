@@ -36,6 +36,8 @@ const AllActivitiesPage = () => {
         .select("id, activity_title, cover_url, activity_desc, activity_date", {
           count: "exact",
         })
+        // is_active is true
+        .eq("is_active", true)
         // .order("created_at", { ascending: false })
         .order("activity_date", { ascending: false })
         .range((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE - 1);

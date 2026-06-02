@@ -17,7 +17,7 @@ import {
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_EVENTS } from "../../../../config/queryKeyConfig";
+import { QK_EVENTS, QK_ALL_EVENTS } from "../../../../config/queryKeyConfig";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import { showToast } from "../../../../components/layout/CustomToast";
@@ -39,6 +39,7 @@ const EventsTableComp = () => {
   const [coverFile, setCoverFile] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [togglingId, setTogglingId] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: [QK_EVENTS],
@@ -46,7 +47,7 @@ const EventsTableComp = () => {
       const { data, error } = await supabase
         .from("events_page")
         .select(
-          "id, event_title, cover_url, event_date, event_time, event_place, event_speaker, image_size, created_at",
+          "id, event_title, cover_url, event_date, event_time, event_place, event_speaker, image_size, is_active, created_at",
         )
         .order("created_at", { ascending: false });
       if (error) throw new Error(error.message);
@@ -163,6 +164,29 @@ const EventsTableComp = () => {
     }
   };
 
+  const handleToggleStatus = async (record) => {
+    setTogglingId(record.id);
+    const isActive = record.is_active !== false;
+    const newStatus = !isActive;
+    const { error } = await supabase
+      .from("events_page")
+      .update({ is_active: newStatus })
+      .eq("id", record.id);
+
+    if (error) {
+      showToast("Failed to update event status.", "error");
+    } else {
+      await queryClient.invalidateQueries({ queryKey: [QK_EVENTS] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ALL_EVENTS] });
+      await queryClient.invalidateQueries({ queryKey: ["home2_events"] });
+      showToast(
+        `Event ${newStatus ? "activated" : "deactivated"} successfully.`,
+        "success",
+      );
+    }
+    setTogglingId(null);
+  };
+
   const handleDelete = async (record) => {
     try {
       if (record.cover_url) {
@@ -232,7 +256,7 @@ const EventsTableComp = () => {
       title: "ACTIONS",
       key: "actions",
       fixed: "right",
-      width: 90,
+      width: 120,
       render: (_, record) => (
         <div className={styles.actions}>
           <Tooltip title="Edit">
@@ -242,6 +266,20 @@ const EventsTableComp = () => {
               onClick={() => openEdit(record)}
             />
           </Tooltip>
+          <button
+            type="button"
+            className={`${styles.toggle} ${record.is_active !== false ? styles.toggleOn : styles.toggleOff} ${togglingId === record.id ? styles.toggleLoading : ""}`}
+            onClick={() => handleToggleStatus(record)}
+            title={record.is_active !== false ? "Deactivate" : "Activate"}
+            aria-pressed={record.is_active !== false}
+            disabled={togglingId === record.id}
+          >
+            {togglingId === record.id ? (
+              <span className={styles.toggleSpinner} />
+            ) : (
+              <span className={styles.toggleThumb} />
+            )}
+          </button>
           <Popconfirm
             title="Delete this event?"
             description="This action cannot be undone."

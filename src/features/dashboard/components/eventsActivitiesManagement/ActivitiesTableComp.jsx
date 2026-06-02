@@ -16,7 +16,11 @@ import {
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_ACTIVITIES } from "../../../../config/queryKeyConfig";
+import {
+  QK_ACTIVITIES,
+  QK_ALL_ACTIVITIES,
+  QK_HOME_ACTIVITIES,
+} from "../../../../config/queryKeyConfig";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import { showToast } from "../../../../components/layout/CustomToast";
@@ -38,6 +42,7 @@ const ActivitiesTableComp = () => {
   const [coverFile, setCoverFile] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [togglingId, setTogglingId] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: [QK_ACTIVITIES],
@@ -45,7 +50,7 @@ const ActivitiesTableComp = () => {
       const { data, error } = await supabase
         .from("activities_page")
         .select(
-          "id, activity_title, cover_url, activity_desc, activity_date, image_size, created_at",
+          "id, activity_title, cover_url, activity_desc, activity_date, image_size, is_active, created_at",
         )
         .order("created_at", { ascending: false });
       if (error) throw new Error(error.message);
@@ -147,6 +152,8 @@ const ActivitiesTableComp = () => {
       }
 
       queryClient.invalidateQueries({ queryKey: [QK_ACTIVITIES] });
+      queryClient.invalidateQueries({ queryKey: [QK_ALL_ACTIVITIES] });
+      queryClient.invalidateQueries({ queryKey: [QK_HOME_ACTIVITIES] });
       closeModal();
     } catch {
       showToast("Failed to save activity. Please try again.", "error");
@@ -154,6 +161,29 @@ const ActivitiesTableComp = () => {
       setSaving(false);
       setUploading(false);
     }
+  };
+
+  const handleToggleStatus = async (record) => {
+    setTogglingId(record.id);
+    const isActive = record.is_active !== false;
+    const newStatus = !isActive;
+    const { error } = await supabase
+      .from("activities_page")
+      .update({ is_active: newStatus })
+      .eq("id", record.id);
+
+    if (error) {
+      showToast("Failed to update activity status.", "error");
+    } else {
+      await queryClient.invalidateQueries({ queryKey: [QK_ACTIVITIES] });
+      await queryClient.invalidateQueries({ queryKey: [QK_ALL_ACTIVITIES] });
+      await queryClient.invalidateQueries({ queryKey: [QK_HOME_ACTIVITIES] });
+      showToast(
+        `Activity ${newStatus ? "activated" : "deactivated"} successfully.`,
+        "success",
+      );
+    }
+    setTogglingId(null);
   };
 
   const handleDelete = async (record) => {
@@ -168,6 +198,8 @@ const ActivitiesTableComp = () => {
       if (error) throw error;
       showToast("Activity deleted.", "success");
       queryClient.invalidateQueries({ queryKey: [QK_ACTIVITIES] });
+      queryClient.invalidateQueries({ queryKey: [QK_ALL_ACTIVITIES] });
+      queryClient.invalidateQueries({ queryKey: [QK_HOME_ACTIVITIES] });
     } catch {
       showToast("Failed to delete activity.", "error");
     }
@@ -217,7 +249,7 @@ const ActivitiesTableComp = () => {
       title: "ACTIONS",
       key: "actions",
       fixed: "right",
-      width: 90,
+      width: 120,
       render: (_, record) => (
         <div className={styles.actions}>
           <Tooltip title="Edit">
@@ -227,6 +259,20 @@ const ActivitiesTableComp = () => {
               onClick={() => openEdit(record)}
             />
           </Tooltip>
+          <button
+            type="button"
+            className={`${styles.toggle} ${record.is_active !== false ? styles.toggleOn : styles.toggleOff} ${togglingId === record.id ? styles.toggleLoading : ""}`}
+            onClick={() => handleToggleStatus(record)}
+            title={record.is_active !== false ? "Deactivate" : "Activate"}
+            aria-pressed={record.is_active !== false}
+            disabled={togglingId === record.id}
+          >
+            {togglingId === record.id ? (
+              <span className={styles.toggleSpinner} />
+            ) : (
+              <span className={styles.toggleThumb} />
+            )}
+          </button>
           <Popconfirm
             title="Delete this activity?"
             description="This action cannot be undone."

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { supabase } from "../../../config/supabaseClient";
-import { QK_ACTIVITIES } from "../../../config/queryKeyConfig";
+import { QK_HOME_ACTIVITIES } from "../../../config/queryKeyConfig";
 import styles from "../styles/ActivityComp.module.css";
 import { FaArrowRightLong } from "react-icons/fa6";
 
@@ -18,11 +18,12 @@ const formatDate = (dateStr) => {
 
 const ActivityComp = () => {
   const { data: activities = [] } = useQuery({
-    queryKey: [QK_ACTIVITIES],
+    queryKey: [QK_HOME_ACTIVITIES],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("activities_page")
         .select("id, activity_title, cover_url, activity_desc, activity_date")
+        .eq("is_active", true)
         .order("activity_date", { ascending: true });
       if (error) throw new Error(error.message);
       return data;
