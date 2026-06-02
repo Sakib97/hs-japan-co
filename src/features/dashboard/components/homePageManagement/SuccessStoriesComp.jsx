@@ -12,7 +12,10 @@ import {
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
-import { QK_SUCCESS_STORIES } from "../../../../config/queryKeyConfig";
+import {
+  QK_SUCCESS_STORIES,
+  QK_HOME_SUCCESS_STORIES,
+} from "../../../../config/queryKeyConfig";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import { showToast } from "../../../../components/layout/CustomToast";
@@ -22,30 +25,39 @@ const BUCKET = "combined_page_images";
 const FOLDER = "success_stories";
 const MAX_SIZE = IMAGE_SIZES.SUCCESS_STORY_AVATAR.maxBytes;
 const MAX_LABEL = IMAGE_SIZES.SUCCESS_STORY_AVATAR.label;
+const PAGE_SIZE = 10;
 
 const SuccessStoriesComp = () => {
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
   const fileInputRef = useRef(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
   const [saving, setSaving] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: [QK_SUCCESS_STORIES],
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: [QK_SUCCESS_STORIES, currentPage],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const from = (currentPage - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error, count } = await supabase
         .from("success_stories")
         .select(
           "id, student_name, student_profession, student_image_url, student_image_size, content, created_at",
+          { count: "exact" },
         )
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
       if (error) throw new Error(error.message);
-      return data;
+      return { rows: data ?? [], total: count ?? 0 };
     },
+    keepPreviousData: true,
   });
 
   const openCreate = () => {
@@ -136,6 +148,7 @@ const SuccessStoriesComp = () => {
       }
 
       queryClient.invalidateQueries({ queryKey: [QK_SUCCESS_STORIES] });
+      queryClient.invalidateQueries({ queryKey: [QK_HOME_SUCCESS_STORIES] });
       closeModal();
     } catch {
       showToast("Failed to save story. Please try again.", "error");
@@ -156,6 +169,7 @@ const SuccessStoriesComp = () => {
       if (error) throw error;
       showToast("Story deleted.", "success");
       queryClient.invalidateQueries({ queryKey: [QK_SUCCESS_STORIES] });
+      queryClient.invalidateQueries({ queryKey: [QK_HOME_SUCCESS_STORIES] });
     } catch {
       showToast("Failed to delete story.", "error");
     }
@@ -249,12 +263,19 @@ const SuccessStoriesComp = () => {
 
       <Table
         columns={columns}
-        dataSource={data ?? []}
+        dataSource={data?.rows ?? []}
         rowKey="id"
-        loading={isLoading}
+        loading={isLoading || isFetching}
         size="small"
         scroll={{ x: "max-content" }}
-        pagination={{ pageSize: 10, showTotal: (t) => `${t} records` }}
+        pagination={{
+          current: currentPage,
+          pageSize: PAGE_SIZE,
+          total: data?.total ?? 0,
+          onChange: (page) => setCurrentPage(page),
+          showTotal: (t) => `${t} records`,
+          showSizeChanger: false,
+        }}
         className={styles.table}
       />
 
@@ -296,7 +317,7 @@ const SuccessStoriesComp = () => {
                 title="Remove image"
                 type="button"
               >
-               <span>×</span>
+                <span>×</span>
               </button>
             </div>
           ) : (

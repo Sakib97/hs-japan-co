@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { supabase } from "../../../config/supabaseClient";
-import { QK_SUCCESS_STORIES } from "../../../config/queryKeyConfig";
+import { QK_HOME_SUCCESS_STORIES } from "../../../config/queryKeyConfig";
 import styles from "./EventsTestimonialsSection.module.css";
 import EventsAndStoriesLoading from "../../../components/loadingSkeletons/EventsAndStoriesLoading";
 
@@ -39,7 +39,7 @@ const EventsTestimonialsSection = () => {
   const [activeIdx, setActiveIdx] = useState(0);
 
   const { data: stories = [], isLoading: storiesLoading } = useQuery({
-    queryKey: [QK_SUCCESS_STORIES],
+    queryKey: [QK_HOME_SUCCESS_STORIES],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("success_stories")
