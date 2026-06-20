@@ -29,6 +29,12 @@ import { QK_TEAM_PAGE_MEMBERS } from "../../../../config/queryKeyConfig";
 const PAGE_SIZE = 10;
 const MAX_MEMBERS = 30; // Maximum members allowed on the team page as per requirements
 const MAX_FILE_SIZE = IMAGE_SIZES.TEAM_STAFF.maxBytes;
+const DETAILS_PREVIEW_LENGTH = 100;
+
+const truncateText = (text, maxLength = DETAILS_PREVIEW_LENGTH) => {
+  if (!text) return "—";
+  return text.length > maxLength ? `${text.slice(0, maxLength)}…` : text;
+};
 
 const RowContext = React.createContext({});
 
@@ -128,6 +134,7 @@ const TeamStaffPanel = () => {
     form.setFieldsValue({
       member_name: record.member_name,
       member_designation: record.member_designation,
+      member_details: record.member_details,
     });
     setSelectedFile(null);
     setPreviewUrl(record.member_image_url || null);
@@ -182,6 +189,7 @@ const TeamStaffPanel = () => {
         const { error } = await supabase.from("team_page").insert({
           member_name: row.member_name,
           member_designation: row.member_designation,
+          member_details: row.member_details,
           member_image_url: imageUrl,
           image_size: imageSize,
           display_order: savedMembers.length,
@@ -193,6 +201,7 @@ const TeamStaffPanel = () => {
           .update({
             member_name: row.member_name,
             member_designation: row.member_designation,
+            member_details: row.member_details,
             member_image_url: imageUrl,
             image_size: imageSize,
           })
@@ -242,12 +251,17 @@ const TeamStaffPanel = () => {
         id: newKey,
         member_name: "",
         member_designation: "",
+        member_details: "",
         member_image_url: "",
         image_size: 0,
         isNew: true,
       },
     ]);
-    form.setFieldsValue({ member_name: "", member_designation: "" });
+    form.setFieldsValue({
+      member_name: "",
+      member_designation: "",
+      member_details: "",
+    });
     setSelectedFile(null);
     setPreviewUrl(null);
     setEditingKey(newKey);
@@ -378,6 +392,25 @@ const TeamStaffPanel = () => {
           </Form.Item>
         ) : (
           <span className={styles.cellText}>{record.member_designation}</span>
+        ),
+    },
+    {
+      title: "Details",
+      dataIndex: "member_details",
+      width: 500,
+      render: (_, record) =>
+        isEditing(record) ? (
+          <Form.Item
+            name="member_details"
+            style={{ margin: 0 }}
+            rules={[{ required: true, message: "Details required" }]}
+          >
+            <Input style={{ width: "100%" }} placeholder="Enter Details... *" />
+          </Form.Item>
+        ) : (
+          <span className={styles.cellText}>
+            {truncateText(record.member_details)}
+          </span>
         ),
     },
     {

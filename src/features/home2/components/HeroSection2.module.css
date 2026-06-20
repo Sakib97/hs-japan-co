@@ -1,7 +1,6 @@
 .hero {
   position: relative;
   min-height: 88vh;
-  background-image: url("https://images.unsplash.com/photo-1480796927426-f609979314bd?w=1600&q=80");
   background-size: cover;
   background-position: center 30%;
   display: flex;

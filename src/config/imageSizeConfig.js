@@ -54,6 +54,12 @@ export const IMAGE_SIZES = {
     label: "3 MB",
   },
 
+  // Homepage hero background (home page management – Hero Section)
+  HOMEPAGE_HERO: {
+    maxBytes: 3 * 1024 * 1024, // 3 MB
+    label: "3 MB",
+  },
+
   // Gallery images (assets management – Gallery Panel)
   GALLERY: {
     maxBytes: 3 * 1024 * 1024, // 3 MB

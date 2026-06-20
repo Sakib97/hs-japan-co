@@ -4,6 +4,12 @@ import styles from "../styles/TeamMembersComp.module.css";
 import { supabase } from "../../../config/supabaseClient";
 import TeamPageLoading from "../../../components/loadingSkeletons/TeamPageLoading";
 
+const MemberDetails = ({ details, className }) => {
+  if (!details?.trim()) return null;
+
+  return <p className={className}>{details.trim()}</p>;
+};
+
 const TeamMembersComp = () => {
   const { data = [], isLoading } = useQuery({
     queryKey: [QK_TEAM_PAGE_MEMBERS],
@@ -31,13 +37,11 @@ const TeamMembersComp = () => {
   return (
     <section className={styles.section}>
       <div className={styles.container}>
-        {/* ── decorative dot + heading ── */}
         <div className={styles.headerArea}>
-          <span className={styles.decorDot}></span>
+          <span className={styles.decorDot} />
           <h2 className={styles.heading}>Our Qualified Team</h2>
         </div>
 
-        {/* ── chairman card ── */}
         {chairman && (
           <div className={styles.chairmanWrapper}>
             <div className={styles.chairmanCard}>
@@ -48,34 +52,43 @@ const TeamMembersComp = () => {
                   className={styles.chairmanImg}
                 />
               </div>
-              <h3 className={styles.chairmanName}>{chairman.member_name}</h3>
-              <p className={styles.chairmanRole}>
-                {chairman.member_designation}
-              </p>
+              <div className={styles.chairmanBody}>
+                <h3 className={styles.chairmanName}>{chairman.member_name}</h3>
+                <p className={styles.chairmanRole}>
+                  {chairman.member_designation}
+                </p>
+                <MemberDetails
+                  details={chairman.member_details}
+                  className={styles.chairmanDetails}
+                />
+              </div>
             </div>
           </div>
         )}
 
-        {/* ── members grid ── */}
-        <div className={styles.grid}>
-          {members.map((m) => (
-            <div key={m.id} className={styles.card}>
-              <div className={styles.cardTop}>
-                <div className={styles.cardInfo}>
+        {members.length > 0 && (
+          <div className={styles.grid}>
+            {members.map((m) => (
+              <article key={m.id} className={styles.card}>
+                <div className={styles.memberImgWrap}>
+                  <img
+                    src={m.member_image_url}
+                    alt={m.member_name}
+                    className={styles.memberImg}
+                  />
+                </div>
+                <div className={styles.cardBody}>
                   <h4 className={styles.memberName}>{m.member_name}</h4>
                   <p className={styles.memberRole}>{m.member_designation}</p>
+                  <MemberDetails
+                    details={m.member_details}
+                    className={styles.memberDetails}
+                  />
                 </div>
-              </div>
-              <div className={styles.memberImgWrap}>
-                <img
-                  src={m.member_image_url}
-                  alt={m.member_name}
-                  className={styles.memberImg}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -62,6 +62,10 @@ export const QK_TEAM_PAGE_MEMBERS = "team_page_members";
 
 // Used in: CarouselComp, HomepagePanel
 export const QK_HOMEPAGE_CAROUSEL = "homepage_carousel_slides";
+// Used in: HeroSectionComp (admin dashboard)
+export const QK_HOMEPAGE_HERO = "homepage_hero";
+// Used in: HeroSection2 (public home)
+export const QK_HOME_HERO = "home-hero";
 
 // ─── Events & Activities ──────────────────────────────────────────────────────
 // Used in: EventsTableComp (admin dashboard)

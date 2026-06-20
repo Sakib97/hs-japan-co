@@ -5,7 +5,8 @@ import styles from "../styles/TeamPage.module.css";
 const TeamPage = () => {
   return (
     <div className={styles.teamPage}>
-      <TeamCareerComp />
+      {/* <TeamCareerComp /> */}
+      <br />
       <TeamMembersComp />
     </div>
   );
