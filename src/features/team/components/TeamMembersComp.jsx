@@ -26,13 +26,7 @@ const TeamMembersComp = () => {
   const chairman = data[0] ?? null;
   const members = data.slice(1);
 
-  if (isLoading) {
-    return (
-      <div className={styles.headerArea}>
-        <TeamPageLoading />
-      </div>
-    );
-  }
+  if (isLoading) return <TeamPageLoading />;
 
   return (
     <section className={styles.section}>
