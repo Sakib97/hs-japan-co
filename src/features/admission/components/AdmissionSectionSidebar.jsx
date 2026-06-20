@@ -138,7 +138,8 @@ const AdmissionSectionSidebar = ({
               <>
                 <FAIconPicker
                   value={item.icon}
-                  onChange={(icon) => handleItemIconChange(index, icon)}
+                  onChange={(icon) => 
+                    handleItemIconChange(index, icon)}
                 >
                   <span
                     className={editStyles.iconEditable}

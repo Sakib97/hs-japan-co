@@ -1,24 +1,27 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "../../../config/supabaseClient";
+import { QK_HOME_CORE_PILLERS } from "../../../config/queryKeyConfig";
+import CorePillarsLoading from "../../../components/loadingSkeletons/CorePillarsLoading";
 import styles from "./CorePillarsSection.module.css";
 
-const PILLARS = [
-  {
-    icon: "fi fi-rr-graduation-cap",
-    title: "Language Training",
-    desc: "Complete JLPT & JLPT N5+ preparation courses, led by certified native-level instructors.",
-  },
-  {
-    icon: "fi fi-rr-handshake",
-    title: "Consultancy",
-    desc: "Comprehensive guidance on choosing the right universities and vocational schools across Japan.",
-  },
-  {
-    icon: "fi fi-rr-passport",
-    title: "Immigration",
-    desc: "Expert visa assistance and documentation support for student, work, and dependent visas.",
-  },
-];
-
 const CorePillarsSection = () => {
+  const { data: pillars = [], isLoading } = useQuery({
+    queryKey: [QK_HOME_CORE_PILLERS],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("core_pillers")
+        .select("id, title, content, icon")
+        .order("id", { ascending: true });
+
+      if (error) throw new Error(error.message);
+      return data ?? [];
+    },
+  });
+
+  if (isLoading) return <CorePillarsLoading />;
+
+  if (pillars.length === 0) return null;
+
   return (
     <section className={styles.section}>
       <div className={styles.header}>
@@ -26,13 +29,20 @@ const CorePillarsSection = () => {
         <div className={styles.titleBar} />
       </div>
       <div className={styles.cards}>
-        {PILLARS.map((p, i) => (
-          <div key={i} className={styles.card}>
-            <div className={styles.iconWrap}>
-              <i className={p.icon} />
-            </div>
-            <h3 className={styles.cardTitle}>{p.title}</h3>
-            <p className={styles.cardDesc}>{p.desc}</p>
+        {pillars.map((pillar) => (
+          <div key={pillar.id} className={styles.card}>
+            {pillar.icon && (
+              <div className={styles.iconWrap}>
+                <i className={pillar.icon} />
+              </div>
+            )}
+            <h3 className={styles.cardTitle}>{pillar.title}</h3>
+            {pillar.content && (
+              <div
+                className={styles.cardDesc}
+                dangerouslySetInnerHTML={{ __html: pillar.content }}
+              />
+            )}
           </div>
         ))}
       </div>

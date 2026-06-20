@@ -26,7 +26,7 @@ const FA_ICONS = [
   "fa-solid fa-pen-to-square",
   "fa-solid fa-signature",
   "fa-solid fa-suitcase",
-    "fa-solid fa-briefcase-medical",
+  "fa-solid fa-briefcase-medical",
   // Education
   "fa-solid fa-graduation-cap",
   "fa-solid fa-school",
@@ -170,7 +170,7 @@ const FA_ICONS = [
   "fa-solid fa-bed",
   "fa-solid fa-chair",
   "fa-solid fa-kitchen-set",
-    "fa-solid fa-bath",
+  "fa-solid fa-bath",
   "fa-solid fa-key",
   "fa-solid fa-lock",
 

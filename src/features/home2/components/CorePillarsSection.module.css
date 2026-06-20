@@ -71,6 +71,14 @@
   margin: 0;
 }
 
+.cardDesc :global(p) {
+  margin: 0 0 0.5em;
+}
+
+.cardDesc :global(p:last-child) {
+  margin-bottom: 0;
+}
+
 @media (max-width: 640px) {
   .card {
     flex: 1 1 100%;

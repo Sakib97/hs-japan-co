@@ -108,3 +108,9 @@ export const QK_PUBLISHED_VISA_PAGES = "published_visa_pages";
 export const QK_SUCCESS_STORIES = "success_stories";
 // Used in: EventsTestimonialsSection (public home)
 export const QK_HOME_SUCCESS_STORIES = "home-success-stories";
+
+// ─── Core Pillars ─────────────────────────────────────────────────────────────
+// Used in: CorePillersComp (admin dashboard)
+export const QK_CORE_PILLERS = "core_pillers";
+// Used in: CorePillarsSection (public home)
+export const QK_HOME_CORE_PILLERS = "home-core-pillers";
