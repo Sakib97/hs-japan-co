@@ -33,7 +33,7 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
-.highlight {
+.stat :global(.highlight) {
   color: #f5c518;
   font-weight: 700;
 }

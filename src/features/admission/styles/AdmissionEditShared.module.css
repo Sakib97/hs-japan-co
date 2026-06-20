@@ -1,0 +1,110 @@
+.rteWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.saveBtn {
+  align-self: flex-start;
+  padding: 8px 20px;
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.saveBtn:hover {
+  background: #a93226;
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.titleInput {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.sidebarTitleInput {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.itemLabelInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.editRow {
+  display: flex;
+  /* align-items: center; */
+  gap: 8px;
+  width: 100%;
+}
+
+.tickBtn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: #c0392b;
+  /* background: #c7a9a6; */
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tickBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.iconEditable {
+  cursor: pointer;
+  position: relative;
+  border: 1px solid #a39d9d;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconEditHint {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  font-size: 0.55rem;
+  opacity: 0.9;
+  color: #c0392b;
+}
+.iconEditable:hover {
+  opacity: 1;
+  /* color: #fff; */
+  background: #e9e4e4;
+}
+
+.mediaEditBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed #ddd;
+}
+
+.mediaLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  margin: 0;
+}

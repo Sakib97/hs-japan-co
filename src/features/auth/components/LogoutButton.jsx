@@ -94,6 +94,14 @@ const LogoutButton = () => {
           >
             {logoutLoading ? "Logging out..." : "Logout"}
           </Button>
+
+          {/* <Button
+            variant="danger"
+            onClick={handleLogout}
+            disabled={logoutLoading}
+          >
+            {logoutLoading ? "Logging out from all devices..." : "Logout From All Devices"}
+          </Button> */}
         </Modal.Footer>
       </Modal>
     </>

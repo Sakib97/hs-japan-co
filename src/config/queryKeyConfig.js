@@ -51,6 +51,9 @@ export const QK_ABOUT_PAGE = "about-page";
 // Used in: WhyJapanPage, TechnologyComp, BetterFutureComp, BuildDreamComp
 export const QK_WHY_JAPAN_PAGE = "why-japan-page";
 
+// Used in: AdmissionPage and admission section components
+export const QK_ADMISSION_PAGE = "admission-page";
+
 // Used in: GalleryGridComp, GalleryPanel
 export const QK_GALLERY_PAGE_IMAGES = "gallery_page_images";
 

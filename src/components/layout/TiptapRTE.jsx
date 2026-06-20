@@ -4,6 +4,7 @@ import { TextStyle, FontFamily, FontSize } from "@tiptap/extension-text-style";
 import TextAlign from "@tiptap/extension-text-align";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
+import Underline from "@tiptap/extension-underline";
 import styles from "../styles/TiptapRTE.module.css";
 
 const FONTS = [
@@ -62,6 +63,7 @@ const TiptapRTE = ({ value, onChange }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Underline,
       TextStyle,
       FontFamily,
       FontSize,
@@ -116,6 +118,13 @@ const TiptapRTE = ({ value, onChange }) => {
           title="Italic"
         >
           <i>I</i>
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          active={editor.isActive("underline")}
+          title="Underline"
+        >
+          <u>U</u>
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleStrike().run()}
