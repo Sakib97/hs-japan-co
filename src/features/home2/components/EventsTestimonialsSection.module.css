@@ -52,6 +52,22 @@
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.eventCard:hover {
+  background: #23255f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(30, 27, 75, 0.28);
+}
+
+.eventCard:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
 }
 
 .eventCardTop {
@@ -177,12 +193,7 @@
 .testimonialsCol {
   flex: 1 1 45%;
   min-width: 0;
-  background: linear-gradient(
-    135deg,
-    #0f172a 0%,
-    #1e1b4b 45%,
-    #4c0519 100%
-  );
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 45%, #4c0519 100%);
   border-radius: 20px;
   padding: 4rem 5vw;
   display: flex;
@@ -365,5 +376,197 @@
   .testimonialsCol {
     padding: 3rem 6vw;
     overflow: hidden;
+  }
+
+  .modalBody {
+    padding: 22px 20px 24px;
+  }
+
+  .modalHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  .modalMetaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .eventCard:hover {
+    transform: none;
+  }
+}
+
+/* ── Event detail modal ── */
+.eventModal :global(.ant-modal-content) {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.eventModal :global(.ant-modal-body) {
+  padding: 0;
+}
+
+.modalDialogTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0;
+  padding: 16px 20px 0;
+}
+
+.eventModal :global(.ant-modal-header) {
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+}
+
+.eventModal :global(.ant-modal-header) hr {
+  margin: 12px 0 0;
+  border: none;
+  border-top: 1px solid #e8eaf6;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.modalCoverWrap {
+  width: 100%;
+  max-height: 320px;
+  overflow: hidden;
+  background: #1e1b4b;
+}
+
+.modalCoverWrap :global(.ant-image),
+.modalCoverWrap :global(.ant-image-img) {
+  width: 100% !important;
+  max-height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.modalBody {
+  padding: 28px 32px 32px;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.modalDateBadge {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.modalDateDay {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.modalDateMonth {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #f5c518;
+  margin-top: 4px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.modalTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0;
+  line-height: 1.35;
+  font-family: "Times New Roman", Times, serif;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.modalMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.modalMetaItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid #e8eaf6;
+  border-radius: 12px;
+  min-width: 0;
+}
+
+.modalMetaIcon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.modalMetaLabel {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.modalMetaValue {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* for mobile */
+@media (max-width: 768px) {
+  .modalMetaGrid {
+    grid-template-columns: 1fr;
+  }
+  .modalMetaItem {
+    padding: 10px 12px;
+  }
+  .modalMetaIcon {
+    width: 32px;
+    height: 32px;
+  }
+  .modalMetaLabel {
+    font-size: 0.68rem;
+  }
+  .modalMetaValue {
+    font-size: 0.88rem;
   }
 }
