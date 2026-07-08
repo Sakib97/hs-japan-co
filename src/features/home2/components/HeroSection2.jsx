@@ -1,19 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { Button, Grid } from "antd";
-import { Link } from "react-router-dom";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_HOME_HERO } from "../../../config/queryKeyConfig";
 import styles from "./HeroSection2.module.css";
 
-const { useBreakpoint } = Grid;
 const DEFAULT_HERO_IMAGE =
   "https://ekaphxsmswixhcxiysiz.supabase.co/storage/v1/object/public/home_page_images/hero/hero_1.jpeg";
 const HERO_SECTION = "homepage_hero";
 
 const HeroSection2 = () => {
-  const screens = useBreakpoint();
-  const isMobile = !screens.md;
-
   const { data: heroImage } = useQuery({
     queryKey: [QK_HOME_HERO],
     queryFn: async () => {
@@ -34,13 +28,8 @@ const HeroSection2 = () => {
 
   return (
     <>
-      <section
-        className={`${styles.hero} ${isMobile ? styles.heroMobile : ""}`}
-        style={isMobile ? undefined : { backgroundImage: `url(${imageUrl})` }}
-      >
-        {isMobile && (
-          <img src={imageUrl} alt="" className={styles.heroImg} />
-        )}
+      <section className={styles.hero}>
+        <img src={imageUrl} alt="" className={styles.heroImg} />
       </section>
 
       <section className={styles.contentSection}>

@@ -246,7 +246,12 @@ const AllEventsPage = () => {
         centered
         destroyOnHidden
         className={styles.eventModal}
-        title={null}
+        title={<div>
+          <div className={styles.modalTitle}>
+            Details
+          </div>
+          <hr />
+        </div>}
         style={{ 
           top:  isMobile ? "0px" : "25px", 
           // fixed width, scrollable within

@@ -227,7 +227,10 @@ const AllActivitiesPage = () => {
         centered
         destroyOnHidden
         className={styles.activityModal}
-        title={null}
+        title={ <div className={styles.modalTitle}>
+                  {selectedActivity?.activity_title ?? "—"}
+                  <hr />
+                </div>}
         style={{
           top: isMobile ? "0px" : "25px",
           maxHeight: isMobile ? "calc(100vh - 120px)" : "calc(100vh - 160px)",
@@ -262,22 +265,11 @@ const AllActivitiesPage = () => {
             )}
 
             <div className={styles.modalBody}>
-              <div className={styles.modalHeader}>
-                {/* {selectedDate && selectedActivity.activity_date && (
-                  <div className={styles.modalDateBadge}>
-                    <span className={styles.modalDateDay}>
-                      {selectedDate.day}
-                    </span>
-                    <span className={styles.modalDateMonth}>
-                      {selectedDate.month}
-                      {selectedDate.year ? ` ${selectedDate.year}` : ""}
-                    </span>
-                  </div>
-                )} */}
+              {/* <div className={styles.modalHeader}>
                 <h2 className={styles.modalTitle}>
                   {selectedActivity.activity_title ?? "—"}
                 </h2>
-              </div>
+              </div> */}
 
               {selectedActivity.activity_date && (
                 <div className={styles.modalMetaGrid}>
@@ -285,8 +277,8 @@ const AllActivitiesPage = () => {
                     <span className={styles.modalMetaIcon}>
                       <i className="fa-regular fa-calendar" />
                     </span>
-                    <div>
-                      <span className={styles.modalMetaLabel}>Date</span>
+                    <div style={{ transform: "translateY(5px)" }}>
+                      {/* <span className={styles.modalMetaLabel}>Date</span> */}
                       <span className={styles.modalMetaValue}>
                         {formatFullDate(selectedActivity.activity_date)}
                       </span>
