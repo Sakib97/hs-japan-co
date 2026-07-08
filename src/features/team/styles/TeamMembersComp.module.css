@@ -57,7 +57,7 @@
 
 .chairmanImgWrap {
   width: 132px;
-  height: 132px;
+  height: 152px;
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 18px;
@@ -131,8 +131,8 @@
 }
 
 .memberImgWrap {
-  width: 96px;
-  height: 96px;
+  width: 100px;
+  height: 115px;
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 16px;

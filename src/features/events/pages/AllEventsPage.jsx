@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Input, Pagination, Spin, Image, Space } from "antd";
-import { SearchOutlined, LoadingOutlined } from "@ant-design/icons";
+import { Input, Pagination, Modal, Image, Grid } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_ALL_EVENTS } from "../../../config/queryKeyConfig";
 import styles from "../styles/AllEventsPage.module.css";
 import AllEventsLoading from "../../../components/loadingSkeletons/AllEventsLoading";
-// import { useBreakpoint } from "antd";
-
 
 const PAGE_SIZE = 8;
 
@@ -37,10 +36,27 @@ const parseDate = (dateStr) => {
   };
 };
 
+const formatFullDate = (dateStr) => {
+  if (!dateStr) return "—";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+const { useBreakpoint } = Grid;
+
 const AllEventsPage = () => {
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const { data, isLoading } = useQuery({
     queryKey: [QK_ALL_EVENTS, currentPage, searchQuery],
     queryFn: async () => {
@@ -53,7 +69,7 @@ const AllEventsPage = () => {
         // is_active is true
         .eq("is_active", true)
         // .order("created_at", { ascending: false })
-        .order("event_date", { ascending: true })
+        .order("event_date", { ascending: false })
         .range((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE - 1);
 
       if (searchQuery.trim()) {
@@ -82,8 +98,21 @@ const AllEventsPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  return (
-    <div className={styles.page}>
+  const openEventModal = (event) => setSelectedEvent(event);
+  const closeEventModal = () => setSelectedEvent(null);
+
+  const handleCardKeyDown = (e, event) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openEventModal(event);
+    }
+  };
+
+  const selectedDate = selectedEvent
+    ? parseDate(selectedEvent.event_date)
+    : null;
+
+  return (    <div className={styles.page}>
       {/* Hero */}
       <div className={styles.hero}>
         <div className={styles.heroInner}>
@@ -132,9 +161,16 @@ const AllEventsPage = () => {
             {events.map((event) => {
               const { day, month, year } = parseDate(event.event_date);
               return (
-                <div key={event.id} className={styles.eventCard}>
+                <div
+                  key={event.id}
+                  className={styles.eventCard}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openEventModal(event)}
+                  onKeyDown={(e) => handleCardKeyDown(e, event)}
+                  aria-label={`View details for ${event.event_title ?? "event"}`}
+                >
                   <div className={styles.eventCardTop}>
-                    {/* Date badge */}
                     <div className={styles.dateBadge}>
                       <span className={styles.dateDay}>{day}</span>
                       <span className={styles.dateMonth}>
@@ -143,7 +179,6 @@ const AllEventsPage = () => {
                       </span>
                     </div>
 
-                    {/* Info */}
                     <div className={styles.eventInfo}>
                       <h3 className={styles.eventTitle}>
                         {event.event_title ?? "—"}
@@ -171,34 +206,22 @@ const AllEventsPage = () => {
                     </div>
                   </div>
 
-                  {/* Cover image */}
                   {event.cover_url && (
                     <div className={styles.coverWrap}>
                       <Image
                         src={event.cover_url}
                         alt={event.event_title ?? ""}
                         className={styles.coverThumb}
-                        // preview={{
-                        //   mask: true,
-                        //   cover: (
-                        //     <Space vertical align="center">
-                        //       <i
-                        //         style={{ fontSize: 30 }}
-                        //         className="fi fi-br-zoom-in"
-                        //       ></i>
-                        //     </Space>
-                        //   ),
-                        // }}
+                        preview={false}
                       />
                       <div className={styles.zoomOverlay}>
-                        <i className="fi fi-br-zoom-in"></i>
+                        <i className="fi fi-br-zoom-in" />
                       </div>
                     </div>
                   )}
                 </div>
               );
-            })}
-          </div>
+            })}          </div>
         )}
 
         {/* Pagination */}
@@ -214,8 +237,124 @@ const AllEventsPage = () => {
           </div>
         )}
       </div>
+
+      <Modal
+        open={!!selectedEvent}
+        onCancel={closeEventModal}
+        footer={null}
+        width={680}
+        centered
+        destroyOnHidden
+        className={styles.eventModal}
+        title={null}
+        style={{ 
+          top:  isMobile ? "0px" : "25px", 
+          // fixed width, scrollable within
+          maxHeight: isMobile ? "calc(100vh - 120px)" : "calc(100vh - 160px)",
+          overflowY: "auto",
+          borderRadius: "6px",
+          zIndex: 1000,
+         }}
+        //  closable={false}
+         closeIcon={<CloseOutlined 
+          style={{ fontSize: 15, color: "black", 
+            backgroundColor: "white",
+            borderRadius: "30%",
+            padding: "4px",
+            border: "3px solid rgb(36, 34, 34)",
+           }} />}
+      >
+        {selectedEvent && (
+          <div className={styles.modalContent}>
+            {selectedEvent.cover_url && (
+              <div className={styles.modalCoverWrap}>
+                <Image
+                  src={selectedEvent.cover_url}
+                  alt={selectedEvent.event_title ?? ""}
+                  className={styles.modalCover}
+                  preview={{ mask: "View full image" }}
+                />
+              </div>
+            )}
+
+            <div className={styles.modalBody}>
+              <div className={styles.modalHeader}>
+                {selectedDate && (
+                  <div className={styles.modalDateBadge}>
+                    <span className={styles.modalDateDay}>
+                      {selectedDate.day}
+                    </span>
+                    <span className={styles.modalDateMonth}>
+                      {selectedDate.month}
+                      {selectedDate.year ? ` ${selectedDate.year}` : ""}
+                    </span>
+                  </div>
+                )}
+                <h2 className={styles.modalTitle}>
+                  {selectedEvent.event_title ?? "—"}
+                </h2>
+              </div>
+
+              <div className={styles.modalMetaGrid}>
+                <div className={styles.modalMetaItem}>
+                  <span className={styles.modalMetaIcon}>
+                    <i className="fa-regular fa-calendar" />
+                  </span>
+                  <div>
+                    <span className={styles.modalMetaLabel}>Date</span>
+                    <span className={styles.modalMetaValue}>
+                      {formatFullDate(selectedEvent.event_date)}
+                    </span>
+                  </div>
+                </div>
+
+                {selectedEvent.event_time && (
+                  <div className={styles.modalMetaItem}>
+                    <span className={styles.modalMetaIcon}>
+                      <i className="fa-regular fa-clock" />
+                    </span>
+                    <div>
+                      <span className={styles.modalMetaLabel}>Time</span>
+                      <span className={styles.modalMetaValue}>
+                        {selectedEvent.event_time}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {selectedEvent.event_place && (
+                  <div className={styles.modalMetaItem}>
+                    <span className={styles.modalMetaIcon}>
+                      <i className="fa-solid fa-building-columns" />
+                    </span>
+                    <div>
+                      <span className={styles.modalMetaLabel}>Venue</span>
+                      <span className={styles.modalMetaValue}>
+                        {selectedEvent.event_place}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {selectedEvent.event_speaker && (
+                  <div className={styles.modalMetaItem}>
+                    <span className={styles.modalMetaIcon}>
+                      <i className="fa-regular fa-user" />
+                    </span>
+                    <div>
+                      <span className={styles.modalMetaLabel}>Speaker</span>
+                      <span className={styles.modalMetaValue}>
+                        {selectedEvent.event_speaker}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
-
 export default AllEventsPage;

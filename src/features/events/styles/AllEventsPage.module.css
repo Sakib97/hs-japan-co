@@ -90,11 +90,18 @@
   background: #1e1b4b;
   border-radius: 14px;
   padding: 22px 28px;
+  min-width: 0;
+  max-width: 100%;
   transition:
     background 0.25s,
     transform 0.2s,
     box-shadow 0.2s;
   box-shadow: 0 2px 10px rgba(30, 27, 75, 0.12);
+}
+
+.eventCard:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
 }
 
 .eventCardTop {
@@ -160,6 +167,8 @@
   color: #fff;
   margin: 0 0 8px;
   line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .eventMeta {
@@ -170,11 +179,15 @@
 
 .metaItem {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.84rem;
   transition: color 0.2s;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
 }
 
 .eventCard:hover .metaItem {
@@ -183,6 +196,8 @@
 
 .metaItem i {
   font-size: 0.82rem;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 /* ── Cover thumbnail ── */
@@ -275,6 +290,141 @@
   margin-top: 48px;
 }
 
+/* ── Event detail modal ── */
+.eventModal :global(.ant-modal-content) {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  /* top: 150px !important; */
+  /* transform: translateY(150px) !important; */
+}
+
+.eventModal :global(.ant-modal-body) {
+  padding: 0;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.modalCoverWrap {
+  width: 100%;
+  max-height: 320px;
+  overflow: hidden;
+  background: #1e1b4b;
+}
+
+.modalCoverWrap :global(.ant-image),
+.modalCoverWrap :global(.ant-image-img) {
+  width: 100% !important;
+  max-height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.modalBody {
+  padding: 28px 32px 32px;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.modalDateBadge {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.modalDateDay {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.modalDateMonth {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #f5c518;
+  margin-top: 4px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.modalTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0;
+  line-height: 1.35;
+  font-family: "Times New Roman", Times, serif;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.modalMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.modalMetaItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid #e8eaf6;
+  border-radius: 12px;
+  min-width: 0;
+}
+
+.modalMetaIcon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.modalMetaLabel {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.modalMetaValue {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .heroTitle {
@@ -351,5 +501,20 @@
 
   .coverThumb {
     border-radius: 12px;
+  }
+
+  .modalBody {
+    padding: 22px 20px 24px;
+  }
+
+  .modalHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  .modalMetaGrid {
+    grid-template-columns: 1fr;
   }
 }

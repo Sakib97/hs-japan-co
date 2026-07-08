@@ -61,7 +61,7 @@ const EventsTestimonialsSection = () => {
           "id, event_title, cover_url, event_date, event_time, event_place, event_speaker, is_active",
         )
         .eq("is_active", true)
-        .order("event_date", { ascending: true })
+        .order("event_date", { ascending: false })
         .limit(4);
       if (error) throw new Error(error.message);
       return data ?? [];
@@ -83,11 +83,11 @@ const EventsTestimonialsSection = () => {
         <div className={styles.layout}>
           {/* Left: Events */}
           <div className={styles.eventsCol}>
-            <h2 className={styles.eventsTitle}>Upcoming Events</h2>
+            <h2 className={styles.eventsTitle}>Recent Events</h2>
 
             <div className={styles.eventsList}>
               {events.length === 0 && (
-                <p className={styles.noEvents}>No upcoming events.</p>
+                <p className={styles.noEvents}>No recent events.</p>
               )}
               {events.map((event, i) => {
                 const { day, month, year } = parseDate(event.event_date);
