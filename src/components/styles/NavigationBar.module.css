@@ -149,6 +149,32 @@
 .desktopNav :global(.nav-link),
 .desktopNav :global(.dropdown-toggle) {
   white-space: nowrap;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  transition: color 0.2s ease;
+}
+
+.desktopNav :global(.nav-link:hover),
+.desktopNav :global(.nav-link:focus),
+.desktopNav :global(.nav-link.active),
+.desktopNav :global(.dropdown-toggle:hover),
+.desktopNav :global(.dropdown-toggle:focus),
+.desktopNav :global(.dropdown-toggle.show),
+.desktopNav :global(.dropdown-toggle.active) {
+  /* color: #f97316 !important; */
+  color: #f9f516 !important;
+}
+
+.desktopNav :global(.dropdown-toggle)::after {
+  border-top-color: #ffffff;
+  transition: border-top-color 0.2s ease;
+}
+
+.desktopNav :global(.dropdown-toggle:hover)::after,
+.desktopNav :global(.dropdown-toggle:focus)::after,
+.desktopNav :global(.dropdown-toggle.show)::after {
+  /* border-top-color: #f97316; */
+  border-top-color: #f9f516;
 }
 
 /* for small screens */

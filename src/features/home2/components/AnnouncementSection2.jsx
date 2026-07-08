@@ -37,7 +37,7 @@ const AnnouncementSection2 = () => {
 
   if (activeSlides.length === 0) return null;
 
-  const speed = activeSlides[0]?.autoplay_speed ?? 10000;
+  const speed = activeSlides[0]?.autoplay_speed ?? 5000;
 
   return (
     <section className={styles.section}>
