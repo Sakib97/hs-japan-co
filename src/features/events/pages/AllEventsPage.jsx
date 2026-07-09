@@ -250,6 +250,7 @@ const AllEventsPage = () => {
         onCancel={closeEventModal}
         footer={null}
         width={680}
+        zIndex={10000}
         centered
         destroyOnHidden
         className={styles.eventModal}

@@ -248,6 +248,7 @@ const EventsTestimonialsSection = () => {
         onCancel={closeEventModal}
         footer={null}
         width={680}
+        zIndex={10000}
         centered
         destroyOnHidden
         className={styles.eventModal}
@@ -269,7 +270,7 @@ const EventsTestimonialsSection = () => {
           maxHeight: isMobile ? "calc(100vh - 120px)" : "calc(100vh - 160px)",
           overflowY: "auto",
           borderRadius: "6px",
-          zIndex: 1000,
+          // zIndex: 100000,
         }}
         closeIcon={
           <CloseOutlined

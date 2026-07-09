@@ -229,6 +229,7 @@ const AllActivitiesPage = () => {
         onCancel={closeActivityModal}
         footer={null}
         width={680}
+        zIndex={10000}
         centered
         destroyOnHidden
         className={styles.activityModal}

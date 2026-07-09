@@ -386,7 +386,8 @@
 }
 
 /* ── Event detail modal ── */
-.eventModal :global(.ant-modal-content) {
+.eventModal :global(.ant-modal-content)   
+{
   padding: 0;
   overflow: hidden;
   border-radius: 16px;
