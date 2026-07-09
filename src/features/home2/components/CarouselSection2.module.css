@@ -12,15 +12,18 @@
 
 .carousel {
   width: 100%;
+  /* height:100%; */
 }
 
 .slide {
   width: 100%;
-  height: 500px;
-  border-radius: 10px;
+  /* height: 500px; */
+  height: auto;
+  display: block;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
 }
 
 /* Ant Design dot overrides */
@@ -41,8 +44,139 @@
   bottom: 14px !important;
 } */
 
+
+/* Hero Carousel Section */
+.hero {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.heroImg {
+  width: 100%;
+  max-height: 700px;
+  object-fit: cover;
+  display: block;
+}
+
+.slideInner {
+  line-height: 0;
+}
+
+
+/* ── Content band below hero image ── */
+.contentSection {
+  position: relative;
+  overflow: hidden;
+  margin-top: 0;
+  background: linear-gradient(
+    to right,
+    #0a0e27 0%,
+    #0d1127 42%,
+    #3a0808 78%,
+    #500b0b 100%
+  );
+  padding: 20px 0 10px;
+}
+
+.contentGlow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 15% 50%,
+      rgba(79, 70, 229, 0.22) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 30%,
+      rgba(192, 57, 43, 0.18) 0%,
+      transparent 40%
+    );
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 0.75rem;
+}
+
+.titleBar {
+  width: 52px;
+  height: 3px;
+  background: #c0392b;
+  border-radius: 2px;
+  margin: 0 auto 1.25rem;
+}
+
+.headings {
+  font-size: clamp(1.5rem, 4.5vw, 1.7rem);
+  font-weight: 700;
+  color: #f5f5f5;
+  line-height: 1.25;
+  margin: 0 0 1.1rem;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.headingsAccent {
+  color: #f5c518;
+}
+
 @media (max-width: 768px) {
-  .slide {
-    height: 240px;
+  .slideInner {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    width: 100%;
   }
+
+  .heroImg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: cover;
+  }
+
+  /* Slick sizes the track to the tallest slide — reset so uniform frames control height */
+  .carousel:global(.slick-initialized) :global(.slick-list),
+  .carousel:global(.slick-initialized) :global(.slick-track),
+  .carousel:global(.slick-initialized) :global(.slick-slide),
+  .carousel:global(.slick-initialized) :global(.slick-slide > div) {
+    height: auto !important;
+  }
+
+  .contentSection {
+    padding: 5px 0 10px;
+  }
+
+  .headings {
+    font-size: 1rem;
+  }
+
+  .eyebrow {
+    font-size: 0.5rem;
+  }
+
+  .titleBar {
+    width: 32px;
+    height: 2px;
+    margin: 0 auto 0.75rem;
+  }
+
 }

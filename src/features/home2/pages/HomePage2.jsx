@@ -10,13 +10,15 @@ import CTASection from "../components/CTASection";
 const HomePage2 = () => {
   return (
     <div>
-      <HeroSection2 />
+      {/* <HeroSection2 /> */}
+      <CarouselSection2 />
+
       <AnnouncementSection2 />
       <CorePillarsSection />
       <PopularCoursesSection />
       <EventsTestimonialsSection />
       <ActivitiesSection2 />
-      <CarouselSection2 />
+      {/* <CarouselSection2 /> */}
       <CTASection />
     </div>
   );

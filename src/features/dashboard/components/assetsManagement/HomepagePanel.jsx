@@ -7,6 +7,7 @@ import {
 import styles from "../../styles/AssetsManagement.module.css";
 import { showToast } from "../../../../components/layout/CustomToast";
 import { supabase } from "../../../../config/supabaseClient";
+import { fetchHomepageCarouselSlides } from "../../../../utils/homepageCarousel";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
 import { Modal, Spin } from "antd";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,21 +15,6 @@ import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { QK_HOMEPAGE_CAROUSEL } from "../../../../config/queryKeyConfig";
 
 const MAX_FILE_SIZE = IMAGE_SIZES.HOMEPAGE_CAROUSEL.maxBytes;
-
-const fetchSlides = async () => {
-  const { data, error } = await supabase
-    .from("home_page")
-    .select("id, image_link, image_order")
-    .eq("image_section", "homepage_carousel")
-    .order("image_order", { ascending: true, nullsFirst: false })
-    .order("id", { ascending: true });
-  if (error) throw new Error(error.message);
-  return data.map((row) => ({
-    id: row.id,
-    url: row.image_link,
-    order: row.image_order,
-  }));
-};
 
 const HomepagePanel = () => {
   const queryClient = useQueryClient();
@@ -45,7 +31,7 @@ const HomepagePanel = () => {
     isError,
   } = useQuery({
     queryKey: [QK_HOMEPAGE_CAROUSEL],
-    queryFn: fetchSlides,
+    queryFn: fetchHomepageCarouselSlides,
   });
 
   const addSlide = async (e) => {

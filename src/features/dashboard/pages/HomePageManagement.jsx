@@ -11,7 +11,7 @@ const HomePageManagement = () => {
   return (
     <div>
       <h3>Home Page Management</h3>
-      {isAdmin && <HeroSectionComp />}
+      {/* {isAdmin && <HeroSectionComp />} */}
       
       {isAdmin && <CorePillersComp />}
       <br />
