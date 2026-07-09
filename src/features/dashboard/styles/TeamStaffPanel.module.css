@@ -1,3 +1,23 @@
+/* ─── Table horizontal drag-scroll (desktop) ─────────────────────────────── */
+.tableScrollWrap :global(.ant-table-body),
+.tableScrollWrap :global(.ant-table-content) {
+  cursor: grab;
+}
+
+.tableScrollWrapPanning,
+.tableScrollWrapPanning :global(.ant-table-body),
+.tableScrollWrapPanning :global(.ant-table-content),
+.tableScrollWrapPanning :global(.ant-table-tbody),
+.tableScrollWrapPanning :global(tr),
+.tableScrollWrapPanning :global(td) {
+  cursor: grabbing !important;
+}
+
+:global(body.teamStaffTablePanning),
+:global(body.teamStaffTablePanning) * {
+  cursor: grabbing !important;
+}
+
 /* ─── Section wrapper ─────────────────────────────────────────────────────── */
 .section {
   background: #fff;

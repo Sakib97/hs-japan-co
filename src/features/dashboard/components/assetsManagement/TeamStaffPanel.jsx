@@ -1,5 +1,5 @@
-﻿import React, { useState, useContext, useMemo, useEffect } from "react";
-import { Form, Input, Popconfirm, Table, Tooltip } from "antd";
+﻿import React, { useState, useContext, useMemo, useEffect, useRef, useCallback } from "react";
+import { Form, Input, Popconfirm, Table, Tooltip, Grid } from "antd";
 import {
   HolderOutlined,
   EditOutlined,
@@ -30,6 +30,9 @@ const PAGE_SIZE = 10;
 const MAX_MEMBERS = 30; // Maximum members allowed on the team page as per requirements
 const MAX_FILE_SIZE = IMAGE_SIZES.TEAM_STAFF.maxBytes;
 const DETAILS_PREVIEW_LENGTH = 100;
+const TABLE_PAN_BODY_CLASS = "teamStaffTablePanning";
+
+const { useBreakpoint } = Grid;
 
 const truncateText = (text, maxLength = DETAILS_PREVIEW_LENGTH) => {
   if (!text) return "—";
@@ -73,6 +76,8 @@ const DraggableRow = ({ children, ...props }) => {
 };
 
 const DragHandle = () => {
+
+
   const { setActivatorNodeRef, listeners } = useContext(RowContext);
   return (
     <button
@@ -87,7 +92,26 @@ const DragHandle = () => {
   );
 };
 
+const isPanExcludedTarget = (target) =>
+  target.closest(
+    "button, a, input, textarea, select, label, .ant-input, .ant-select, .ant-popover, .ant-form-item",
+  );
+
+const getTableScrollEl = (wrap) => {
+  if (!wrap) return null;
+  const candidates = wrap.querySelectorAll(
+    ".ant-table-body, .ant-table-content",
+  );
+  for (const el of candidates) {
+    if (el.scrollWidth > el.clientWidth) return el;
+  }
+  return wrap.querySelector(".ant-table-body");
+};
+
 const TeamStaffPanel = () => {
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+  
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
 
@@ -99,6 +123,46 @@ const TeamStaffPanel = () => {
   const [deletingKey, setDeletingKey] = useState(null);
   const [reordering, setReordering] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isTablePanning, setIsTablePanning] = useState(false);
+  const tableWrapRef = useRef(null);
+  const isPanningRef = useRef(false);
+  const panStartRef = useRef({ x: 0, scrollLeft: 0 });
+
+  const handleTablePanMouseDown = useCallback((e) => {
+    if (e.button !== 0) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (isPanExcludedTarget(e.target)) return;
+
+    const scrollEl = getTableScrollEl(tableWrapRef.current);
+    if (!scrollEl || scrollEl.scrollWidth <= scrollEl.clientWidth) return;
+
+    isPanningRef.current = true;
+    panStartRef.current = { x: e.pageX, scrollLeft: scrollEl.scrollLeft };
+
+    setIsTablePanning(true);
+    document.body.classList.add(TABLE_PAN_BODY_CLASS);
+    document.body.style.userSelect = "none";
+    scrollEl.style.cursor = "grabbing";
+
+    const onMove = (moveEvent) => {
+      if (!isPanningRef.current) return;
+      const dx = moveEvent.pageX - panStartRef.current.x;
+      scrollEl.scrollLeft = panStartRef.current.scrollLeft - dx;
+    };
+
+    const onUp = () => {
+      isPanningRef.current = false;
+      setIsTablePanning(false);
+      document.body.classList.remove(TABLE_PAN_BODY_CLASS);
+      document.body.style.userSelect = "";
+      scrollEl.style.cursor = "";
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+    };
+
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+  }, []);
 
   const { data: dbData = [], isLoading } = useQuery({
     queryKey: [QK_TEAM_PAGE_MEMBERS],
@@ -417,7 +481,7 @@ const TeamStaffPanel = () => {
       title: "Actions",
       dataIndex: "operation",
       width: 110,
-      // fixed: "right",
+      fixed: isMobile ? "none" : "right",
       render: (_, record) => {
         if (isEditing(record)) {
           return (
@@ -530,26 +594,34 @@ const TeamStaffPanel = () => {
             items={paginatedSaved.map((m) => m.key)}
             strategy={verticalListSortingStrategy}
           >
-            <Table
-              components={{ body: { row: DraggableRow } }}
-              rowKey="key"
-              dataSource={visibleRows}
-              columns={columns}
-              pagination={{
-                current: currentPage,
-                pageSize: PAGE_SIZE,
-                total: savedMembers.length,
-                onChange: (page) => setCurrentPage(page),
-                showSizeChanger: false,
-                showTotal: (t) => `${t} members`,
-              }}
-              loading={isLoading || reordering}
-              bordered
-              rowClassName={(record) =>
-                isEditing(record) ? styles.tableRowEditing : ""
-              }
-              scroll={{ x: "max-content" }}
-            />
+            <div
+              ref={tableWrapRef}
+              className={`${styles.tableScrollWrap} ${
+                isTablePanning ? styles.tableScrollWrapPanning : ""
+              }`}
+              onMouseDown={handleTablePanMouseDown}
+            >
+              <Table
+                components={{ body: { row: DraggableRow } }}
+                rowKey="key"
+                dataSource={visibleRows}
+                columns={columns}
+                pagination={{
+                  current: currentPage,
+                  pageSize: PAGE_SIZE,
+                  total: savedMembers.length,
+                  onChange: (page) => setCurrentPage(page),
+                  showSizeChanger: false,
+                  showTotal: (t) => `${t} members`,
+                }}
+                loading={isLoading || reordering}
+                bordered
+                rowClassName={(record) =>
+                  isEditing(record) ? styles.tableRowEditing : ""
+                }
+                scroll={{ x: "max-content" }}
+              />
+            </div>
           </SortableContext>
         </DndContext>
       </Form>
