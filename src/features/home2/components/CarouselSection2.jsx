@@ -2,16 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Carousel } from "antd";
 import { QK_HOMEPAGE_CAROUSEL } from "../../../config/queryKeyConfig";
 import { fetchHomepageCarouselSlides } from "../../../utils/homepageCarousel";
+import CarouselSection2Loading from "../../../components/loadingSkeletons/CarouselSection2Loading";
 import styles from "./CarouselSection2.module.css";
 
 const CarouselSection2 = () => {
-  const { data: slides = [] } = useQuery({
+  const { data: slides = [], isLoading } = useQuery({
     queryKey: [QK_HOMEPAGE_CAROUSEL],
     queryFn: fetchHomepageCarouselSlides,
   });
 
+  if (isLoading) return <CarouselSection2Loading />;
   if (slides.length === 0) return null;
-
   return (
     <div className={styles.carouselSection}>
       {/* <div className={styles.wrapper}> */}
