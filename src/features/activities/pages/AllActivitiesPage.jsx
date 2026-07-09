@@ -6,6 +6,7 @@ import { supabase } from "../../../config/supabaseClient";
 import { QK_ALL_ACTIVITIES } from "../../../config/queryKeyConfig";
 import styles from "../styles/AllActivitiesPage.module.css";
 import AllActivitiesLoading from "../../../components/loadingSkeletons/AllActivitiesLoading";
+import ClampedTextWithSeeMore from "../../../components/common/ClampedTextWithSeeMore";
 
 const PAGE_SIZE = 8;
 
@@ -192,7 +193,11 @@ const AllActivitiesPage = () => {
                     {activity.activity_title ?? "—"}
                   </h3>
                   {activity.activity_desc && (
-                    <p className={styles.tileDesc}>{activity.activity_desc}</p>
+                    <ClampedTextWithSeeMore
+                      text={activity.activity_desc}
+                      textClassName={styles.tileDesc}
+                      onSeeMore={() => openActivityModal(activity)}
+                    />
                   )}
                   {activity.activity_date && (
                     <span className={styles.tileDate}>
@@ -227,10 +232,13 @@ const AllActivitiesPage = () => {
         centered
         destroyOnHidden
         className={styles.activityModal}
-        title={ <div className={styles.modalTitle}>
-                  {selectedActivity?.activity_title ?? "—"}
-                  <hr />
-                </div>}
+        title={
+          <div className={styles.modalTitle}>
+            Details
+            {/* {selectedActivity?.activity_title ?? "—"} */}
+            <hr />
+          </div>
+        }
         style={{
           top: isMobile ? "0px" : "25px",
           maxHeight: isMobile ? "calc(100vh - 120px)" : "calc(100vh - 160px)",
@@ -265,11 +273,11 @@ const AllActivitiesPage = () => {
             )}
 
             <div className={styles.modalBody}>
-              {/* <div className={styles.modalHeader}>
+              <div className={styles.modalHeader}>
                 <h2 className={styles.modalTitle}>
                   {selectedActivity.activity_title ?? "—"}
                 </h2>
-              </div> */}
+              </div>
 
               {selectedActivity.activity_date && (
                 <div className={styles.modalMetaGrid}>

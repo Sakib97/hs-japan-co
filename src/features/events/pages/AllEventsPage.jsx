@@ -6,7 +6,8 @@ import { SearchOutlined } from "@ant-design/icons";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_ALL_EVENTS } from "../../../config/queryKeyConfig";
 import EventCardTitle from "../../../components/common/EventCardTitle";
-import styles from "../styles/AllEventsPage.module.css";import AllEventsLoading from "../../../components/loadingSkeletons/AllEventsLoading";
+import styles from "../styles/AllEventsPage.module.css";
+import AllEventsLoading from "../../../components/loadingSkeletons/AllEventsLoading";
 
 const PAGE_SIZE = 8;
 
@@ -112,7 +113,8 @@ const AllEventsPage = () => {
     ? parseDate(selectedEvent.event_date)
     : null;
 
-  return (    <div className={styles.page}>
+  return (
+    <div className={styles.page}>
       {/* Hero */}
       <div className={styles.hero}>
         <div className={styles.heroInner}>
@@ -181,11 +183,13 @@ const AllEventsPage = () => {
 
                     <div className={styles.eventInfo}>
                       <EventCardTitle
-                        as="h3"
+                        // as="h3"
                         title={event.event_title}
                         titleClassName={styles.eventTitle}
                         onSeeMore={() => openEventModal(event)}
-                      />                      <div className={styles.eventMeta}>
+                      />
+                      {/* <br /> */}
+                      <div className={styles.eventMeta}>
                         {event.event_time && (
                           <span className={styles.metaItem}>
                             <i className="fa-regular fa-clock" />
@@ -223,7 +227,8 @@ const AllEventsPage = () => {
                   )}
                 </div>
               );
-            })}          </div>
+            })}{" "}
+          </div>
         )}
 
         {/* Pagination */}
@@ -248,28 +253,33 @@ const AllEventsPage = () => {
         centered
         destroyOnHidden
         className={styles.eventModal}
-        title={<div>
-          <div className={styles.modalTitle}>
-            Details
+        title={
+          <div>
+            <div className={styles.modalTitle}>Details</div>
+            <hr />
           </div>
-          <hr />
-        </div>}
-        style={{ 
-          top:  isMobile ? "0px" : "25px", 
+        }
+        style={{
+          top: isMobile ? "0px" : "25px",
           // fixed width, scrollable within
           maxHeight: isMobile ? "calc(100vh - 120px)" : "calc(100vh - 160px)",
           overflowY: "auto",
           borderRadius: "6px",
           zIndex: 1000,
-         }}
+        }}
         //  closable={false}
-         closeIcon={<CloseOutlined 
-          style={{ fontSize: 15, color: "black", 
-            backgroundColor: "white",
-            borderRadius: "30%",
-            padding: "4px",
-            border: "3px solid rgb(36, 34, 34)",
-           }} />}
+        closeIcon={
+          <CloseOutlined
+            style={{
+              fontSize: 15,
+              color: "black",
+              backgroundColor: "white",
+              borderRadius: "30%",
+              padding: "4px",
+              border: "3px solid rgb(36, 34, 34)",
+            }}
+          />
+        }
       >
         {selectedEvent && (
           <div className={styles.modalContent}>
