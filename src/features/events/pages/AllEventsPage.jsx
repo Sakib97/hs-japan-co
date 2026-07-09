@@ -5,8 +5,8 @@ import { CloseOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_ALL_EVENTS } from "../../../config/queryKeyConfig";
-import styles from "../styles/AllEventsPage.module.css";
-import AllEventsLoading from "../../../components/loadingSkeletons/AllEventsLoading";
+import EventCardTitle from "../../../components/common/EventCardTitle";
+import styles from "../styles/AllEventsPage.module.css";import AllEventsLoading from "../../../components/loadingSkeletons/AllEventsLoading";
 
 const PAGE_SIZE = 8;
 
@@ -180,10 +180,12 @@ const AllEventsPage = () => {
                     </div>
 
                     <div className={styles.eventInfo}>
-                      <h3 className={styles.eventTitle}>
-                        {event.event_title ?? "—"}
-                      </h3>
-                      <div className={styles.eventMeta}>
+                      <EventCardTitle
+                        as="h3"
+                        title={event.event_title}
+                        titleClassName={styles.eventTitle}
+                        onSeeMore={() => openEventModal(event)}
+                      />                      <div className={styles.eventMeta}>
                         {event.event_time && (
                           <span className={styles.metaItem}>
                             <i className="fa-regular fa-clock" />

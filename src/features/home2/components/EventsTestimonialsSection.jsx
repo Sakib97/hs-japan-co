@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Modal, Image, Grid } from "antd";
+import { Modal, Image, Grid, Divider } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_HOME_SUCCESS_STORIES } from "../../../config/queryKeyConfig";
+import EventCardTitle from "../../../components/common/EventCardTitle";
 import styles from "./EventsTestimonialsSection.module.css";
 import EventsAndStoriesLoading from "../../../components/loadingSkeletons/EventsAndStoriesLoading";
 
@@ -113,6 +114,7 @@ const EventsTestimonialsSection = () => {
     <section className={styles.section}>
       {storiesLoading || eventsLoading ? (
         <EventsAndStoriesLoading />
+
       ) : (
         <div className={styles.layout}>
           {/* Left: Events */}
@@ -149,9 +151,11 @@ const EventsTestimonialsSection = () => {
                         </span>
                       </div>
                       <div className={styles.eventInfo}>
-                        <h4 className={styles.eventTitle}>
-                          {event.event_title ?? "—"}
-                        </h4>
+                        <EventCardTitle
+                          title={event.event_title}
+                          titleClassName={styles.eventTitle}
+                          onSeeMore={() => openEventModal(event)}
+                        />
                         <div className={styles.eventMeta}>
                           {event.event_time && (
                             <span className={styles.metaItem}>
@@ -251,7 +255,13 @@ const EventsTestimonialsSection = () => {
           <div>
             <div className={styles.modalDialogTitle}>Details</div>
             {/* <hr /> */}
-            <hr style={{ margin: "10px",  }} />
+            <Divider 
+            size="large"
+            style={{ margin: "10px", 
+              borderColor: "black", 
+              transform: "translateX(-2%)",
+              // right: "0",
+              }} />
           </div>
         }
         style={{

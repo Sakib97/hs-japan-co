@@ -166,9 +166,6 @@
   font-weight: 700;
   color: #fff;
   margin: 0 0 8px;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 .eventMeta {
@@ -324,7 +321,7 @@
 }
 
 .modalBody {
-  padding: 28px 32px 32px;
+  padding: 22px 0px 24px 0px;
 }
 
 .modalHeader {
@@ -365,7 +362,7 @@
 .modalTitle {
   flex: 1;
   min-width: 0;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #1e1b4b;
   margin: 0;
@@ -474,11 +471,6 @@
 
   .eventTitle {
     font-size: 1.05rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .eventMeta {
@@ -504,7 +496,7 @@
   }
 
   .modalBody {
-    padding: 22px 20px 24px;
+    padding: 22px 0px 24px 0px;
   }
 
   .modalHeader {
