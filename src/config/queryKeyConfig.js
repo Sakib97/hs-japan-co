@@ -78,6 +78,8 @@ export const QK_ACTIVITIES = "activities_page";
 export const QK_HOME_ACTIVITIES = "home-activities";
 // Used in: AllActivitiesPage (public paginated listing)
 export const QK_ALL_ACTIVITIES = "all-activities";
+// Used in: ActivitiesTableComp — currently pinned activity (at most one)
+export const QK_PINNED_ACTIVITY = "pinned-activity";
 
 // ─── Contact ─────────────────────────────────────────────────────────────────
 // Used in: ContactInfoComp

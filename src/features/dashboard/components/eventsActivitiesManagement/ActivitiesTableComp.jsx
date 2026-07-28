@@ -13,13 +13,16 @@ import {
   Popconfirm,
   Image,
 } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, DeleteOutlined, PushpinOutlined,
+  PushpinFilled
+ } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../../config/supabaseClient";
 import {
   QK_ACTIVITIES,
   QK_ALL_ACTIVITIES,
   QK_HOME_ACTIVITIES,
+  QK_PINNED_ACTIVITY,
 } from "../../../../config/queryKeyConfig";
 import { IMAGE_SIZES } from "../../../../config/imageSizeConfig";
 import { uploadImage, deleteImage } from "../../../../utils/handleImage";
@@ -45,6 +48,7 @@ const ActivitiesTableComp = () => {
   const [coverPreview, setCoverPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [togglingId, setTogglingId] = useState(null);
+  const [pinningId, setPinningId] = useState(null);
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: [QK_ACTIVITIES, currentPage],
@@ -55,7 +59,7 @@ const ActivitiesTableComp = () => {
       const { data, error, count } = await supabase
         .from("activities_page")
         .select(
-          "id, activity_title, cover_url, activity_desc, activity_date, image_size, is_active, created_at",
+          "id, activity_title, cover_url, activity_desc, activity_date, image_size, is_active, is_pinned, created_at",
           { count: "exact" },
         )
         .order("created_at", { ascending: false })
@@ -67,6 +71,29 @@ const ActivitiesTableComp = () => {
     keepPreviousData: true,
   });
 
+  const { data: pinnedActivity } = useQuery({
+    queryKey: [QK_PINNED_ACTIVITY],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("activities_page")
+        .select("id")
+        .eq("is_pinned", true)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+
+  const pinnedId = pinnedActivity?.id ?? null;
+
+  const invalidateActivityQueries = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: [QK_ACTIVITIES] }),
+      queryClient.invalidateQueries({ queryKey: [QK_ALL_ACTIVITIES] }),
+      queryClient.invalidateQueries({ queryKey: [QK_HOME_ACTIVITIES] }),
+      queryClient.invalidateQueries({ queryKey: [QK_PINNED_ACTIVITY] }),
+    ]);
+  };
   const openCreate = () => {
     setEditingRecord(null);
     setCoverFile(null);
@@ -160,9 +187,7 @@ const ActivitiesTableComp = () => {
         showToast("Activity created.", "success");
       }
 
-      queryClient.invalidateQueries({ queryKey: [QK_ACTIVITIES] });
-      queryClient.invalidateQueries({ queryKey: [QK_ALL_ACTIVITIES] });
-      queryClient.invalidateQueries({ queryKey: [QK_HOME_ACTIVITIES] });
+      await invalidateActivityQueries();
       closeModal();
     } catch {
       showToast("Failed to save activity. Please try again.", "error");
@@ -184,15 +209,45 @@ const ActivitiesTableComp = () => {
     if (error) {
       showToast("Failed to update activity status.", "error");
     } else {
-      await queryClient.invalidateQueries({ queryKey: [QK_ACTIVITIES] });
-      await queryClient.invalidateQueries({ queryKey: [QK_ALL_ACTIVITIES] });
-      await queryClient.invalidateQueries({ queryKey: [QK_HOME_ACTIVITIES] });
+      await invalidateActivityQueries();
       showToast(
         `Activity ${newStatus ? "activated" : "deactivated"} successfully.`,
         "success",
       );
     }
     setTogglingId(null);
+  };
+
+  const handlePin = async (record) => {
+    setPinningId(record.id);
+    try {
+      if (record.is_pinned) {
+        const { error } = await supabase
+          .from("activities_page")
+          .update({ is_pinned: false })
+          .eq("id", record.id);
+        if (error) throw error;
+        showToast("Activity unpinned.", "success");
+      } else {
+        const { error: unpinError } = await supabase
+          .from("activities_page")
+          .update({ is_pinned: false })
+          .eq("is_pinned", true);
+        if (unpinError) throw unpinError;
+
+        const { error } = await supabase
+          .from("activities_page")
+          .update({ is_pinned: true })
+          .eq("id", record.id);
+        if (error) throw error;
+        showToast("Activity pinned.", "success");
+      }
+      await invalidateActivityQueries();
+    } catch {
+      showToast("Failed to update pin. Please try again.", "error");
+    } finally {
+      setPinningId(null);
+    }
   };
 
   const handleDelete = async (record) => {
@@ -206,14 +261,11 @@ const ActivitiesTableComp = () => {
         .eq("id", record.id);
       if (error) throw error;
       showToast("Activity deleted.", "success");
-      queryClient.invalidateQueries({ queryKey: [QK_ACTIVITIES] });
-      queryClient.invalidateQueries({ queryKey: [QK_ALL_ACTIVITIES] });
-      queryClient.invalidateQueries({ queryKey: [QK_HOME_ACTIVITIES] });
+      await invalidateActivityQueries();
     } catch {
       showToast("Failed to delete activity.", "error");
     }
   };
-
   const columns = [
     {
       title: "COVER",
@@ -261,7 +313,52 @@ const ActivitiesTableComp = () => {
       width: 120,
       render: (_, record) => (
         <div className={styles.actions}>
-          <Tooltip title="Edit">
+          <Popconfirm
+            title={record.is_pinned ? "Unpin this activity?" : "Pin this activity?"}
+            description={
+              record.is_pinned ? (
+                "This activity will no longer appear as pinned."
+              ) : (
+                <>
+                  Only one activity can be pinned.
+                  <br />
+                  Any currently pinned activity will be unpinned.
+                </>
+              )
+            }
+            onConfirm={() => handlePin(record)}
+            okText={record.is_pinned ? "Unpin" : "Pin"}
+            cancelText="Cancel"
+            disabled={
+              !!pinningId ||
+              (!!pinnedId && pinnedId !== record.id && !record.is_pinned)
+            }
+          >
+            <Tooltip
+              title={
+                pinnedId && pinnedId !== record.id && !record.is_pinned
+                  ? "Unpin the current activity first"
+                  : record.is_pinned
+                    ? "Unpin this activity"
+                    : "Pin this activity"
+              }
+            >
+              <span>
+                <Button
+                  size="small"
+                  loading={pinningId === record.id}
+                  disabled={
+                    !!pinningId ||
+                    (!!pinnedId && pinnedId !== record.id && !record.is_pinned)
+                  }
+                  icon={
+                    record.is_pinned ? <PushpinFilled /> : <PushpinOutlined />
+                  }
+                  type={record.is_pinned ? "primary" : "default"}
+                />
+              </span>
+            </Tooltip>
+          </Popconfirm>          <Tooltip title="Edit">
             <Button
               size="small"
               icon={<EditOutlined />}

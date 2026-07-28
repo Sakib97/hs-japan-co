@@ -20,7 +20,7 @@ const CarouselSection2 = () => {
         <Carousel
           arrows
           autoplay={{ dotDuration: true }}
-          autoplaySpeed={6000}
+          autoplaySpeed={3000}
           draggable
           dots
           className={styles.carousel}

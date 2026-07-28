@@ -1,5 +1,5 @@
 .section {
-  padding: 4.5rem 8vw;
+  padding: 1.5rem 8vw;
   background: #f8fafc;
 }
 
@@ -52,7 +52,7 @@
 
 .card {
   flex: 1 1 200px;
-  max-width: 260px;
+  max-width: 560px;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   overflow: hidden;

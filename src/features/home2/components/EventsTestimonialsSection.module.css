@@ -14,7 +14,8 @@
 .eventsCol {
   flex: 1 1 55%;
   min-width: 0;
-  padding: 4rem 5vw 4rem 8vw;
+  /* padding: 4rem 5vw 4rem 8vw; */
+  padding: 1.0rem 3.5rem;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -186,7 +187,7 @@
   min-width: 0;
   background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 45%, #4c0519 100%);
   border-radius: 20px;
-  padding: 4rem 5vw;
+  padding: 1.0rem 3.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;

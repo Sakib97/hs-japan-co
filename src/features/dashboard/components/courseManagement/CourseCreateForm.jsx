@@ -326,9 +326,13 @@ const CourseCreateForm = ({ onSubmit, editingCourse, onEditComplete }) => {
             ) : (
               <>
                 <span className={styles.submitIcon}>
-                  <i className="fi fi-br-plus"></i>
+                  {editingCourse ? (
+                    <i className="fa-solid fa-pen-to-square"></i>
+                  ) : (
+                    <i style={{ fontSize: "1.0rem" }} className="fi fi-br-layer-plus"></i>
+                  )}
                 </span>
-                &nbsp; {editingCourse ? "Update Course" : "Create Course"}
+                &nbsp; {editingCourse ? "Update Course" : "Create Coure"}
               </>
             )}
           </button>

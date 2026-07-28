@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { List } from "antd";
+import { List, Grid } from "antd";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { supabase } from "../../../config/supabaseClient";
 import { QK_HOME_ACTIVITIES } from "../../../config/queryKeyConfig";
 import styles from "./ActivitiesSection2.module.css";
 import AllActivitiesLoading from "../../../components/loadingSkeletons/AllActivitiesLoading";
-import { Grid } from "antd";
 
 const { useBreakpoint } = Grid;
 
@@ -30,8 +29,11 @@ const ActivitiesSection2 = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("activities_page")
-        .select("id, activity_title, cover_url, activity_desc, activity_date, is_active")
+        .select(
+          "id, activity_title, cover_url, activity_desc, activity_date, is_active, is_pinned",
+        )
         .eq("is_active", true)
+        .order("is_pinned", { ascending: false })
         .order("activity_date", { ascending: false })
         .limit(4);
       if (error) throw new Error(error.message);
@@ -54,6 +56,12 @@ const ActivitiesSection2 = () => {
     );
   if (activities.length === 0) return null;
 
+  const pinned = activities.find((a) => a.is_pinned) ?? null;
+  // const listItems = pinned
+  //   ? activities.filter((a) => a.id !== pinned.id)
+  //   : activities;
+  const listItems =  activities;
+
   return (
     <section className={styles.section}>
       <div className={styles.header}>
@@ -61,45 +69,72 @@ const ActivitiesSection2 = () => {
         <div className={styles.titleBar} />
       </div>
 
-    
+      <div className={`${styles.layout} ${pinned ? styles.layoutWithPin : ""}`}>
+        <div className={styles.listCol}>
+          {listItems.length > 0 ? (
+            <List
+              dataSource={listItems}
+              className={styles.list}
+              split={false}
+              renderItem={(activity) => (
+                <List.Item key={activity.id} className={styles.listItem}>
+                  {activity.cover_url && (
+                    <div className={styles.thumbWrap}>
+                      <img
+                        src={activity.cover_url}
+                        alt={activity.activity_title ?? ""}
+                        className={styles.thumbImg}
+                      />
+                    </div>
+                  )}
+                  <div className={styles.itemContent}>
+                    <h3 className={styles.itemTitle}>
+                      {activity.activity_title ?? "—"}
+                    </h3>
+                    {activity.activity_desc && (
+                      <p className={styles.itemDesc}>{activity.activity_desc}</p>
+                    )}
+                    {activity.activity_date && (
+                      <span className={styles.itemDate}>
+                        <i className="fa-regular fa-calendar" />
+                        {formatDate(activity.activity_date)}
+                      </span>
+                    )}
+                  </div>
+                </List.Item>
+              )}
+            />
+          ) : (
+            <p className={styles.emptyHint}>No other activities yet.</p>
+          )}
 
-      <List
-        dataSource={activities}
-        className={styles.list}
-        split={false}
-        renderItem={(activity) => (
-          <List.Item key={activity.id} className={styles.listItem}>
-            {activity.cover_url && (
-              <div className={styles.thumbWrap}>
-                <img
-                  src={activity.cover_url}
-                  alt={activity.activity_title ?? ""}
-                  className={styles.thumbImg}
-                />
-              </div>
-            )}
-            <div className={styles.itemContent}>
-              <h3 className={styles.itemTitle}>
-                {activity.activity_title ?? "—"}
+          <div className={styles.viewAllWrap}>
+            <Link to="/activities" className={styles.viewAllLink}>
+              View All Activities <FaArrowRightLong />
+            </Link>
+          </div>
+        </div>
+
+        {pinned && (
+          <aside className={styles.pinnedCol}>
+            <div className={styles.pinnedCard}>
+              {pinned.cover_url ? (
+                <div className={styles.pinnedImageWrap}>
+                  <img
+                    src={pinned.cover_url}
+                    alt={pinned.activity_title ?? ""}
+                    className={styles.pinnedImage}
+                  />
+                </div>
+              ) : (
+                <div className={styles.pinnedImagePlaceholder} />
+              )}
+              <h3 className={styles.pinnedTitle}>
+                {pinned.activity_title ?? "—"}
               </h3>
-              {activity.activity_desc && (
-                <p className={styles.itemDesc}>{activity.activity_desc}</p>
-              )}
-              {activity.activity_date && (
-                <span className={styles.itemDate}>
-                  <i className="fa-regular fa-calendar" />
-                  {formatDate(activity.activity_date)}
-                </span>
-              )}
             </div>
-          </List.Item>
+          </aside>
         )}
-      />
-
-      <div className={styles.viewAllWrap}>
-        <Link to="/activities" className={styles.viewAllLink}>
-          View All Activities <FaArrowRightLong />
-        </Link>
       </div>
     </section>
   );
