@@ -19,8 +19,8 @@ const ContactPage = () => {
         />
       )}
       <ContactInfoComp isEditMode={isEditMode} />
-      <ContactMapBDComp />
       <ContactMapJPComp />
+      <ContactMapBDComp />
     </div>
   );
 };
