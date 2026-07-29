@@ -5,19 +5,21 @@
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
 .layout {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 50px;
 }
 
 .content {
   flex: 1;
+  /* text-align: justify; */
+
 }
 
 .heading {
@@ -32,6 +34,7 @@
   font-size: 0.95rem;
   line-height: 1.75;
   /* color: #666; */
+  /* text-align: justify; */
 }
 
 .imageWrapper {
