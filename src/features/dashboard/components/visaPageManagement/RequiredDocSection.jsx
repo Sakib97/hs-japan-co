@@ -226,7 +226,7 @@ const RequiredDocSection = forwardRef(
             <div
               style={{ fontSize: "12px", color: "#666", marginBottom: "8px" }}
             >
-              <div>Recommended: 400×500px</div>
+              <div>Recommended: 900×500px</div>
               <div>Max file size: {sideImageConfig.label}</div>
             </div>
             <Upload.Dragger
