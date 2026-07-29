@@ -35,7 +35,7 @@ const AdmissionSSWComp = ({ isEditMode, data }) => {
             defaults={defaults}
             styles={styles}
           >
-            {!isEditMode && videoUrl && videoThumbnail && (
+            {/* {!isEditMode && videoUrl && videoThumbnail && (
               <div className={styles.videoWrapper}>
                 <img
                   src={videoThumbnail}
@@ -56,7 +56,7 @@ const AdmissionSSWComp = ({ isEditMode, data }) => {
                   <i className="fa-solid fa-play" />
                 </a>
               </div>
-            )}
+            )} */}
           </AdmissionSectionContent>
 
           <AdmissionSectionSidebar
@@ -69,6 +69,31 @@ const AdmissionSSWComp = ({ isEditMode, data }) => {
             showMediaFields
             defaultSidebarImage={defaults.media.sidebarImage}
           />
+        </div>
+
+        <div className={styles.videoContainer}>
+          {!isEditMode && videoUrl && videoThumbnail && (
+            <div className={styles.videoWrapper}>
+              <img
+                src={videoThumbnail}
+                alt="Video thumbnail"
+                className={styles.videoThumb}
+                onError={() => {
+                  if (thumbQuality !== "hqdefault") {
+                    setThumbQuality("hqdefault");
+                  }
+                }}
+              />
+              <a
+                href={videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.playButton}
+              >
+                <i className="fa-solid fa-play" />
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </section>
