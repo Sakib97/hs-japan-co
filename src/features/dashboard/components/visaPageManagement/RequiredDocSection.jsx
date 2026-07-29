@@ -1,4 +1,4 @@
-import { Input, Upload, Button } from "antd";
+import { Input, Upload, Button, Image } from "antd";
 import {
   DeleteOutlined,
   PlusCircleOutlined,
@@ -198,6 +198,25 @@ const RequiredDocSection = forwardRef(
           </span>
           <h2 className={styles.sectionTitle}>Required Documentation</h2>
         </div>
+
+        <hr />
+        <div className={styles.sampleBlock}>
+          <div className={styles.sampleHeader}>
+            <span className={styles.sampleBadge}>Sample</span>
+            <p className={styles.sampleHint}>
+              Example of how this section appears on the live visa page
+            </p>
+          </div>
+          <div className={styles.sampleFrame}>
+            <Image
+              alt="Eligibility section sample preview"
+              src="https://ekaphxsmswixhcxiysiz.supabase.co/storage/v1/object/public/combined_page_images/visa_page/samples/doc_sample.png"
+              rootClassName={styles.sampleImageRoot}
+              preview={{ mask: "View full sample" }}
+            />
+          </div>
+        </div>
+        <hr />
 
         <div className={styles.grid}>
           <div className={styles.imageCol}>

@@ -1,12 +1,13 @@
 .section {
   display: flex;
+  /* padding: -1rem 0vw; */
   min-height: 420px;
   background-color: #ffffff;
 }
 
 .left {
   flex: 1 1 55%;
-  padding: 4rem 4rem 4rem 10vw;
+  padding: 1rem 2rem 2rem 10vw;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -1,4 +1,4 @@
-import { Input, Upload } from "antd";
+import { Input, Upload, Image } from "antd";
 import { CloudUploadOutlined } from "@ant-design/icons";
 import styles from "./HeroConfigSection.module.css";
 import SaveDraftBtnComp from "./SaveDraftBtnComp";
@@ -170,6 +170,25 @@ const HeroConfigSection = ({ data, onChange, isEdit = false }) => {
           </span>
         </div>
       </div>
+
+      <hr />
+      <div className={styles.sampleBlock}>
+        <div className={styles.sampleHeader}>
+          <span className={styles.sampleBadge}>Sample</span>
+          <p className={styles.sampleHint}>
+            Example of how this section appears on the live visa page
+          </p>
+        </div>
+        <div className={styles.sampleFrame}>
+          <Image
+            alt="Eligibility section sample preview"
+            src="https://ekaphxsmswixhcxiysiz.supabase.co/storage/v1/object/public/combined_page_images/visa_page/samples/hero_sampl.png"
+            rootClassName={styles.sampleImageRoot}
+            preview={{ mask: "View full sample" }}
+          />
+        </div>
+      </div>
+      <hr />
 
       <div className={styles.grid}>
         <div className={styles.left}>

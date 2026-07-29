@@ -1,4 +1,4 @@
-import { Input, Button } from "antd";
+import { Input, Button, Divider, Image } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState, forwardRef, useImperativeHandle } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,7 +19,10 @@ const ApplicationProcessSection = forwardRef(
     const addStep = () => {
       onChange({
         ...data,
-        steps: [...data.steps, { title: "", subtitle: "" }],
+        steps: [
+          ...data.steps,
+          { title: "", subtitle: "", title_en: "", subtitle_en: "" },
+        ],
       });
     };
 
@@ -47,7 +50,13 @@ const ApplicationProcessSection = forwardRef(
     const isDraftDisabled =
       !data.title?.trim() ||
       !data.subtitle?.trim() ||
-      data.steps.some((s) => !s.title?.trim() || !s.subtitle?.trim());
+      data.steps.some(
+        (s) =>
+          !s.title?.trim() ||
+          !s.subtitle?.trim() ||
+          !s.title_en?.trim() ||
+          !s.subtitle_en?.trim(),
+      );
 
     const saveDraft = async () => {
       setDraftSaving(true);
@@ -61,6 +70,8 @@ const ApplicationProcessSection = forwardRef(
             p_steps: data.steps.map((s, i) => ({
               title: s.title.trim(),
               subtitle: s.subtitle.trim(),
+              title_en: s.title_en?.trim() || null,
+              subtitle_en: s.subtitle_en?.trim() || null,
               order: i,
             })),
           },
@@ -108,6 +119,26 @@ const ApplicationProcessSection = forwardRef(
           <h2 className={styles.sectionTitle}>Application Process</h2>
         </div>
 
+        <hr />
+        <div className={styles.sampleBlock}>
+          <div className={styles.sampleHeader}>
+            <span className={styles.sampleBadge}>Sample</span>
+            <p className={styles.sampleHint}>
+              Example of how this section appears on the live visa page
+            </p>
+          </div>
+          <div className={styles.sampleFrame}>
+            <Image
+              alt="Eligibility section sample preview"
+              src="https://ekaphxsmswixhcxiysiz.supabase.co/storage/v1/object/public/combined_page_images/visa_page/samples/app_process.png"
+              className={styles.sampleImage}
+              rootClassName={styles.sampleImageRoot}
+              preview={{ mask: "View full sample" }}
+            />
+          </div>
+        </div>
+        <hr />
+
         <div className={styles.grid}>
           <div className={styles.left}>
             <div className={styles.field}>
@@ -141,6 +172,8 @@ const ApplicationProcessSection = forwardRef(
                 <div key={idx} className={styles.stepItem}>
                   <span className={styles.stepNum}>{idx + 1}</span>
                   <div className={styles.stepFields}>
+                    <Divider>In Bangla</Divider>
+
                     <div
                       style={{
                         fontSize: "12px",
@@ -173,6 +206,45 @@ const ApplicationProcessSection = forwardRef(
                       value={step.subtitle}
                       onChange={(e) =>
                         updateStep(idx, "subtitle", e.target.value)
+                      }
+                      style={{ marginTop: 0 }}
+                    />
+
+                    <Divider>In English</Divider>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        color: "#666",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      <span style={{ fontWeight: 500 }}>TITLE</span>{" "}
+                      <span className={styles.req}>*</span>
+                    </div>
+                    <Input
+                      placeholder="Step Title in English (e.g. Document Submission)"
+                      value={step.title_en ?? ""}
+                      onChange={(e) =>
+                        updateStep(idx, "title_en", e.target.value)
+                      }
+                    />
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        color: "#666",
+                        marginTop: "8px",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      <span style={{ fontWeight: 500 }}>DETAILS</span>{" "}
+                      <span className={styles.req}>*</span>
+                    </div>
+                    <TextArea
+                      rows={2}
+                      placeholder="Step details in English..."
+                      value={step.subtitle_en ?? ""}
+                      onChange={(e) =>
+                        updateStep(idx, "subtitle_en", e.target.value)
                       }
                       style={{ marginTop: 0 }}
                     />

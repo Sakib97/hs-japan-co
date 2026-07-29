@@ -9,32 +9,37 @@ const VisaPageApplicationProcessComp = ({ section, steps }) => {
       </div>
 
       <div className={styles.timeline}>
-        {steps.map((step, i) => {
-          const isOdd = i % 2 === 0; // odd steps (1st, 3rd…) go right
-          return (
-            <div key={i} className={styles.step}>
-              <div className={`${styles.side} ${styles.left}`}>
-                {!isOdd && (
-                  <div className={styles.card}>
-                    <h3 className={styles.cardTitle}>{step.title}</h3>
-                    <p className={styles.cardSubtitle}>{step.subtitle}</p>
-                  </div>
-                )}
-              </div>
-
-              <div className={styles.circle}>{i + 1}</div>
-
-              <div className={`${styles.side} ${styles.right}`}>
-                {isOdd && (
-                  <div className={styles.card}>
-                    <h3 className={styles.cardTitle}>{step.title}</h3>
-                    <p className={styles.cardSubtitle}>{step.subtitle}</p>
-                  </div>
-                )}
-              </div>
+        {steps.map((step, i) => (
+          <div key={step.id ?? i} className={styles.step}>
+            <div className={`${styles.side} ${styles.left}`}>
+              {(step.title_en || step.subtitle_en) && (
+                <div className={styles.card}>
+                  {step.title_en && (
+                    <h3 className={styles.cardTitle}>{step.title_en}</h3>
+                  )}
+                  {step.subtitle_en && (
+                    <p className={styles.cardSubtitle}>{step.subtitle_en}</p>
+                  )}
+                </div>
+              )}
             </div>
-          );
-        })}
+
+            <div className={styles.circle}>{i + 1}</div>
+
+            <div className={`${styles.side} ${styles.right}`}>
+              {(step.title || step.subtitle) && (
+                <div className={styles.card}>
+                  {step.title && (
+                    <h3 className={styles.cardTitle}>{step.title}</h3>
+                  )}
+                  {step.subtitle && (
+                    <p className={styles.cardSubtitle}>{step.subtitle}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

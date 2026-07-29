@@ -47,8 +47,10 @@ const mapToFormData = (d) => ({
         ? d.application_steps.map((s) => ({
             title: s.title || "",
             subtitle: s.subtitle || "",
+            title_en: s.title_en || "",
+            subtitle_en: s.subtitle_en || "",
           }))
-        : [{ title: "", subtitle: "" }],
+        : [{ title: "", subtitle: "", title_en: "", subtitle_en: "" }],
   },
   requiredDocs: {
     sectionTitle: d.required_docs_section?.title || "",
@@ -86,7 +88,11 @@ const EditVisaFormInner = ({ initialData, onCancel, onSuccess }) => {
     !formData.applicationProcess.title?.trim() ||
     !formData.applicationProcess.subtitle?.trim() ||
     formData.applicationProcess.steps.some(
-      (s) => !s.title?.trim() || !s.subtitle?.trim(),
+      (s) =>
+        !s.title?.trim() ||
+        !s.subtitle?.trim() ||
+        !s.title_en?.trim() ||
+        !s.subtitle_en?.trim(),
     );
 
   const isRequiredDocsDisabled =

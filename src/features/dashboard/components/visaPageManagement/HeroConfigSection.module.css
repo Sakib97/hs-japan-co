@@ -14,6 +14,36 @@
   margin-bottom: 24px;
 }
 
+/* Sample Block */
+
+.sampleBlock {
+  margin-bottom: 20px;
+  padding: 12px;
+}
+.sampleHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.sampleBadge {
+  background: #f7f7b9;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.sampleHint {
+  font-size: 1rem;
+  color: #6b7280;
+  margin: 0;
+}
+.sampleImageRoot{
+  border: 3px solid #5f6164;
+}
+
+
 .iconWrap {
   width: 32px;
   height: 32px;

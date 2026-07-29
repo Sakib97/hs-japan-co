@@ -26,7 +26,7 @@ const getInitialState = () => ({
   applicationProcess: {
     title: "",
     subtitle: "",
-    steps: [{ title: "", subtitle: "" }],
+    steps: [{ title: "", subtitle: "", title_en: "", subtitle_en: "" }],
   },
   requiredDocs: {
     sectionTitle: "",
@@ -60,7 +60,11 @@ const CreateVisaForm = ({ onCancel, onSuccess }) => {
     !formData.applicationProcess.title?.trim() ||
     !formData.applicationProcess.subtitle?.trim() ||
     formData.applicationProcess.steps.some(
-      (s) => !s.title?.trim() || !s.subtitle?.trim(),
+      (s) =>
+        !s.title?.trim() ||
+        !s.subtitle?.trim() ||
+        !s.title_en?.trim() ||
+        !s.subtitle_en?.trim(),
     );
 
   const isRequiredDocsDisabled =

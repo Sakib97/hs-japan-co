@@ -1,5 +1,5 @@
 .section {
-  padding: 5rem 10vw;
+  padding: 2rem 10vw;
   background-color: #f8fafc;
 }
 
@@ -85,7 +85,7 @@
 }
 
 .card {
-  max-width: 380px;
+  max-width: 880px;
   width: 100%;
   background: #ffffff;
   border: 1px solid #e2e8f0;
