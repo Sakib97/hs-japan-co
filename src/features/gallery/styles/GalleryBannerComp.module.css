@@ -1,7 +1,7 @@
 .banner {
   position: relative;
-  background: url("https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1400&h=350&fit=crop")
-    center / cover no-repeat;
+  background: url("https://ekaphxsmswixhcxiysiz.supabase.co/storage/v1/object/public/home_page_images/hero/Gallery2.jpeg")
+    top / cover no-repeat;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -21,7 +21,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 70px 20px 50px;
+  padding: 100px 120px 140px;
 }
 
 .title {
