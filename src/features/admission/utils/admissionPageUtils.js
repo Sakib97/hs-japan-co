@@ -38,21 +38,24 @@ export const getSidebarMeta = (sidebarItems) => {
   if (!sidebarItems || Array.isArray(sidebarItems)) {
     return {
       videoUrl: null,
+      videoUrl2: null,
       sidebarImage: null,
     };
   }
   return {
     videoUrl: sidebarItems.videoUrl ?? null,
+    videoUrl2: sidebarItems.videoUrl2 ?? null,
     sidebarImage: sidebarItems.sidebarImage ?? null,
   };
 };
 
 export const buildSidebarPayload = (items, meta = {}) => {
-  const hasMeta = meta.videoUrl || meta.sidebarImage;
+  const hasMeta = meta.videoUrl || meta.videoUrl2 || meta.sidebarImage;
   if (!hasMeta) return items;
   return {
     items,
     videoUrl: meta.videoUrl ?? null,
+    videoUrl2: meta.videoUrl2 ?? null,
     sidebarImage: meta.sidebarImage ?? null,
   };
 };

@@ -10,19 +10,49 @@ import {
   getYoutubeThumbnail,
 } from "../utils/admissionPageUtils";
 
-const AdmissionSSWComp = ({ isEditMode, data }) => {
-  const defaults = ADMISSION_DEFAULTS.ssw;
-  const meta = getSidebarMeta(data?.sidebar_items);
-  const videoUrl = meta.videoUrl ?? defaults.media.videoUrl;
+const VideoThumb = ({ url }) => {
   const [thumbQuality, setThumbQuality] = useState("maxresdefault");
 
   useEffect(() => {
     setThumbQuality("maxresdefault");
-  }, [videoUrl]);
+  }, [url]);
 
-  const videoThumbnail =
-    getYoutubeThumbnail(videoUrl, thumbQuality) ??
-    getYoutubeThumbnail(videoUrl, "hqdefault");
+  const thumbnail =
+    getYoutubeThumbnail(url, thumbQuality) ??
+    getYoutubeThumbnail(url, "hqdefault");
+
+  if (!url || !thumbnail) return null;
+
+  return (
+    <div className={styles.videoWrapper}>
+      <img
+        src={thumbnail}
+        alt="Video thumbnail"
+        className={styles.videoThumb}
+        onError={() => {
+          if (thumbQuality !== "hqdefault") {
+            setThumbQuality("hqdefault");
+          }
+        }}
+      />
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.playButton}
+      >
+        <i className="fa-solid fa-play" />
+      </a>
+    </div>
+  );
+};
+
+const AdmissionSSWComp = ({ isEditMode, data }) => {
+  const defaults = ADMISSION_DEFAULTS.ssw;
+  const meta = getSidebarMeta(data?.sidebar_items);
+  const videoUrl = meta.videoUrl ?? defaults.media.videoUrl;
+  const videoUrl2 = meta.videoUrl2 ?? defaults.media.videoUrl2;
+  const videos = [videoUrl, videoUrl2].filter(Boolean);
 
   return (
     <section className={styles.section}>
@@ -34,30 +64,7 @@ const AdmissionSSWComp = ({ isEditMode, data }) => {
             sectionKey={ADMISSION_SECTION_KEYS.SSW}
             defaults={defaults}
             styles={styles}
-          >
-            {/* {!isEditMode && videoUrl && videoThumbnail && (
-              <div className={styles.videoWrapper}>
-                <img
-                  src={videoThumbnail}
-                  alt="Video thumbnail"
-                  className={styles.videoThumb}
-                  onError={() => {
-                    if (thumbQuality !== "hqdefault") {
-                      setThumbQuality("hqdefault");
-                    }
-                  }}
-                />
-                <a
-                  href={videoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.playButton}
-                >
-                  <i className="fa-solid fa-play" />
-                </a>
-              </div>
-            )} */}
-          </AdmissionSectionContent>
+          />
 
           <AdmissionSectionSidebar
             isEditMode={isEditMode}
@@ -71,30 +78,17 @@ const AdmissionSSWComp = ({ isEditMode, data }) => {
           />
         </div>
 
-        <div className={styles.videoContainer}>
-          {!isEditMode && videoUrl && videoThumbnail && (
-            <div className={styles.videoWrapper}>
-              <img
-                src={videoThumbnail}
-                alt="Video thumbnail"
-                className={styles.videoThumb}
-                onError={() => {
-                  if (thumbQuality !== "hqdefault") {
-                    setThumbQuality("hqdefault");
-                  }
-                }}
-              />
-              <a
-                href={videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.playButton}
-              >
-                <i className="fa-solid fa-play" />
-              </a>
-            </div>
-          )}
-        </div>
+        {!isEditMode && videos.length > 0 && (
+          <div
+            className={`${styles.videoContainer} ${
+              videos.length === 1 ? styles.videoContainerSingle : ""
+            }`}
+          >
+            {videos.map((url) => (
+              <VideoThumb key={url} url={url} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -52,6 +52,7 @@ export const ADMISSION_DEFAULTS = {
     ],
     media: {
       videoUrl: "https://youtu.be/pEQlcsNAVmc",
+      videoUrl2: "",
       sidebarImage:
         "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=300&h=300&fit=crop",
     },

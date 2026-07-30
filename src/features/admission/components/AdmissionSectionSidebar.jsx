@@ -189,7 +189,7 @@ const AdmissionSectionSidebar = ({
 
       {isEditMode && showMediaFields && (
         <div className={editStyles.mediaEditBlock}>
-          <p className={editStyles.mediaLabel}>Video URL</p>
+          <p className={editStyles.mediaLabel}>Video URL 1</p>
           <Input
             value={media.videoUrl ?? ""}
             onChange={(e) =>
@@ -200,17 +200,17 @@ const AdmissionSectionSidebar = ({
             }
             placeholder="https://youtu.be/..."
           />
-          {/* <p className={editStyles.mediaLabel}>Sidebar image URL</p> */}
-          {/* <Input
-            value={media.sidebarImage ?? ""}
+          <p className={editStyles.mediaLabel}>Video URL 2</p>
+          <Input
+            value={media.videoUrl2 ?? ""}
             onChange={(e) =>
               setMediaDraft((prev) => ({
                 ...(prev ?? meta),
-                sidebarImage: e.target.value,
+                videoUrl2: e.target.value,
               }))
             }
-            placeholder="https://..."
-          /> */}
+            placeholder="https://youtu.be/..."
+          />
           <button
             type="button"
             className={editStyles.saveBtn}

@@ -15,7 +15,7 @@
   flex: 1 1 55%;
   min-width: 0;
   /* padding: 4rem 5vw 4rem 8vw; */
-  padding: 1.0rem 3.5rem;
+  padding: 1rem 3.5rem;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -186,8 +186,8 @@
   flex: 1 1 45%;
   min-width: 0;
   background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 45%, #4c0519 100%);
-  border-radius: 20px;
-  padding: 1.0rem 3.5rem;
+  /* border-radius 20px; */
+  padding: 1rem 3.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -387,8 +387,7 @@
 }
 
 /* ── Event detail modal ── */
-.eventModal :global(.ant-modal-content)   
-{
+.eventModal :global(.ant-modal-content) {
   padding: 0;
   overflow: hidden;
   border-radius: 16px;
