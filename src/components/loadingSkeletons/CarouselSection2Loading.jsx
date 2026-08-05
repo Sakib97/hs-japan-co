@@ -13,7 +13,7 @@ const CarouselSection2Loading = () => {
         <Skeleton.Node
           active
           style={{ width: '100vw', 
-            height: isMobile ? '50vh' : '75vh', 
+            height: isMobile ? '50vh' : '85vh', 
             borderRadius: 0 }}
         />
       </div>
