@@ -87,7 +87,7 @@ const PopularCoursesSection = () => {
                       Details
                     </Button>
                   </Link>
-                  <Link to="/admission">
+                  <Link to="/online-admission">
                     <Button size="small" type="primary" danger>
                       Enroll
                     </Button>
