@@ -6,7 +6,7 @@ import { useAuth } from "../../../context/AuthProvider";
 import styles from "../styles/CourseDetailsPage.module.css";
 import { decodeCourseID } from "../../../utils/generateToken";
 import CourseDetailsLoading from "../../../components/loadingSkeletons/CourseDetailsLoading";
-
+import { Image } from "antd";
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
@@ -85,10 +85,12 @@ const CourseDetailsPage = () => {
 
         {/* ── Hero image ── */}
         <div className={styles.heroWrapper}>
-          <img
+          <Image
             src={course.cover_image_url}
             alt={course.course_name}
             className={styles.heroImg}
+            rootClassName={styles.heroImgRoot}
+            preview={{ mask: "View full image" }}
           />
           <div className={styles.heroOverlay}>
             {course.course_level && (
