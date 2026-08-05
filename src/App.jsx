@@ -175,6 +175,7 @@ function App() {
               <RoleBasedRoute
                 allowedRoles={["admin", "employee"]}
                 allowedEmployeeStatuses={["full_time"]}
+                allowedEmployeeDepartmentIncludes={["finance", "account"]}
               >
                 <FinancesPage />
               </RoleBasedRoute>

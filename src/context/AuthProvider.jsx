@@ -11,12 +11,20 @@ export const AuthProvider = ({ children }) => {
   const [userMetaLoading, setUserMetaLoading] = useState(true);
   const [studentStatus, setStudentStatus] = useState(null);
   const [employeeStatus, setEmployeeStatus] = useState(null);
+  const [employeeDepartment, setEmployeeDepartment] = useState(null);
+  const [employeeDesignation, setEmployeeDesignation] = useState(null);
   const fetchedUid = useRef(null);
   const isSuperAdmin = !!userMeta?.is_superadmin;
 
   // NEW: store realtime channel
   const studentChannelRef = useRef(null);
   const employeeChannelRef = useRef(null);
+
+  const clearEmployeeProfile = () => {
+    setEmployeeStatus(null);
+    setEmployeeDepartment(null);
+    setEmployeeDesignation(null);
+  };
 
   const fetchStudentStatus = async (email) => {
     const { data } = await supabase
@@ -30,10 +38,12 @@ export const AuthProvider = ({ children }) => {
   const fetchEmployeeStatus = async (email) => {
     const { data } = await supabase
       .from("employees")
-      .select("activity_status")
+      .select("activity_status, department_name, designation_name")
       .eq("email", email)
       .single();
     setEmployeeStatus(data?.activity_status ?? null);
+    setEmployeeDepartment(data?.department_name ?? null);
+    setEmployeeDesignation(data?.designation_name ?? null);
   };
 
   // NEW: subscribe to realtime updates
@@ -81,7 +91,9 @@ export const AuthProvider = ({ children }) => {
           filter: `email=eq.${email}`,
         },
         (payload) => {
-          setEmployeeStatus(payload.new.activity_status);
+          setEmployeeStatus(payload.new.activity_status ?? null);
+          setEmployeeDepartment(payload.new.department_name ?? null);
+          setEmployeeDesignation(payload.new.designation_name ?? null);
         },
       )
       .subscribe();
@@ -123,7 +135,7 @@ export const AuthProvider = ({ children }) => {
           setUser(null);
           setUserMeta(null);
           setStudentStatus(null);
-          setEmployeeStatus(null);
+          clearEmployeeProfile();
           fetchedUid.current = null;
         } else {
           setUserMeta(userMetaData);
@@ -183,7 +195,7 @@ export const AuthProvider = ({ children }) => {
                 setUser(null);
                 setUserMeta(null);
                 setStudentStatus(null);
-                setEmployeeStatus(null);
+                clearEmployeeProfile();
                 fetchedUid.current = null;
                 //  CLEANUP realtime
                 if (studentChannelRef.current) {
@@ -212,7 +224,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setUserMeta(null);
         setStudentStatus(null);
-        setEmployeeStatus(null);
+        clearEmployeeProfile();
         setUserMetaLoading(false);
         fetchedUid.current = null;
         //  CLEANUP realtime on logout
@@ -256,6 +268,8 @@ export const AuthProvider = ({ children }) => {
         setStudentStatus,
         employeeStatus,
         setEmployeeStatus,
+        employeeDepartment,
+        employeeDesignation,
       }}
     >
       {children}

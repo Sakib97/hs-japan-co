@@ -6,6 +6,7 @@ import NotFound from "./NotFound";
 const RoleBasedRoute = ({
   allowedRoles,
   allowedEmployeeStatuses,
+  allowedEmployeeDepartmentIncludes,
   children,
 }) => {
   const {
@@ -15,6 +16,7 @@ const RoleBasedRoute = ({
     userMetaLoading,
     studentStatus,
     employeeStatus,
+    employeeDepartment,
   } = useAuth();
   const location = useLocation();
 
@@ -55,6 +57,19 @@ const RoleBasedRoute = ({
     !allowedEmployeeStatuses.includes(employeeStatus)
   ) {
     return <NotFound />;
+  }
+
+  if (
+    userMeta.role === "employee" &&
+    allowedEmployeeDepartmentIncludes?.length
+  ) {
+    const dept = (employeeDepartment ?? "").toLowerCase();
+    const deptAllowed = allowedEmployeeDepartmentIncludes.some((pattern) =>
+      dept.includes(pattern.toLowerCase()),
+    );
+    if (!deptAllowed) {
+      return <NotFound />;
+    }
   }
 
   return children;

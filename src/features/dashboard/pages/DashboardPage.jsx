@@ -140,6 +140,7 @@ const mainMenuItems = [
         role: "employee",
         isActive: true,
         employeeStatus: ["full_time"],
+        employeeDepartmentIncludes: ["finance", "account"],
       },
     ],
   },
@@ -304,17 +305,39 @@ const bottomMenuItems = [
   // },
 ];
 
+const matchesDepartmentPattern = (departmentName, patterns) => {
+  if (!patterns?.length) return true;
+  const dept = (departmentName ?? "").toLowerCase();
+  if (!dept) return false;
+  return patterns.some((pattern) => dept.includes(pattern.toLowerCase()));
+};
+
 const filterMenuItemsByVisibility = (
   items,
-  { role, studentStatus, employeeStatus },
+  { role, studentStatus, employeeStatus, employeeDepartment },
 ) =>
   items.filter((item) => {
     if (!item.visibleForRoles) return true;
     const match = item.visibleForRoles.find((r) => r.role === role);
     if (!match || !match.isActive) return false;
-    if (match.studentStatus) return match.studentStatus.includes(studentStatus);
-    if (match.employeeStatus)
-      return match.employeeStatus.includes(employeeStatus);
+    if (match.studentStatus && !match.studentStatus.includes(studentStatus)) {
+      return false;
+    }
+    if (
+      match.employeeStatus &&
+      !match.employeeStatus.includes(employeeStatus)
+    ) {
+      return false;
+    }
+    if (
+      match.employeeDepartmentIncludes &&
+      !matchesDepartmentPattern(
+        employeeDepartment,
+        match.employeeDepartmentIncludes,
+      )
+    ) {
+      return false;
+    }
     return true;
   });
 
@@ -335,6 +358,7 @@ const DashboardPage = () => {
     userMetaLoading,
     studentStatus,
     employeeStatus,
+    employeeDepartment,
   } = useAuth();
   const { unreadCount } = useNotification(user?.email, { limit: 6 });
   useNotificationRealTime(user?.email);
@@ -397,6 +421,7 @@ const DashboardPage = () => {
     role: userMeta?.role,
     studentStatus,
     employeeStatus,
+    employeeDepartment,
   };
   const visibleMenuItems = filterMenuItemsByVisibility(
     mainMenuItems,
