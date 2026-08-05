@@ -1,7 +1,6 @@
 import { Link } from "react-router";
 import styles from "./Footer.module.css";
 
-
 const Footer = () => {
   return (
     <footer className={styles.footer}>
@@ -66,17 +65,28 @@ const Footer = () => {
         <div className={styles.container}>
           <div className={styles.bottomContent}>
             <p className={styles.copyright}>
-              Copyright &copy; {new Date().getFullYear()} Hs Japan Academy All Rights Reserved
+              Copyright &copy; {new Date().getFullYear()} Hs Japan Academy All
+              Rights Reserved
             </p>
             <div className={styles.socialLinks}>
-              <a target="_blank" rel="noopener noreferrer" href="#" className={styles.socialLink}>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.facebook.com/www.hsjapan.co"
+                className={styles.socialLink}
+              >
                 <i className="fa-brands fa-facebook-f" />
               </a>
-              <a target="_blank" rel="noopener noreferrer" href="#" className={styles.socialLink}>
+              {/* <a target="_blank" rel="noopener noreferrer" href="#" className={styles.socialLink}>
                 <i className="fi fi-brands-twitter-alt"></i>
-              </a>
+              </a> */}
               {/* youtube */}
-              <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/@hs-japan-academy" className={styles.socialLink}>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.youtube.com/@hs-japan-academy"
+                className={styles.socialLink}
+              >
                 <i className="fi fi-brands-youtube"></i>
               </a>
             </div>
