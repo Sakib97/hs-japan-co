@@ -75,6 +75,10 @@ const Footer = () => {
               <a target="_blank" rel="noopener noreferrer" href="#" className={styles.socialLink}>
                 <i className="fi fi-brands-twitter-alt"></i>
               </a>
+              {/* youtube */}
+              <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/@hs-japan-academy" className={styles.socialLink}>
+                <i className="fi fi-brands-youtube"></i>
+              </a>
             </div>
           </div>
         </div>
