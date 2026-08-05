@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { QK_GALLERY_PAGE_IMAGES } from "../../../config/queryKeyConfig";
 import { LoadingOutlined } from "@ant-design/icons";
 import GalleryPageLoading from "../../../components/loadingSkeletons/GalleryPageLoading";
+import { Image } from "antd";
 
 const fetchGalleryImages = async () => {
   const { data, error } = await supabase
@@ -59,10 +60,12 @@ const GalleryGridComp = () => {
           {galleryData.map((item) => (
             <div key={item.id} className={styles.card}>
               <div className={styles.imageWrapper}>
-                <img
+                <Image
                   src={item.url}
                   alt={item.caption || "Gallery image"}
                   className={styles.image}
+                  rootClassName={styles.imageRoot}
+                  preview={{ mask: "View" }}
                 />
               </div>
               {item.caption && <p className={styles.title}>{item.caption}</p>}
