@@ -157,7 +157,7 @@ const AcademicCoursesComp = ({ isEditMode, data = [], isLoading }) => {
 
   return (
     <div className={styles.card}>
-      <h3 className={styles.title}>Academic Courses</h3>
+      <h3 className={styles.title}>Our Services</h3>
       <ul className={styles.list}>
         {/* Existing DB rows */}
         {courses.map((course, index) => {
