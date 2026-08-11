@@ -56,22 +56,24 @@ const GalleryGridComp = () => {
   return (
     <section className={styles.section}>
       <div className={styles.container}>
-        <div className={styles.grid}>
-          {galleryData.map((item) => (
-            <div key={item.id} className={styles.card}>
-              <div className={styles.imageWrapper}>
-                <Image
-                  src={item.url}
-                  alt={item.caption || "Gallery image"}
-                  className={styles.image}
-                  rootClassName={styles.imageRoot}
-                  preview={{ mask: "View" }}
-                />
+        <Image.PreviewGroup>
+          <div className={styles.grid}>
+            {galleryData.map((item) => (
+              <div key={item.id} className={styles.card}>
+                <div className={styles.imageWrapper}>
+                  <Image
+                    src={item.url}
+                    alt={item.caption || "Gallery image"}
+                    className={styles.image}
+                    rootClassName={styles.imageRoot}
+                    preview={{ mask: "View" }}
+                  />
+                </div>
+                {item.caption && <p className={styles.title}>{item.caption}</p>}
               </div>
-              {item.caption && <p className={styles.title}>{item.caption}</p>}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Image.PreviewGroup>
       </div>
     </section>
   );
