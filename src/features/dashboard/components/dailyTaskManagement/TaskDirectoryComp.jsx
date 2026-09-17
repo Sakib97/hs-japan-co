@@ -25,6 +25,7 @@ import {
   DAILY_TASK_STATUS_COLOR,
   DAILY_TASK_STATUS,
   NOTIFICATION_TYPE,
+  DAILY_TASK_EXPORT_COUNT,
 } from "../../../../config/statusAndRoleConfig";
 import {
   QK_DAILY_TASKS,
@@ -34,6 +35,8 @@ import { getFormattedTime } from "../../../../utils/dateUtil";
 import styles from "./TaskDirectoryComp.module.css";
 import { useAuth } from "../../../../context/AuthProvider";
 import { showToast } from "../../../../components/layout/CustomToast";
+// import { exportTasksToDocx } from "./TaskExport";
+import exportTasksToDocx from "./TaskExport";
 
 const PAGE_SIZE = 10;
 
@@ -64,6 +67,7 @@ const TaskDirectoryComp = () => {
   const [statusChangeRecord, setStatusChangeRecord] = useState(null);
   const [newStatus, setNewStatus] = useState(null);
   const [reviewComments, setReviewComments] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
 
   const columns = [
     {
@@ -312,6 +316,67 @@ const TaskDirectoryComp = () => {
     });
   };
 
+  const handleExportDocx = async (recordCount) => {
+    try {
+      setIsExporting(true);
+
+      const selectFields =
+        "id, created_at, content, status, created_by_email, created_by_name, verification_comments, verified_by";
+
+      let query = supabase
+        .from("daily_task")
+        .select(selectFields)
+        .order("created_at", { ascending: false })
+        .limit(recordCount);
+
+      if (userMeta?.role === "employee") {
+        query = query.eq("created_by_email", user?.email ?? null);
+      }
+
+      if (selectedStatus) {
+        query = query.eq("status", selectedStatus);
+      }
+
+      if (selectedDate) {
+        const startOfDay = selectedDate.startOf("day").toISOString();
+        const endOfDay = selectedDate.endOf("day").toISOString();
+        query = query
+          .gte("created_at", startOfDay)
+          .lte("created_at", endOfDay);
+      }
+
+      if (searchQuery) {
+        if (userMeta?.role === "admin") {
+          query = query.or(
+            `created_by_name.ilike.%${searchQuery}%,created_by_email.ilike.%${searchQuery}%`,
+          );
+        } else {
+          query = query.ilike("content", `%${searchQuery}%`);
+        }
+      }
+
+      const { data: tasks, error } = await query;
+      if (error) throw new Error(error.message);
+
+      if (!tasks?.length) {
+        showToast("No records found to export", "warning");
+        return;
+      }
+
+      await exportTasksToDocx(tasks, {
+        statusFilter: selectedStatus,
+        dateFilter: selectedDate ? selectedDate.format("DD/MM/YYYY") : null,
+        searchFilter: searchQuery || null,
+      });
+
+      showToast("Report downloaded successfully", "success");
+    } catch (err) {
+      showToast(err.message ?? "Failed to export report", "error");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
@@ -394,6 +459,26 @@ const TaskDirectoryComp = () => {
               }}
               value={searchQuery}
             />
+
+            {/* dropdown button to select number of rows per page; default is 10; options are 10, 20, 50, 100; */}
+            <Dropdown
+              menu={{
+                items: DAILY_TASK_EXPORT_COUNT.map((opt) => ({
+                  key: opt.value,
+                  label: <span>{opt.label}</span>,
+                  onClick: () => handleExportDocx(opt.value),
+                })),
+              }}
+              placement="bottomLeft"
+            >
+              <Button
+                icon={<i className="fi fi-rr-download"></i>}
+                size="middle"
+                loading={isExporting}
+              >
+                Export Docx
+              </Button>
+            </Dropdown>
           </div>
         )}
       </div>

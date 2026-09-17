@@ -189,6 +189,14 @@ export const DAILY_TASK_STATUS_COLOR = {
   [DAILY_TASK_STATUS.UNSATISFACTORY]: "red",
 };
 
+export const DAILY_TASK_EXPORT_COUNT = [
+  { value: 10, label: "Latest 10 records" },
+  { value: 20, label: "Latest 20 records" },
+  { value: 50, label: "Latest 50 records" },
+  { value: 100, label: "Latest 100 records" },
+  { value: 200, label: "Latest 200 records" },
+];
+
 // ─── Payment / Transaction Status ────────────────────────────────────────────────
 // Used in: finances / transactions / payments table (future)
 export const PAYMENT_STATUS = {
